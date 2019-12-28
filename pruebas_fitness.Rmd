@@ -42,6 +42,29 @@ compositionPop <- function(objPop) {
 
 ```
 
+Función modificada para realizar la simulación varias veces y representar los resultados. Lo único que he modificado es el empleo de "sapply" en vez de "lapply" porque así ya se te devuelve directamente como matriz y es más cómodo que lapply. Luego, he intentado que dfPop sea un data frame con solo 2 columnas (una correspondiente al genotipo y otra al nº de individuos obtenidos al final de cada simulación) para que tenga pinta de data frame y pueda ser empleado por ggplot sin la necesidad del stack. Es simplemente otra versión para que el objeto generado esté organizado como un data frame (por si lo ve Ramón). Pero hace lo mismo. Simplemente 
+
+```{r message = FALSE, warning = FALSE}
+
+simul_boxplot2 <- function(df) {
+  e <- ggplot(df, aes(x = Genotype, y = N))
+  e + geom_boxplot(aes(fill = Genotype)) +
+    stat_summary(fun.y = mean, geom = "point",
+                 shape = 18, size = 2.5, color = "#FC4E07") 
+}
+
+compositionPop2 <- function(objPop) {
+  clon_labels <- c("WT", objPop[[1]]$geneNames)
+  listPop <- sapply(objPop, function(x) tail(x[[1]], 1)[1, -1])
+  dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
+                      "N" = c(listPop))
+  simul_boxplot2(dfPop)
+}
+
+```
+
+
+
 ## Primer ejemplo (Miguel): Local dispersal promotres biodiversity in a real fame of rock-paper-scissors.
 Tiene que ver con E.coli y resistencia-sensibilidad a colicina. 
 * (R): bacterias resistentes
@@ -561,7 +584,7 @@ scen1 <- allFitnessEffects(genotFitness = pan_rel_01(a = 0.5, b = 0.7,
                           frequencyType = "rel")
 
 # Meter paralelización
-simulScen1 <- oncoSimulPop(100,
+simulScen1 <- oncoSimulPop(10,
                               scen1,
                               model = "McFL",
                               onlyCancer = FALSE,
