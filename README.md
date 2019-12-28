@@ -1,5 +1,5 @@
 # OncoSimulR Ejercicio 2
-Trabajo de R realizado por
+Trabajo de R 
 
 Alejandro
 Miguel
