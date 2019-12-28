@@ -375,7 +375,7 @@ plot(simulScen1, show = "genotypes", type = "line")
 ##### Versión con WT como S
 Es solo un ejemplo, el resultado es el mismo respecto al primero, pero no sé qué es mejor.
 
-```{r example3_scen1_2 results="hide"}
+```{r example3_scen1_2}
 
 scen1 <- allFitnessEffects(genotFitness = pan_rel_02(a = 0.5, b = 0.7,
                                                      p = 0.1, g = 0.8),
