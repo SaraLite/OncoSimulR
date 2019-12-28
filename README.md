@@ -1,4 +1,4 @@
-# OncoSimulR
+# OncoSimulR Ejercicio 2
 Trabajo de R realizado por
 
 Alejandro
