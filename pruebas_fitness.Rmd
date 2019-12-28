@@ -260,43 +260,44 @@ plot(competition, show = "genotypes", type = 'line',
      ylab = "Number of organisms")
 ```
 
-## Tercer ejemplo (Diego): Investigating prostate cancer tumour–stroma interactions: clinical and biological insights from an evolutionary game <http://dx.doi.org/10.1038/bjc.2011.517>
+## Tercer ejemplo (Diego): Investigating prostate cancer tumour–stroma interactions: clinical and biological insights from an evolutionary game (<http://dx.doi.org/10.1038/bjc.2011.517>)
 
-**Nota:**Este ejemplo simula la relación entre dos tipos de poblaciones tumorales y una población no tumoral. No simula relaciones de epistasia entre genes, etc. 
+**Nota:** Este ejemplo simula la relación entre dos tipos de poblaciones tumorales y una población no tumoral. No simula relaciones de epistasia entre genes, etc.
 
-### Introduction
+### Introducción (del paper)
 In this paper we introduce an Evolutionary Game Theory (EGT) model that studies the evolution of three different cell populations over time: stromal cells, a dependant tumour phenotype capable of co-opting stromal cells to support its growth, and an independent tumour phenotype that does not require microenvironmental support, be it stromal associated or not.
 The payoff is fitness in the Darwinian sense: more average reproductive success. In this context, interactions between the players are important, be it in a cooperative or competitive manner, as they determine whether it will become a larger share of the population (Sigmund and Nowak, 1999). Fitness is also population dependant, so a given subpopulation might become more (or less) fit if the numbers of a different subpopulation with whom it interacts go up (or down).
+
 
 **Más papers con posibles modelos (ya hechos)**
 EGT has been used to explore various aspects of cancer (Tomlinson and Bodmer, 1997), including glioma progression (Basanta et al, 2008, 2011), the influence of the tumour – host interface in colorectal carcinogenesis (Gatenby and Vincent, 2003), the role of phenotypic variability in multiple myeloma (Dingli et al, 2009), and the evolution of a number of phenotypic traits such as motility and invasion (Mansury et al, 2006; Bellomo et al, 2008) or microenvironmental independence (Anderson et al, 2009).
 
+
 ### Modelo
 There are only four variables in the model,which is the minimum necessity to consider how the costs and benefits of either relaying on the stroma and the stromal cells (a, b, r == p)) or on the other hand being independent (g) affect the outcome of prostate cancer.
-**Attention**
-The payoff values are normalised in the range (0:1) so 1 represents the maximum fitness for any given phenotype.
+
+**Attention:** The payoff values are normalised in the range (0:1) so 1 represents the maximum fitness for any given phenotype.
 
 Tenemos, en primer lugar, tres tipos celulares:
-1. S: células estromales.
-2. D: células tumorales dependientes del microambiente.
-3. I: células tumorales independientes del microambiente.
+
+1. S: células estromales.  
+2. D: células tumorales dependientes del microambiente.  
+3. I: células tumorales independientes del microambiente.  
 
 Las relaciones entre sí en términos de costes y beneficios son:
-* $\alpha$ (a): beneficio de la cooperación entre S y D y entre D y D.
-* $\beta$ (b): coste de extraer recursos del microambiente.
-* $\gamma$ (g): coste de ser independiente del microambiente (no lo usan en las fórmulas, repasar porque probablemente lo usen en algún punto del paper)
-* $\rho\varrho$ (p): beneficio de D por factores de crecimiento paracrinos producidos por I.
+
+* $\alpha$ (a): beneficio de la cooperación entre S y D y entre D y D.  
+* $\beta$ (b): coste de extraer recursos del microambiente.  
+* $\gamma$ (g): coste de ser independiente del microambiente (no lo usan en las fórmulas, repasar porque probablemente lo usen en algún punto del paper).  
+* $\rho$ (p): beneficio de D por factores de crecimiento paracrinos producidos por I.  
 
 ### Explicación
-Las células I son independientes, asumiéndose que tienen un fitness constante (1 - $\gamma$)
-Las células D son dependientes del microambiente para obtener sus recursos, por lo que los costes asociados a la extracción de éstos se representan con $\beta$. Microambientes con pocos recursos estarán representados, por tanto, por altos valores de $\beta$ (y viceversa). Como las células I producen espacio y factores de crecimiento compartibles, el modelo asume que las células D obtienen una ventaja adaptativa de sus interacciones con las células I, lo cual está representado por la variable $\rho\varrho$ (p). 
-Por otra parte, células D que interactúen con otras células D tendrán problemas compartiendo los recursos existentes en el microambiente y por lo tanto, se asume que tienen el doble de costo $\beta$ por depender del microambiente para su supervivencia, teniendo un fitness de 1 - 2 * $\beta$. 
-También se consideran poblaciones de células estromales (S) que pueden interactuar con el tumor. Las células S conservan la capacidad de sufrir una rápida proliferación, pero normalmente tienen un crecimiento quiescente con bajos ratios de proliferación y muerte, por lo que se suponen con un fitness igual a cero. Sin embargo, bajo ciertas circunstancias, las células estromales son susceptibles de cooperar con ciertos fenotipos tumorales. En esta situacuón, células tumorales y estromales producen factores que pueden estimular el crecimiento de las poblaciones entre sí de forma mutualista. Esta relación mutualista está representada mediante $\alpha$. Bajos valores de $\alpha$ representan tumores donde el estroma no puede cooperar. 
+Las células I son independientes, asumiéndose que tienen un fitness constante (1 - $\gamma$).  
+Las células D son dependientes del microambiente para obtener sus recursos, por lo que los costes asociados a la extracción de éstos se representan con $\beta$. Microambientes con pocos recursos estarán representados, por tanto, por altos valores de $\beta$ (y viceversa). Como las células I producen espacio y factores de crecimiento compartibles, el modelo asume que las células D obtienen una ventaja adaptativa de sus interacciones con las células I, lo cual está representado por la variable $\rho$ (p).  
+Por otra parte, células D que interactúen con otras células D tendrán problemas compartiendo los recursos existentes en el microambiente y por lo tanto, se asume que tienen el doble de costo $\beta$ por depender del microambiente para su supervivencia, teniendo un fitness de 1 - 2 * $\beta$.  
+También se consideran poblaciones de células estromales (S) que pueden interactuar con el tumor. Las células S conservan la capacidad de sufrir una rápida proliferación, pero normalmente tienen un crecimiento quiescente con bajos ratios de proliferación y muerte, por lo que se suponen con un fitness igual a cero. Sin embargo, bajo ciertas circunstancias, las células estromales son susceptibles de cooperar con ciertos fenotipos tumorales. En esta situacuón, células tumorales y estromales producen factores que pueden estimular el crecimiento de las poblaciones entre sí de forma mutualista. Esta relación mutualista está representada mediante $\alpha$. Bajos valores de $\alpha$ representan tumores donde el estroma no puede cooperar.  
 
-
-```{r}
-# No entiendo pq hay que meter un WT, para mí ya sería S == WT
-# Tp entiendo pq 1 + en todos
+```{r example3_equations}
 
 # Con WT y S
 # El problema aquí es que estoy modelando que S proceden de una población inicial WT, lo que no es cierto. Creo que sería mejor poner S como WT.
@@ -339,23 +340,23 @@ One may apply the replicator equations described in the previous section to stud
 * $\gamma$: costo en el que deben incurrir las células I para ser independientes del microambiente. 
 
 
-#### Primer escenario:
+
+#### **Primer escenario.**
+
 * a = 0.5: cooperación entre D-D y D-S intermedia. 
-* b = 0.7: coste de la obtención de recursos: microambiente relativamente pobre.
-* p = 0.1: beneficio bajo de células D por coexistir con I.
-* g = 0.8: coste de ser independiente alto.
+* b = 0.7: coste de la obtención de recursos: microambiente relativamente pobre. 
+* p = 0.1: beneficio bajo de células D por coexistir con I. 
+* g = 0.8: coste de ser independiente alto. 
 
 Un valor suficientemente alto de a y suficientemente bajo de p se traduce en que las células D obtienen un beneficio mayor de su interacción con las células S que de su relación con las células I. Dado al alto coste de independencia g, no es sorprendente que las células I acaben extinguiéndose y el tumor acabe estando formado por los otros dos tipos celulares. 
 
 ##### Versión con S separado de WT
-```{r}
-sizeS <- 40000 - (40000 * 0.0001) * 2
+```{r example3_scen1_1}
 
 scen1 <- allFitnessEffects(genotFitness = pan_rel_01(a = 0.5, b = 0.7,
                                                      p = 0.1, g = 0.8),
                           frequencyDependentFitness = TRUE,
                           frequencyType = "rel")
-
 
 simulScen1 <- oncoSimulIndiv(scen1,
                               model = "McFL",
@@ -368,20 +369,18 @@ simulScen1 <- oncoSimulIndiv(scen1,
                               errorHitMaxTries = FALSE,
                               errorHitWallTime = FALSE)
 
-
 plot(simulScen1, show = "genotypes", type = "line")
 ```
 
 ##### Versión con WT como S
 Es solo un ejemplo, el resultado es el mismo respecto al primero, pero no sé qué es mejor.
 
-```{r}
+```{r example3_scen1_2 results="hide"}
 
 scen1 <- allFitnessEffects(genotFitness = pan_rel_02(a = 0.5, b = 0.7,
                                                      p = 0.1, g = 0.8),
                           frequencyDependentFitness = TRUE,
                           frequencyType = "rel")
-
 
 simulScen1 <- oncoSimulIndiv(scen1,
                               model = "McFL",
@@ -397,7 +396,7 @@ simulScen1 <- oncoSimulIndiv(scen1,
 plot(simulScen1, show = "genotypes", type = "line")
 ```
 
-#### Segundo escenario
+#### **Segundo escenario.**
 * a = 0.3: cooperación entre D-D y D-S baja 
 * b = 0.7: microambiente relativamente pobre.
 * p = 0.1: beneficio bajo de células D por coexistir con I.
@@ -416,7 +415,6 @@ scen1 <- allFitnessEffects(genotFitness = pan_rel_01(a = 0.3, b = 0.7,
                                                      p = 0.1, g = 0.7),
                           frequencyDependentFitness = TRUE,
                           frequencyType = "rel")
-
 
 simulScen1 <- oncoSimulIndiv(scen1,
                               model = "McFL",
@@ -455,14 +453,13 @@ simulScen1 <- oncoSimulIndiv(scen1,
 plot(simulScen1, show = "genotypes", type = "line")
 ```
 
-#### Tercer escenario
+#### **Tercer escenario.**
 * a = 0.2: cooperación entre D-D y D-S baja. 
 * b = 0.35: microambiente relativamente rico, beneficioso para células D.
 * p = 0.1: beneficio bajo de células D por coexistir con I.
 * g = 0.3: coste de ser independiente muy bajo.
 
-Situación extrema: a pesar de que el coste de la independencia es bastante bajo (solo 0.3 en relación a escenarios anteriores), el hecho de que el ambiente sea moderadamente rico (b = 0.35), hace que las células D (dependientes del microambiente) prevalezcan sobre el resto, incluso sobre las I. 
-Con hacer solo un poco más pobre el microambiente (b = 0.40), las células D y las I sobreviven, cooperando entre sí (Cuarto escenario).
+Situación extrema: a pesar de que el coste de la independencia es bastante bajo (solo 0.3 en relación a escenarios anteriores), el hecho de que el ambiente sea moderadamente rico (b = 0.35), hace que las células D (dependientes del microambiente) prevalezcan sobre el resto, incluso sobre las I. Con hacer solo un poco más pobre el microambiente (b = 0.40), las células D y las I sobreviven, cooperando entre sí (Cuarto escenario).
 
 ##### Versión con S separado de WT
 
@@ -471,7 +468,6 @@ scen1 <- allFitnessEffects(genotFitness = pan_rel_01(a = 0.2, b = 0.35,
                                                      p = 0.1, g = 0.3),
                           frequencyDependentFitness = TRUE,
                           frequencyType = "rel")
-
 
 simulScen1 <- oncoSimulIndiv(scen1,
                               model = "McFL",
@@ -483,7 +479,7 @@ simulScen1 <- oncoSimulIndiv(scen1,
                               seed = NULL,
                               errorHitMaxTries = FALSE,
                               errorHitWallTime = FALSE)
-simulScen1
+
 plot(simulScen1, show = "genotypes", type = "line")
 ```
 
@@ -495,7 +491,6 @@ scen1 <- allFitnessEffects(genotFitness = pan_rel_02(a = 0.2, b = 0.35,
                           frequencyDependentFitness = TRUE,
                           frequencyType = "rel")
 
-
 simulScen1 <- oncoSimulIndiv(scen1,
                               model = "McFL",
                               onlyCancer = FALSE,
@@ -510,7 +505,8 @@ simulScen1 <- oncoSimulIndiv(scen1,
 plot(simulScen1, show = "genotypes", type = "line")
 ```
 
-#### Cuarto escenario
+#### **Cuarto escenario.**
+
 ##### Versión con S separado de WT
 
 ```{r}
@@ -534,7 +530,7 @@ simulScen1
 plot(simulScen1, show = "genotypes", type = "line")
 ```
 
-  ##### Versión con WT como S
+##### Versión con WT como S
 
 ```{r}
 scen1 <- allFitnessEffects(genotFitness = pan_rel_02(a = 0.2, b = 0.4,
@@ -556,7 +552,7 @@ simulScen1 <- oncoSimulIndiv(scen1,
 plot(simulScen1, show = "genotypes", type = "line")
 ```
 
-### Simulación con 100 réplicas delescenario 1
+### Simulación con x réplicas del escenario 1
 
 ```{r}
 scen1 <- allFitnessEffects(genotFitness = pan_rel_01(a = 0.5, b = 0.7,
@@ -565,10 +561,11 @@ scen1 <- allFitnessEffects(genotFitness = pan_rel_01(a = 0.5, b = 0.7,
                           frequencyType = "rel")
 
 # Meter paralelización
-simulScen1 <- oncoSimulPop(5,
+simulScen1 <- oncoSimulPop(100,
                               scen1,
                               model = "McFL",
                               onlyCancer = FALSE,
+                              mc.cores = 8, # paralelización
                               finalTime = 100,
                               mu = 1e-4,
                               initSize = 4000,
@@ -577,17 +574,8 @@ simulScen1 <- oncoSimulPop(5,
                               errorHitMaxTries = FALSE,
                               errorHitWallTime = FALSE)
 
-
-plot(simulScen1, show = "genotypes", type = "line")
-
-
-
 compositionPop(simulScen1)
 
-
-# Frecuencias de genes:
-# sampledGenotypes(samplePop(simulScen1))
-# simulation <- tail(simulation[[1]], 1)[1, -1]
 ```
 
 
