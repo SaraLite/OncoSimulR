@@ -59,6 +59,8 @@ compositionPop2 <- function(objPop) {
   dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
                       "N" = c(listPop))
   simul_boxplot2(dfPop)
+  
+  
 }
 
 ```
