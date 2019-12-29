@@ -609,7 +609,7 @@ Me ha estado preguntado Álex respecto a su ejemplo y, cuando lo hemos hecho con
 ```{r}
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "G", "V", "A"),
-             Fitness = c("1",
+             Fitness = c("1.5",
                          paste0("1 + ", a, " * (f_1 + 1)"),
                          paste0("1 + ", a, " * f_1 + ", v, " * (f_2 + 1) - ", c),
                          paste0("1 + ", a, " * f_1 + ", v, " * f_2")
@@ -642,3 +642,10 @@ compositionPop2(simulation)
 ### Comentarios
 * No sé qué situación es mejor, si mantener WT independiente de S (a pesar de que el programa modela que S aparece como producto mutacional de WT) o no. Utilizando uno u otro los valores de los parámetros cambian para representar un mismo escenario (a pesar de que aquí tienen los mismos, pero para que las gráficas se parecieran más, los valroes deben ser ligeramente distintos). He puesto los dos casos para que comparéis y me digais.
 * Creo que cada una de las simulaciones habría que hacerla varias veces, porque los resultados a veces son ligeramente distintos  si lo corres varias veces. 
+
+### Cosas a tener en cuenta
+--> Cuando una subpoblación llega a 1e8 se para la simulación
+
+--> Hay que tener en cuenta que si uno de los clones (mutantes) no se origina a partir del WT y el WT muere antes de que pueda aparecer, el programa no lo coge y nos dará error en la simulación repetida 1000 veces. Podemos solucionarlo aumentando la tasa de natalidad del WT o aumentando la tasa de mutación del WT o el tamaño inicial del WT. 
+
+--> spPopSizes no soluciona el problema anterior porque solo lo emplea la función evalAllFitnessEffects. OncoSimulIndv y las otras no lo tienen en cuenta, así que no se soluciona nada. 
