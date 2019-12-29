@@ -606,10 +606,19 @@ compositionPop(simulScen1)
 
 Me ha estado preguntado Álex respecto a su ejemplo y, cuando lo hemos hecho con oncoSimulPop, la función nueva compositionPop2 ha fallado. Falla a la hora de generar el data frame, que por lo que sea el número de filas no es el mismo que el número de etiquetas (entiendo yo). Revísalo, porque a mí me parece mejor trabajar probablemente con sapply. 
 
+## Ejemplo Álex:
+
+# a: beneficio debido a la acidez si hay células que producen ácido.
+# v: beneficio (para las células aeróbicas) debido a la vascularización si hay células que
+#    están (sobre) produciendo VEGF a un coste c.
+# c: coste de producir VEGF.
+
+# Situación 1: De acuerdo a la figura 1, en esta primera situación hay oscilaciones dentro de la población, pero debería acabar ganando G.
+
 ```{r}
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "G", "V", "A"),
-             Fitness = c("1.5",
+             Fitness = c("1",
                          paste0("1 + ", a, " * (f_1 + 1)"),
                          paste0("1 + ", a, " * f_1 + ", v, " * (f_2 + 1) - ", c),
                          paste0("1 + ", a, " * f_1 + ", v, " * f_2")
@@ -621,22 +630,85 @@ afavc <- allFitnessEffects(genotFitness = avc(2.5, 2, 1), # Parametros de la int
                            frequencyType = "rel")
 
 simulation <- oncoSimulPop(20,
-                              afavc,
-                              model = "McFL",
-                              onlyCancer = FALSE,
-                              mc.cores = 8, # paralelización
-                              finalTime = 15,
-                              mu = 1e-4,
-                              initSize = 4000,
-                              keepPhylog = TRUE,
-                              seed = NULL,
-                              errorHitMaxTries = FALSE,
-                              errorHitWallTime = FALSE)
+                           mc.cores = 6,
+                           afavc,
+                           model = "McFL",
+                           onlyCancer = FALSE,
+                           finalTime = 25,
+                           mu = 1e-2,
+                           initSize = 4000,
+                           keepPhylog = TRUE,
+                           seed = NULL,
+                           errorHitMaxTries = FALSE,
+                           errorHitWallTime = FALSE)
 
+#plot(simulation, show = "genotypes", type = "line")
 compositionPop2(simulation)
-
 ```
 
+# Situación 2: De acuerdo a la figura 1, en esta primera situación debería ganar siempre V.
+
+```{r}
+avc <- function (a, v, c) {
+  data.frame(Genotype = c("WT", "G", "V", "A"),
+             Fitness = c("1",
+                         paste0("1 + ", a, " * (f_1 + 1)"),
+                         paste0("1 + ", a, " * f_1 + ", v, " * (f_2 + 1) - ", c),
+                         paste0("1 + ", a, " * f_1 + ", v, " * f_2")
+                         ))
+                          }
+
+afavc <- allFitnessEffects(genotFitness = avc(2.5, 7, 1), # Parametros de la interaccion
+                           frequencyDependentFitness = TRUE,
+                           frequencyType = "rel")
+
+simulation <- oncoSimulPop(20,
+                           mc.cores = 6,
+                           afavc,
+                           model = "McFL",
+                           onlyCancer = FALSE,
+                           finalTime = 25,
+                           mu = 1e-2,
+                           initSize = 4000,
+                           keepPhylog = TRUE,
+                           seed = NULL,
+                           errorHitMaxTries = FALSE,
+                           errorHitWallTime = FALSE)
+
+compositionPop2(simulation)
+```
+
+# Situación 3: de acuerdo a la figura 1, en esta situación debería ganar G.
+
+```{r}
+avc <- function (a, v, c) {
+  data.frame(Genotype = c("WT", "G", "V", "A"),
+             Fitness = c("1",
+                         paste0("1 + ", a, " * (f_1 + 1)"),
+                         paste0("1 + ", a, " * f_1 + ", v, " * (f_2 + 1) - ", c),
+                         paste0("1 + ", a, " * f_1 + ", v, " * f_2")
+                         ))
+                          }
+
+afavc <- allFitnessEffects(genotFitness = avc(37.5, 2, 1), # Parametros de la interaccion
+                           frequencyDependentFitness = TRUE,
+                           frequencyType = "rel")
+
+simulation <- oncoSimulPop(20,
+                           mc.cores = 6,
+                           afavc,
+                           model = "McFL",
+                           onlyCancer = FALSE,
+                           finalTime = 25,
+                           mu = 1e-2,
+                           initSize = 4000,
+                           keepPhylog = TRUE,
+                           seed = NULL,
+                           errorHitMaxTries = FALSE,
+                           errorHitWallTime = FALSE)
+
+compositionPop2(simulation)
+```
 
 
 ### Comentarios
