@@ -42,7 +42,7 @@ compositionPop <- function(objPop) {
 
 ```
 
-Función modificada para realizar la simulación varias veces y representar los resultados. Lo único que he modificado es el empleo de "sapply" en vez de "lapply" porque así ya se te devuelve directamente como matriz y es más cómodo que lapply. Luego, he intentado que dfPop sea un data frame con solo 2 columnas (una correspondiente al genotipo y otra al nº de individuos obtenidos al final de cada simulación) para que tenga pinta de data frame y pueda ser empleado por ggplot sin la necesidad del stack. Es simplemente otra versión para que el objeto generado esté organizado como un data frame (por si lo ve Ramón). Pero hace lo mismo. Simplemente 
+Función modificada para realizar la simulación varias veces y representar los resultados. Lo único que he modificado es el empleo de "sapply" en vez de "lapply" porque así ya se te devuelve directamente como matriz y es más cómodo que lapply. Luego, he intentado que dfPop sea un data frame con solo 2 columnas (una correspondiente al genotipo y otra al nº de individuos obtenidos al final de cada simulación) para que tenga pinta de data frame y pueda ser empleado por ggplot sin la necesidad del stack. Es simplemente otra versión para que el objeto generado esté organizado como un data frame (por si lo ve Ramón). Pero hace lo mismo. Simplemente.
 
 ```{r message = FALSE, warning = FALSE}
 
@@ -59,8 +59,6 @@ compositionPop2 <- function(objPop) {
   dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
                       "N" = c(listPop))
   simul_boxplot2(dfPop)
-  
-  
 }
 
 ```
@@ -566,7 +564,7 @@ scen1 <- allFitnessEffects(genotFitness = pan_rel_02(a = 0.2, b = 0.4,
 simulScen1 <- oncoSimulIndiv(scen1,
                               model = "McFL",
                               onlyCancer = FALSE,
-                              finalTime = 100,
+                              finalTime = 15,
                               mu = 1e-4,
                               initSize = 4000,
                               keepPhylog = TRUE,
@@ -586,7 +584,7 @@ scen1 <- allFitnessEffects(genotFitness = pan_rel_01(a = 0.5, b = 0.7,
                           frequencyType = "rel")
 
 # Meter paralelización
-simulScen1 <- oncoSimulPop(10,
+simulScen1 <- oncoSimulPop(20,
                               scen1,
                               model = "McFL",
                               onlyCancer = FALSE,
@@ -602,6 +600,43 @@ simulScen1 <- oncoSimulPop(10,
 compositionPop(simulScen1)
 
 ```
+
+
+### Simulación x repeticiones ejemplo Álex.
+
+Me ha estado preguntado Álex respecto a su ejemplo y, cuando lo hemos hecho con oncoSimulPop, la función nueva compositionPop2 ha fallado. Falla a la hora de generar el data frame, que por lo que sea el número de filas no es el mismo que el número de etiquetas (entiendo yo). Revísalo, porque a mí me parece mejor trabajar probablemente con sapply. 
+
+```{r}
+avc <- function (a, v, c) {
+  data.frame(Genotype = c("WT", "G", "V", "A"),
+             Fitness = c("1",
+                         paste0("1 + ", a, " * (f_1 + 1)"),
+                         paste0("1 + ", a, " * f_1 + ", v, " * (f_2 + 1) - ", c),
+                         paste0("1 + ", a, " * f_1 + ", v, " * f_2")
+                         ))
+                          }
+
+afavc <- allFitnessEffects(genotFitness = avc(2.5, 2, 1), # Parametros de la interaccion
+                           frequencyDependentFitness = TRUE,
+                           frequencyType = "rel")
+
+simulation <- oncoSimulPop(20,
+                              afavc,
+                              model = "McFL",
+                              onlyCancer = FALSE,
+                              mc.cores = 8, # paralelización
+                              finalTime = 15,
+                              mu = 1e-4,
+                              initSize = 4000,
+                              keepPhylog = TRUE,
+                              seed = NULL,
+                              errorHitMaxTries = FALSE,
+                              errorHitWallTime = FALSE)
+
+compositionPop2(simulation)
+
+```
+
 
 
 ### Comentarios
