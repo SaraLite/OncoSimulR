@@ -687,7 +687,7 @@ compositionPop2(simulation)
 
 # Situación 3: de acuerdo a la figura 1, en esta situación debería ganar G.
 
-We know that if the benefit from an extra unit of vascularisation in a fully aerobic group is lower than the cost c to produce that unit, then for a sufficiently low proportion of G and thus sufficiently large number of A sharing the club good, A will have higher fitness than V. This will lead to a decrease in the proportion q of V among A and thus a decrease in the average fitness of A. A lower fitness in A will lead to an increase in the proportion of G until the aerobic groups (among which the club good is split) get sufficiently small and fitness starts to favour V over A, swinging the dynamics back.
+We know that if the benefit from an extra unit of vascularisation in a fully aerobic group is lower than the cost c to produce that unit, then for a sufficiently low proportion of G and thus sufficiently large number of A sharing the club good, A will have higher fitness than V. This will lead to a decrease in the average fitness of A. A lower fitness in A will lead to an increase in the proportion of G until the aerobic groups (among which the club good is split) get sufficiently small and fitness starts to favour V over A, swinging the dynamics back.
 
 ```{r}
 avc <- function (a, v, c) {
