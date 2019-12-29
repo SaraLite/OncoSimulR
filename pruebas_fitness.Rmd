@@ -72,7 +72,7 @@ Tiene que ver con E.coli y resistencia-sensibilidad a colicina.
 * (S): bacterias sensibles
 
 Situaciones.
-1) En algunos casos, el ratio de crecimiento de R excederá al de C, pero será menor que el de S. Esto ocurre porque R evitan los costes competiticos de tener el plásmido col, pero sufren porque el receptor de colicina yestá involucrado en funciones cruciales para la bacteria. 
+1) En algunos casos, el ratio de crecimiento de R excederá al de C, pero será menor que el de S. Esto ocurre porque R evitan los costes competitivos de tener el plásmido col, pero sufren porque el receptor de colicina está involucrado en funciones cruciales para la bacteria. 
 2) En otros casos, S puede desplazar a R (porque S tiene una ventaja en el ratio de crecimiento) y C puede desplazar a S (porque C mata a S).
 
 ```{r}
@@ -109,7 +109,7 @@ plot(resultscrs, show = "genotypes", type = "line")
 * K -> carrying capacities (max capacity of the environment)
 * a_12 -> competition coefficient. The effect of specie 2 on specie 1
 
-We must introduce a WT specie in the model due to "to_genotFitness_std" which requires WT to appears once.
+We must introduce a WT species in the model due to "to_genotFitness_std" which requires WT to appears once.
 
 **Modelo de Lotka-Volterra**
 <https://books.google.es/books?id=HgAgMwsYOtkC&pg=PA167&lpg=PA167&dq=a21+a12+Lotka&source=bl&ots=SSTfj46eM6&sig=ACfU3U1aG5qdkQT56tmSrO0SC7SROkKVeQ&hl=es&sa=X&ved=2ahUKEwivovuP-9PmAhWRyoUKHRslAREQ6AEwA3oECAcQAQ#v=onepage&q=a21%20a12%20Lotka&f=false>
@@ -615,6 +615,8 @@ Me ha estado preguntado Álex respecto a su ejemplo y, cuando lo hemos hecho con
 
 # Situación 1: De acuerdo a la figura 1, en esta primera situación hay oscilaciones dentro de la población, pero debería acabar ganando G.
 
+In this case, we see that if the fitness benefit of a single unit of acidification is higher than the maximum benefit from the club good for A, G will always have a strictly higher fitness than A, and be selected for. In this scenario, the population will converge towards all G, regardless of the initial proportions (as long as there is at least some G in the population).
+
 ```{r}
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "G", "V", "A"),
@@ -642,11 +644,14 @@ simulation <- oncoSimulPop(20,
                            errorHitMaxTries = FALSE,
                            errorHitWallTime = FALSE)
 
-#plot(simulation, show = "genotypes", type = "line")
+plot(simulation, show = "genotypes", type = "line")
 compositionPop2(simulation)
+
 ```
 
 # Situación 2: De acuerdo a la figura 1, en esta primera situación debería ganar siempre V.
+
+If the benefit to V from their extra unit of vascularisation is higher than the cost c to produce that unit, then V will always have a strictly higher fitness than A. In addition, if the maximum possible benefit of the club good to A is higher than the benefit of an extra unit of acidification, then for sufficiently high number of V, G will have lower fitness than A. When both conditions are satisfied, the population will converge towards all V.
 
 ```{r}
 avc <- function (a, v, c) {
@@ -675,10 +680,14 @@ simulation <- oncoSimulPop(20,
                            errorHitMaxTries = FALSE,
                            errorHitWallTime = FALSE)
 
+plot(simulation, show = "genotypes", type = "line")
 compositionPop2(simulation)
+
 ```
 
 # Situación 3: de acuerdo a la figura 1, en esta situación debería ganar G.
+
+We know that if the benefit from an extra unit of vascularisation in a fully aerobic group is lower than the cost c to produce that unit, then for a sufficiently low proportion of G and thus sufficiently large number of A sharing the club good, A will have higher fitness than V. This will lead to a decrease in the proportion q of V among A and thus a decrease in the average fitness of A. A lower fitness in A will lead to an increase in the proportion of G until the aerobic groups (among which the club good is split) get sufficiently small and fitness starts to favour V over A, swinging the dynamics back.
 
 ```{r}
 avc <- function (a, v, c) {
@@ -707,7 +716,9 @@ simulation <- oncoSimulPop(20,
                            errorHitMaxTries = FALSE,
                            errorHitWallTime = FALSE)
 
+plot(simulation, show = "genotypes", type = "line")
 compositionPop2(simulation)
+
 ```
 
 
