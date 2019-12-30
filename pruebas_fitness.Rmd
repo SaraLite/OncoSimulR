@@ -732,3 +732,9 @@ compositionPop2(simulation)
 --> Hay que tener en cuenta que si uno de los clones (mutantes) no se origina a partir del WT y el WT muere antes de que pueda aparecer, el programa no lo coge y nos dará error en la simulación repetida 1000 veces. Podemos solucionarlo aumentando la tasa de natalidad del WT o aumentando la tasa de mutación del WT o el tamaño inicial del WT. 
 
 --> spPopSizes no soluciona el problema anterior porque solo lo emplea la función evalAllFitnessEffects. OncoSimulIndv y las otras no lo tienen en cuenta, así que no se soluciona nada. 
+
+
+--> McFL para cuando no hay colapso (no dependencia total entre clones)
+--> McFLD depedencia total (si se muere uno el otro debe acabar muriendo porque no tiene más recursos)
+
+--> Dificultados: cmabiando la leyenda, cambiando los ejes tras recortar la gráfica, plotfitnessLandscape te da combinaciones de mutantes y no me interesa
