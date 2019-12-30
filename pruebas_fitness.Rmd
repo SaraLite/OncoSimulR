@@ -3,21 +3,19 @@ title: "Pruebas OncoSimulR"
 date: "27/12/2019"
 output: html_document
 ---
-
+<style>
+body {
+text-align: justify}
+</style>
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
 ```{r message = FALSE, warning = FALSE}
+suppressPackageStartupMessages(library("OncoSimulR"))
+suppressPackageStartupMessages(library("ggplot2"))
 
-# Working Directory
-# workingDirectory <- "Documentos/proyectos_master/proyecto_R/"
-# setwd(workingDirectory)
-
-library(OncoSimulR)
-library(ggplot2)
-# source("./scripts/Function_rep_x1000.R")
 options(stringsAsFactors = FALSE) ## get rid of the messages
 
 
@@ -45,24 +43,24 @@ compositionPop <- function(objPop) {
 Función modificada para realizar la simulación varias veces y representar los resultados. Lo único que he modificado es el empleo de "sapply" en vez de "lapply" porque así ya se te devuelve directamente como matriz y es más cómodo que lapply. Luego, he intentado que dfPop sea un data frame con solo 2 columnas (una correspondiente al genotipo y otra al nº de individuos obtenidos al final de cada simulación) para que tenga pinta de data frame y pueda ser empleado por ggplot sin la necesidad del stack. Es simplemente otra versión para que el objeto generado esté organizado como un data frame (por si lo ve Ramón). Pero hace lo mismo. Simplemente.
 
 ```{r message = FALSE, warning = FALSE}
-
+## Plot boxplot
 simul_boxplot2 <- function(df) {
   e <- ggplot(df, aes(x = Genotype, y = N))
   e + geom_boxplot(aes(fill = Genotype)) +
     stat_summary(fun.y = mean, geom = "point",
                  shape = 18, size = 2.5, color = "#FC4E07") 
-}
+  }
 
+## Extract and create a data frame with results from several simulations
 compositionPop2 <- function(objPop) {
   clon_labels <- c("WT", objPop[[1]]$geneNames)
   listPop <- sapply(objPop, function(x) tail(x[[1]], 1)[1, -1])
   dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
                       "N" = c(listPop))
   simul_boxplot2(dfPop)
-}
+  }
 
 ```
-
 
 
 ## Primer ejemplo (Miguel): Local dispersal promotres biodiversity in a real fame of rock-paper-scissors.
@@ -103,27 +101,46 @@ resultscrs <- oncoSimulIndiv(afcrs,
 plot(resultscrs, show = "genotypes", type = "line")
 ```
 
-## Segundo ejemplo (Álvaro): Situaciones competitivas
+## Segundo ejemplo (Álvaro): The Lotka-Volterra model of competition between two competing species
 
-* r ->  intrinsic growth rates
-* K -> carrying capacities (max capacity of the environment)
-* a_12 -> competition coefficient. The effect of specie 2 on specie 1
+Species do not exist in isolation of one another. The simple models of exponential and logistic growth fail to capture the fact that the growth of a species must depend on its interactions with other species (Otto and Day 2007). Including all possible factors in a model is very complex. However, there are models that focus on specific interactions and how they affect population growth, for example, Lotka-Volterra model.
+
+The Lotka-Volterra model extends the logistic model by allowing multiple species to compete for resources, resulting in both inter-specific and intra-specific competition. In this part we will consider only two competing species (S1 and S2). 
+
+Competition model describe how the number of individuals of each species chenges when other species uses the same resource. 
+
+The parameters considered in Lotka-Volterra model are:
+  n -> number of individuals
+  r ->  Intrinsic growth rates
+  K -> Carrying capacities (max capacity of the environment)
+  a_ij -> competition coefficient. The effect of species j on species i
+
+With these parameters, the continuous-time differential equations for the Lotka-Volterra model are:
+
+![Lotka-Volterra continuous-time differential equations](.\Images_markdown\lotka_volterra_continuous_equations.PNG)
+
+As it is said above, the signs of α12 and α21 therefore reflect the relationship between the two species:
+    a_12  a_21  Relationship
+     -      -    Mutualistic
+     -      0    Commensal
+     0      -    Commensal
+     +      -    Parasitic
+     -      +    Parasitic
+     +      +    Competitive
+     +      0    Amensalism
+     0      +    Amensalism
 
 We must introduce a WT species in the model due to "to_genotFitness_std" which requires WT to appears once.
 
-**Modelo de Lotka-Volterra**
-<https://books.google.es/books?id=HgAgMwsYOtkC&pg=PA167&lpg=PA167&dq=a21+a12+Lotka&source=bl&ots=SSTfj46eM6&sig=ACfU3U1aG5qdkQT56tmSrO0SC7SROkKVeQ&hl=es&sa=X&ved=2ahUKEwivovuP-9PmAhWRyoUKHRslAREQ6AEwA3oECAcQAQ#v=onepage&q=a21%20a12%20Lotka&f=false>
+Next, to show the effect of competition coefficients and competition models we will model the scenarios proposed in the book "Analysis and Management of Animal Populations" (Williams, Nichols and Conroy, 2010, 168-171). For the following examples S1 and S2 will be the two species used, and can be interpreted as cellular clones competing for cellular resources or multicellular organisms competing for environmental resources (sexual or asexual reproduction is not relevant as it is incorporated in the birth rate). 
 
-Hay que modificar el codigo para ponerle un contexto biologico pero lo que se va a ver aqui es la importancia de los parametros de competitividad en la dinamica de dos poblaciones
+S2 in these examples has a higher rate of growth than S1 (r2 > r1) and higher carrying capacity (K2 > K1). However, S1 has a stronger competitive effect on S2 (a21 > a12).
 
-### Cosas que mejorar:
-1) Graficas: sacar la leyenda y ponerla a mano
-2) Intentar poner mas de 2 especies (una movida matematica)
-3) Podemos cambiar los parametros para que sea mas exagerado el efecto
+Before seeing the examples, we have to keep in mind that in these models we treat resources as constant and the competition comes from the fight for resources, in any case is one of the species the resource. 
 
 ```{r}
 ## Lotka-Volterra expressions for competition models
-G_fe_LV <- function(r1, r2, K1, K2, a_12, a_21, awt = 1,
+S1S2_LV <- function(r1, r2, K1, K2, a_12, a_21, awt = 1,
                     gt = c("WT", "S1", "S2")) {
   data.frame(Genotype = gt,
              Fitness = c(
@@ -138,26 +155,35 @@ G_fe_LV <- function(r1, r2, K1, K2, a_12, a_21, awt = 1,
 }
 
 ## Show expressions for birth rates
-G_fe_LV("r1", "r2", "K1", "K2", "a_12", "a_21", "awt")
+S1S2_LV("r1", "r2", "K1", "K2", "a_12", "a_21", "awt")
 
 ```
 
-### Prueba 1: No hay competitividad, los coeficientes de competitividad = 0
+### Case 1: No competition
+
+No hay competitividad, los coeficientes de competitividad = 0
 Vemos que las poblaciones se acercan a su K (maxima poblacion soportada) sp2 tiene mas individuos que sp1
 
-```{r}
-## Test 1: No competition effects
+```{r, message=F}
+## Case 1: No competition effects
 ## K2 > K1; r2 > r1 (specie 2 has greater capacity and growth rate)
 ## a21 > a12 (specie 1 has more effect on specie 2)
-fe_competition <-
+S1S2_competition <-
   allFitnessEffects(
     genotFitness =
-      G_fe_LV(1.2, 1.7, 350, 400, 0, 0,
+      S1S2_LV(1.2, 1.7, 350, 400, 0, 0,
               gt = c("WT", "S1", "S2")),
     frequencyDependentFitness = TRUE,
-    frequencyType = "abs")
+    frequencyType = "abs",
+    spPopSizes = c(5000, 5000, 5000)) ## frequency expressed in absolute terms
 
-competition <- oncoSimulIndiv(fe_competition,
+
+
+## Plot fitness landscape of genotype "H, D" evaluation
+data.frame("S1_fitness" = evalGenotype(genotype = "S1", fitnessEffects = S1S2_competition), 
+           "S2_fitness" = evalGenotype(genotype = "S2", fitnessEffects = S1S2_competition))
+
+S1S2_simulation <- oncoSimulPop(2, S1S2_competition,
                               model = "Exp",
                               onlyCancer = FALSE,
                               finalTime = 500,
@@ -167,31 +193,38 @@ competition <- oncoSimulIndiv(fe_competition,
                               seed = NULL,
                               errorHitMaxTries = FALSE,
                               errorHitWallTime = FALSE)
-competition
 
-plot(competition, show = "genotypes", type = 'line',
-     col = c("black", "green", "red", "blue"),
-     xlim = c(20, 500))
+
+
+## Plot first trajectory as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(40, 500), 
+     ylab = "Number of individuals", 
+     main = "No competition effect", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
 
 ```
-
 ### Prueba 2: Ligera competitividad. Coef  a_12 = 0.25 a_21= 0.5
 Vemos que la sp 1 tiene mas efecto sobre sp2 y sp2 ahora tiene menos individuos que sp1
 
-```{r}
+```{r, message=FALSE}
 ## Test 2: Competition with Stable Coexistance
 ## K2 > K1; r2 > r1 (specie 2 has greater capacity and growth rate)
 ## a21 > a12 (specie 1 has more effect on specie 2)
 ## Vemos que ahora la competencia provoca que se lleguen a menor n? de indv
-fe_competition <-
+S1S2_competition <-
   allFitnessEffects(
     genotFitness =
-      G_fe_LV(1.2, 1.7, 350, 400, 0.25, 0.5,
+      S1S2_LV(1.2, 1.7, 350, 400, 0.25, 0.5,
               gt = c("WT", "S1", "S2")),
     frequencyDependentFitness = TRUE,
     frequencyType = "abs")
 
-competition <- oncoSimulIndiv(fe_competition,
+S1S2_simulation <- oncoSimulPop(2, 
+                                S1S2_competition,
                               model = "Exp",
                               onlyCancer = FALSE,
                               finalTime = 500,
@@ -201,12 +234,16 @@ competition <- oncoSimulIndiv(fe_competition,
                               seed = NULL,
                               errorHitMaxTries = FALSE,
                               errorHitWallTime = FALSE)
-competition
 
-plot(competition, show = "genotypes", type = 'line',
-     col = c("black", "green", "red", "blue"),
-     xlim = c(20, 500),
-     ylab = "Number of cells")
+## Plot first trajectory as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(40, 500), 
+     ylab = "Number of individuals", 
+     main = "Competition with Stable Coexistance", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
 
 ```
 
@@ -216,20 +253,20 @@ se comprueba viendo que el producto de los coef es menor que 1.
 a_12 * a_21 = 0.75 * 1 < 1.
 La competencia ha aumentando y vemos que hay fluctuacion de las poblaciones
 Ninguna llega a la K
-```{r}
+```{r, message=FALSE}
 ## Test 3: Estable competition but more aggressive
 # Vemos que las dos especies no son compatibles y el estado no es estable
 ## Ambas impactan bastante sobre la otra, pero pueden coexitir
 ## Se alejan del K original
-fe_competition <-
+S1S2_competition <-
   allFitnessEffects(
     genotFitness =
-      G_fe_LV(1.2, 1.7, 350, 400, 0.75, 1,
+      S1S2_LV(1.2, 1.7, 350, 400, 0.77 , 1,
               gt = c("WT", "S1", "S2")),
     frequencyDependentFitness = TRUE,
     frequencyType = "abs")
 
-competition <- oncoSimulIndiv(fe_competition,
+S1S2_simulation <- oncoSimulPop(2, S1S2_competition,
                               model = "Exp",
                               onlyCancer = FALSE,
                               finalTime = 500,
@@ -239,12 +276,16 @@ competition <- oncoSimulIndiv(fe_competition,
                               seed = NULL,
                               errorHitMaxTries = FALSE,
                               errorHitWallTime = FALSE)
-competition
 
-plot(competition, show = "genotypes", type = 'line',
-     col = c("black", "green", "red", "blue"),
-     xlim = c(10, 500),
-     ylab = "Number of organisms")
+## Plot first trajectory as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(40, 500), 
+     ylab = "Number of individuals", 
+     main = "Competition with Stable Coexistance", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
 
 ```
 
@@ -252,20 +293,20 @@ plot(competition, show = "genotypes", type = 'line',
 ### Prueba 4: Competitividad muy alta, insostenible. a_12 = 0.9 a_21= 1.4
 La especie 1 afecta mucho a especie 2. La especie 2 se extingue y la especie 1, libre de competencia, llega a la K1.
 
-```{r}
+```{r, message=F}
 ## Test 4: Unestable competition
 # Vemos que las dos especies no son compatibles y el estado no es estable
 ## Una de ellas se extingue, y la otra llega a un valor cercano a la K.
 ## Sobrevive S1 que es la que m?s impacto tiene sobre la otra (a_21 > a_12)
-fe_competition <-
+S1S2_competition <-
   allFitnessEffects(
     genotFitness =
-      G_fe_LV(1.2, 1.7, 350, 400, 0.9, 1.4,
+      S1S2_LV(1.2, 1.7, 350, 400, 0.9, 1.4,
               gt = c("WT", "S1", "S2")),
     frequencyDependentFitness = TRUE,
     frequencyType = "abs")
 
-competition <- oncoSimulIndiv(fe_competition,
+S1S2_simulation <- oncoSimulPop(2, S1S2_competition,
                               model = "Exp",
                               onlyCancer = FALSE,
                               finalTime = 500,
@@ -275,12 +316,16 @@ competition <- oncoSimulIndiv(fe_competition,
                               seed = NULL,
                               errorHitMaxTries = FALSE,
                               errorHitWallTime = FALSE)
-competition
 
-plot(competition, show = "genotypes", type = 'line',
-     col = c("black", "green", "red", "blue"),
-     xlim = c(10, 500),
-     ylab = "Number of organisms")
+## Plot first trajectory as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(10, 500), 
+     ylab = "Number of individuals", 
+     main = "Unestable competition", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
 ```
 
 ## Tercer ejemplo (Diego): Investigating prostate cancer tumour–stroma interactions: clinical and biological insights from an evolutionary game (<http://dx.doi.org/10.1038/bjc.2011.517>)
@@ -608,16 +653,17 @@ Me ha estado preguntado Álex respecto a su ejemplo y, cuando lo hemos hecho con
 
 ## Ejemplo Álex:
 
-# a: beneficio debido a la acidez si hay células que producen ácido.
-# v: beneficio (para las células aeróbicas) debido a la vascularización si hay células que
-#    están (sobre) produciendo VEGF a un coste c.
-# c: coste de producir VEGF.
+a: beneficio debido a la acidez si hay células que producen ácido.
+v: beneficio (para las células aeróbicas) debido a la vascularización si hay células que
+  están (sobre) produciendo VEGF a un coste c.
+c: coste de producir VEGF.
 
-# Situación 1: De acuerdo a la figura 1, en esta primera situación hay oscilaciones dentro de la población, pero debería acabar ganando G.
+# Situación 1: 
+De acuerdo a la figura 1, en esta primera situación hay oscilaciones dentro de la población, pero debería acabar ganando G.
 
 In this case, we see that if the fitness benefit of a single unit of acidification is higher than the maximum benefit from the club good for A, G will always have a strictly higher fitness than A, and be selected for. In this scenario, the population will converge towards all G, regardless of the initial proportions (as long as there is at least some G in the population).
 
-```{r}
+```{r, message=FALSE}
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "G", "V", "A"),
              Fitness = c("1",
@@ -649,11 +695,12 @@ compositionPop2(simulation)
 
 ```
 
-# Situación 2: De acuerdo a la figura 1, en esta primera situación debería ganar siempre V.
+# Situación 2: 
+De acuerdo a la figura 1, en esta primera situación debería ganar siempre V.
 
 If the benefit to V from their extra unit of vascularisation is higher than the cost c to produce that unit, then V will always have a strictly higher fitness than A. In addition, if the maximum possible benefit of the club good to A is higher than the benefit of an extra unit of acidification, then for sufficiently high number of V, G will have lower fitness than A. When both conditions are satisfied, the population will converge towards all V.
 
-```{r}
+```{r, message=FALSE}
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "G", "V", "A"),
              Fitness = c("1",
@@ -680,16 +727,17 @@ simulation <- oncoSimulPop(20,
                            errorHitMaxTries = FALSE,
                            errorHitWallTime = FALSE)
 
-plot(simulation, show = "genotypes", type = "line")
+plot(simulation[[1]], show = "genotypes", type = "line")
 compositionPop2(simulation)
 
 ```
 
-# Situación 3: de acuerdo a la figura 1, en esta situación debería ganar G.
+# Situación 3: 
+De acuerdo a la figura 1, en esta situación debería ganar G.
 
 We know that if the benefit from an extra unit of vascularisation in a fully aerobic group is lower than the cost c to produce that unit, then for a sufficiently low proportion of G and thus sufficiently large number of A sharing the club good, A will have higher fitness than V. This will lead to a decrease in the average fitness of A. A lower fitness in A will lead to an increase in the proportion of G until the aerobic groups (among which the club good is split) get sufficiently small and fitness starts to favour V over A, swinging the dynamics back.
 
-```{r}
+```{r, message=FALSE}
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "G", "V", "A"),
              Fitness = c("1",
@@ -721,6 +769,122 @@ compositionPop2(simulation)
 
 ```
 
+## Evolutionary games theory: Hawk and Dove example
+The example we are going to show is one of the first games that Maynar Smith analyzed. This classic game is: Hawk and Dove (https://en.wikipedia.org/wiki/Chicken_(game))
+
+In this game, the two competitors are subtypes of the same species but with different strategies.  The Hawk first displays aggression, then escalates into a fight until it either wins or is injured (loses). The Dove first displays aggression, but if faced with major escalation runs for safety. If not faced with such escalation, the Dove attempts to share the resource.
+
+![Payoff Matrix for Hawk Dove Game](.\Images_markdown\Hawk_Dove_payoff.PNG)
+
+Given that the resource is given the value V, the damage from losing a fight is given cost C:[1]
+
+- If a Hawk meets a Dove he gets the full resource V to himself
+- If a Hawk meets a Hawk – half the time he wins, half the time he loses...so his average outcome is then V/2 minus C/2
+- If a Dove meets a Hawk he will back off and get nothing – 0
+- If a Dove meets a Dove both share the resource and get V/2
+
+The actual payoff however depends on the probability of meeting a Hawk or Dove, which in turn is a representation of the percentage of Hawks and Doves in the population when a particular contest takes place. That in turn is determined by the results of all of the previous contests. If the cost of losing C is greater than the value of winning V (the normal situation in the natural world) the mathematics ends in an stationary point (ESS), a mix of the two strategies where the population of Hawks is V/C.
+
+In this case we assume a stable equilibrium in the population dynamics, that is, although there are external variations in the model, it recovers and returns to equilibrium (as shown in the image below).
+
+![Stable equilibrium](.\Images_markdown\Stable_equilibrium.jpg)
+
+We are going to simulate with OncoSimulR the situation in which the cost of losing C is greater than the value of gaining V (C = 10, V = 2). Before performing the simulation, let's look at the fitness of each competitor.
+
+```{r, message=F}
+## Stablish Genotype-Fitnees mapping. D = Dove, H = Hawk
+H_D_fitness <- function(c, v,
+                    gt = c("WT", "H", "D")) {
+  data.frame(Genotype = gt,
+             Fitness = c(
+               paste0("1"),
+               paste0("1 + f_1 *", (v-c)/2, "+ f_2 *", v),
+               paste0("1 + f_2 *", v/2)))
+}
+
+## Fitness Effects specification
+HD_competition <-allFitnessEffects(
+  genotFitness = H_D_fitness(10, 2, 
+                         gt = c("WT", "H", "D")),
+  frequencyDependentFitness = TRUE,
+  frequencyType = "rel",
+  spPopSizes = c(5000, 5000, 5000))
+
+## Plot fitness landscape of genotype "H, D" evaluation
+data.frame("Doves_fitness" = evalGenotype(genotype = "D", fitnessEffects = HD_competition), 
+           "Hawks_fitness" = evalGenotype(genotype = "H", fitnessEffects = HD_competition)) 
+```
+
+We observe that the penalty of fighting (C > V) benefits the dove in terms of fitness respect to the hawk. 
+
+``` {r, message=F}
+options(stringsAsFactors = FALSE)
+## Simulated trajectories
+simulation <- oncoSimulPop(2,
+                           mc.cores = 6,
+                           HD_competition,
+                           model = "McFL", # There is no collapse
+                           onlyCancer = FALSE,
+                           finalTime = 500,
+                           mu = 1e-2, # Quick emergence of D and H
+                           initSize = 4000,
+                           keepPhylog = TRUE,
+                           seed = NULL,
+                           errorHitMaxTries = FALSE,
+                           errorHitWallTime = FALSE)
+
+
+oldpar <- par (
+  # Change the colors
+  col.main="black", col.lab="blue",
+  # Titles in bold
+  font.main=2, font.lab=2,
+  # Change font size
+  cex.main=2, cex.lab=1.2,
+  # Vertically
+  las = 1
+  )
+
+## Plot first trajectory as an example
+plot(simulation[[1]], show = "genotypes", type = "line", xlim = c(40, 500), lwdClone = 2, ylab = "Number of individuals", main = "Hawk and Dove trajectory")
+
+par <- oldpar
+
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(simulation)
+```
+
+As mentioned above, mathematically when a stationary point (ESS) is reached the relative frequency of hawks is V/C and doves 1-(V/C). Considering f_H as relative frecuency of hawks and f_D = 1-f_H as frequency of doves:
+Hawk:
+1 + f_H*(v-c)/2 + (1-f_H)*v
+
+Dove:
+1 + (1-f_H)*v/2
+
+Hawk = Dove: 
+1 + f_H*(v-c)/2 + (1-f_H)*v = 1 + (1-f_H)*v/2 
+
+Resolving for f_H:
+f_H = V/C
+
+Therefore, the relative frequency of hawks in equilibrium is equal to V/C. In our case it would be 20% (C = 10, V = 2). Let's check it:
+
+```{r}
+## Recover the final result from first simulation
+result <- tail(simulation[[1]][[1]], 1)
+
+## Get the number of organisms from each species
+n_WT <- result[2]
+n_D <- result[3]
+n_H <- result[4]
+total <- n_WT + n_D + n_H
+
+## Dove percentage
+data.frame("Doves" = round(n_D/total, 2)*100, "Hawks" = round(n_H/total, 2)*100  )
+```
+To sum up, this example shows that when the risks of contest injury or death (the Cost C) is significantly greater than the potential reward (the benefit value V), the stable population will be mixed between aggressors and doves, and the proportion of doves will exceed that of the aggressors. This explains behaviours observed in nature.
+
+
 
 ### Comentarios
 * No sé qué situación es mejor, si mantener WT independiente de S (a pesar de que el programa modela que S aparece como producto mutacional de WT) o no. Utilizando uno u otro los valores de los parámetros cambian para representar un mismo escenario (a pesar de que aquí tienen los mismos, pero para que las gráficas se parecieran más, los valroes deben ser ligeramente distintos). He puesto los dos casos para que comparéis y me digais.
@@ -738,3 +902,10 @@ compositionPop2(simulation)
 --> McFLD depedencia total (si se muere uno el otro debe acabar muriendo porque no tiene más recursos)
 
 --> Dificultados: cmabiando la leyenda, cambiando los ejes tras recortar la gráfica, plotfitnessLandscape te da combinaciones de mutantes y no me interesa
+
+**Modelo de Lotka-Volterra**
+<https://books.google.es/books?id=HgAgMwsYOtkC&pg=PA167&lpg=PA167&dq=a21+a12+Lotka&source=bl&ots=SSTfj46eM6&sig=ACfU3U1aG5qdkQT56tmSrO0SC7SROkKVeQ&hl=es&sa=X&ved=2ahUKEwivovuP-9PmAhWRyoUKHRslAREQ6AEwA3oECAcQAQ#v=onepage&q=a21%20a12%20Lotka&f=false>
+
+### Cosas que mejorar:
+1) Graficas: sacar la leyenda y ponerla a mano
+2) Intentar poner mas de 2 especies (una movida matematica)
