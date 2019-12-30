@@ -2,15 +2,15 @@
 title: "Hawk and Dove"
 output: html_document
 ---
-
+<style>
+body {
+text-align: justify}
+</style>
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-
-
+## Evolutionary games theory
 ```{r}
 suppressPackageStartupMessages(library("OncoSimulR"))
 suppressPackageStartupMessages(library("ggplot2"))
@@ -21,7 +21,7 @@ simul_boxplot2 <- function(df) {
   e <- ggplot(df, aes(x = Genotype, y = N))
   e + geom_boxplot(aes(fill = Genotype)) +
     stat_summary(fun.y = mean, geom = "point",
-                 shape = 18, size = 2.5, color = "#FC4E07") 
+                 shape = 18, size = 2.5, color = "#FC4E07")
 }
 
 compositionPop2 <- function(objPop) {
@@ -29,23 +29,16 @@ compositionPop2 <- function(objPop) {
   listPop <- sapply(objPop, function(x) tail(x[[1]], 1)[1, -1])
   dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
                       "N" = c(listPop))
-  print(dfPop)
   simul_boxplot2(dfPop)
 }
-
 ```
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-Evolutionary games theory
-
-In mathematics, particularly in calculus, a stationary point of a differentiable function of one variable is a point on the graph of the function where the function's derivative is zero.Informally, it is a point where the function "stops" increasing or decreasing. 
-
-The example we are going to show is one of the first games that Maynar Smith analyzed, the classic game: Hawk and Dove (https://en.wikipedia.org/wiki/Chicken_(game))
+## Evolutionary games theory
+The example we are going to show is one of the first games that Maynar Smith analyzed. This classic game is: Hawk and Dove (https://en.wikipedia.org/wiki/Chicken_(game))
 
 In this game, the two competitors are subtypes of the same species but with different strategies.  The Hawk first displays aggression, then escalates into a fight until it either wins or is injured (loses). The Dove first displays aggression, but if faced with major escalation runs for safety. If not faced with such escalation, the Dove attempts to share the resource.
 
-![Payoff Matrix for Hawk Dove Game](OncoSimulR_Ejercicio2\Images_markdown\Hawk_Dove_payoff.PNG)
+![Payoff Matrix for Hawk Dove Game](.\Images_markdown\Hawk_Dove_payoff.PNG)
 
 Given that the resource is given the value V, the damage from losing a fight is given cost C:[1]
 
@@ -58,12 +51,12 @@ The actual payoff however depends on the probability of meeting a Hawk or Dove, 
 
 In this case we assume a stable equilibrium in the population dynamics, that is, although there are external variations in the model, it recovers and returns to equilibrium (as shown in the image below).
 
-![Stable equilibrium](OncoSimulR_Ejercicio2\Images_markdown\Stable_equilibrium.jpg)
+![Stable equilibrium](.\Images_markdown\Stable_equilibrium.jpg)
 
-We are going to simulate with OncoSimulR the situation in which the cost of losing C is greater than the value of gaining V (C = 10, V = 2). 
+We are going to simulate with OncoSimulR the situation in which the cost of losing C is greater than the value of gaining V (C = 10, V = 2). Before performing the simulation, let's look at the fitness of each competitor.
 
-```{r}
-## Stablish Genotype-Fitnees mapping
+```{r, message=F}
+## Stablish Genotype-Fitnees mapping. D = Dove, H = Hawk
 H_D_fitness <- function(c, v,
                     gt = c("WT", "H", "D")) {
   data.frame(Genotype = gt,
@@ -82,37 +75,61 @@ HD_competition <-allFitnessEffects(
   spPopSizes = c(5000, 5000, 5000))
 
 ## Plot fitness landscape of genotype "H, D" evaluation
-D <- evalGenotype(genotype = "D", fitnessEffects = HD_competition, echo = TRUE)
-H <- evalGenotype(genotype = "H", fitnessEffects = HD_competition, echo = TRUE) 
+data.frame("Doves_fitness" = evalGenotype(genotype = "D", fitnessEffects = HD_competition), 
+           "Hawks_fitness" = evalGenotype(genotype = "H", fitnessEffects = HD_competition)) 
+```
 
-# plotFitnessLandscape(evalAllGenotypes(fitnessEffects = HD_competition))
+We observe that the penalty of fighting (C > V) benefits the dove in terms of fitness respect to the hawk. 
 
+``` {r, message=F}
 options(stringsAsFactors = FALSE)
-simulation <- oncoSimulPop(20,
+## Simulated trajectories
+simulation <- oncoSimulPop(2,
                            mc.cores = 6,
                            HD_competition,
                            model = "McFL", # There is no collapse
                            onlyCancer = FALSE,
                            finalTime = 500,
-                           mu = 1e-2,
+                           mu = 1e-2, # Quick emergence of D and H
                            initSize = 4000,
                            keepPhylog = TRUE,
                            seed = NULL,
                            errorHitMaxTries = FALSE,
                            errorHitWallTime = FALSE)
 
+## Plot first trajectory as an example
 plot(simulation[[1]], show = "genotypes", type = "line", xlim = c(40, 500))
+
+## Agreement: Show boxplot from several simulations. 
 compositionPop2(simulation)
-
 ```
 
+As mentioned above, mathematically when a stationary point (ESS) is reached the relative frequency of hawks is V/C and doves 1-(V/C). Considering f_H as relative frecuency of hawks and f_D = 1-f_H as frequency of doves:
+Hawk:
+1 + f_H*(v-c)/2 + (1-f_H)*v
 
-## Including Plots
+Dove:
+1 + (1-f_H)*v/2
 
-You can also embed plots, for example:
+Hawk = Dove: 
+1 + f_H*(v-c)/2 + (1-f_H)*v = 1 + (1-f_H)*v/2 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Resolving for f_H:
+f_H = V/C
+
+Therefore, the relative frequency of hawks in equilibrium is equal to V/C. In our case it would be 20% (C = 10, V = 2). Let's check it:
+
+```{r}
+## Recover the final result from first simulation
+result <- tail(simulation[[1]][[1]], 1)
+
+## Get the number of organisms from each species
+n_WT <- result[2]
+n_D <- result[3]
+n_H <- result[4]
+total <- n_WT + n_D + n_H
+
+## Dove percentage
+data.frame("Doves" = round(n_D/total, 2)*100, "Hawks" = round(n_H/total, 2)*100  )
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+To sum up, this example shows that when the risks of contest injury or death (the Cost C) is significantly greater than the potential reward (the benefit value V), the stable population will be mixed between aggressors and doves, and the proportion of doves will exceed that of the aggressors. This explains behaviours observed in nature.
