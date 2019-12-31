@@ -193,7 +193,7 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
                           srange = c(0.4, 1), vrange = c(0.8, 1), type = "stacked", 
                           breakSortColors = "oe", colauto = TRUE, legend.ncols = "auto", 
                           lwdStackedStream = 1, xlab = "Time units", ylab = "Number of cells", 
-                          ylim = NULL, xlim = NULL, ...) 
+                          ylim = NULL, xlim = NULL, ypos = max(tail(z[[1]], 1)), ...) 
 {
   y <- z$pops.by.time[, 2:ncol(z$pops.by.time), drop = FALSE]
   if (type %in% c("stacked", "stream")) 
@@ -214,7 +214,7 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
     col <- rep(col, length.out = (max(ndr)))[ndr]
   }
   if (type == "line") {
-    par(mar = c(4.8, 4.8, 4.8, 2.1))
+    par(mar = c(3, 4.8, 3, 6))
     matplot(x = z$pops.by.time[, 1], y = y, log = log, type = "l", 
             col = col, lty = lty, lwd = lwd, xlab = xlab, ylab = ylab, 
             ylim = ylim, xlim = xlim, ...)
@@ -234,7 +234,8 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
         else legend.ncols <- 1
       }
       par(xpd = TRUE)
-      legend(x = "top", title = "Genotypes", lty = lty, 
+      coord <- par("usr")
+      legend(x = coord[2]*1.02, y = ypos, title = "Genotypes", lty = lty, 
              inset = -0.29, col = col, lwd = lwd, legend = ldrv, 
              ncol = legend.ncols)
     }
