@@ -214,7 +214,7 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
     col <- rep(col, length.out = (max(ndr)))[ndr]
   }
   if (type == "line") {
-    par(mar = c(3, 4.8, 3, 6))
+    par(mar = c(3, 4.8, 3, 8))
     matplot(x = z$pops.by.time[, 1], y = y, log = log, type = "l", 
             col = col, lty = lty, lwd = lwd, xlab = xlab, ylab = ylab, 
             ylim = ylim, xlim = xlim, ...)
@@ -235,7 +235,8 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
       }
       par(xpd = TRUE)
       coord <- par("usr")
-      legend(x = coord[2]*1.02, y = ypos, title = "Genotypes", lty = lty, 
+      # coord[2]*1.02, y = coord[4]+ypos
+      legend(x = "right" , title = "Genotypes", lty = lty, 
              inset = -0.29, col = col, lwd = lwd, legend = ldrv, 
              ncol = legend.ncols)
     }
