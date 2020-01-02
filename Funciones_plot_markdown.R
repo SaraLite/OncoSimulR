@@ -1,21 +1,55 @@
-## Plot boxplot
-simul_boxplot2 <- function(df) {
-  e <- ggplot(df, aes(x = Genotype, y = N))
-  e + geom_boxplot(aes(fill = Genotype)) +
-    stat_summary(fun.y = mean, geom = "point",
-                 shape = 18, size = 2.5, color = "#FC4E07") 
+## Authors: Diego Mañanes, Alejandro Martín, 
+##          Miguel Hernández, Sara Dorado, Álvaro Huertas 
+## Date: 02/01/2020
+
+## Summary: This scrip contains functions created for plotting the results
+## from several iteration of oncoSimulPop and modified functions from 
+## Oncosimul.R for placing the legend outside the plot. 
+
+#############################################################################
+############## Functions for plotting several simulations ###################
+
+## Plot box plot
+simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N") {
+  ## Create box plot, title and axis parameters
+  e <- ggplot(df, aes(x = Genotype, y = N)) +
+    theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+          axis.title.x = element_text(size = 12, face = "bold"),
+          axis.title.y = element_text(size = 12, face = "bold"),
+          axis.text.x = element_text(size = 11),
+          axis.text.y = element_text(size = 11)
+    )
+  ## No title
+  if (main ==FALSE) {
+    e + geom_boxplot(aes(fill = Genotype)) +
+      stat_summary(fun.y = mean, geom = "point",
+                   shape = 18, size = 2.5, color = "#FC4E07") +
+      xlab(xlab) + ylab(ylab)
+  }
+  ## Title
+  else{
+    e + geom_boxplot(aes(fill = Genotype)) +
+      stat_summary(fun.y = mean, geom = "point",
+                   shape = 18, size = 2.5, color = "#FC4E07") +
+      labs(title = main) +
+      xlab(xlab) + ylab(ylab)
+  }
 }
 
 ## Extract and create a data frame with results from several simulations
-compositionPop2 <- function(objPop) {
+compositionPop2 <- function(objPop, ...) {
   clon_labels <- c("WT", objPop[[1]]$geneNames)
   listPop <- vapply(objPop, function(x) tail(x[[1]], 1)[1, -1], as.double(1:length(clon_labels)))
   dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
                       "N" = c(listPop))
-  simul_boxplot2(dfPop)
+  simul_boxplot2(dfPop, ...)
 }
 
+##########################################################
+############## Modified plot.oncosimul ###################
+## Now you the legend is placed outside the plot on the right side
 
+## Function used by plot.oncosimul. Not modified
 xlim.pop.data <- function(x, xlim) {
   x$pops.by.time <- x$pops.by.time[
     (x$pops.by.time[, 1] >= xlim[1]) &
@@ -23,7 +57,7 @@ xlim.pop.data <- function(x, xlim) {
   return(x)
 }
 
-
+## Function used by plot.oncosimul. Not modified
 myhsvcols <- function(ndr, ymax, srange = c(0.4, 1),
                       vrange = c(0.8, 1),
                       breakSortColors = "oe") {
@@ -82,7 +116,7 @@ myhsvcols <- function(ndr, ymax, srange = c(0.4, 1),
               colorsLegend = colorsLegend))
 }
 
-
+## Function used by plot.oncosimul. Not modified
 plot.stacked2 <- function (x, y, order.method = "as.is", ylab = "", 
           xlab = "", border = NULL, lwd = 1, col = rainbow(length(y[1, 
                                                                     ])), ylim = NULL, log = "", ...) 
@@ -131,8 +165,7 @@ plot.stacked2 <- function (x, y, order.method = "as.is", ylab = "",
   }
 }
 
-
-
+## Main function modified at "line" and "stacked" legends plot
 plot.oncosimul <- function(x,
                            show = "drivers", 
                            type = ifelse(show == "genotypes",
