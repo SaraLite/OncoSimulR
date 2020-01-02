@@ -25,9 +25,8 @@ vignette: |
 ---
 
 # News and functions used
-
+**Lo hará Álvaro**
 **Explicar por encima cosas nuevas (lo de la leyenda), los paquetes cargados y las funciones incorporadas**
-
 
 ```{r message = FALSE, warning = FALSE}
 
@@ -45,23 +44,454 @@ RNGkind("L'Ecuyer-CMRG")
 # get rid of the messages
 options(stringsAsFactors = FALSE)
 
-# Functions
-simul_boxplot2 <- function(df) {
-  e <- ggplot(df, aes(x = Genotype, y = N))
-  e + geom_boxplot(aes(fill = Genotype)) +
-    stat_summary(fun.y = mean, geom = "point",
-                 shape = 18, size = 2.5, color = "#FC4E07") 
+## Import functions
+source("./Funciones_plot_markdown.R")
+```
+
+# The Lotka-Volterra model of competition between two competing species
+
+Species do not exist in isolation of one another. The simple models of exponential and logistic growth fail to capture the fact that the growth of a species must depend on its interactions with other species (Otto and Day 2007). Including all possible factors in a model is very complex. However, there are models that focus on specific interactions and how they affect population growth, for example, Lotka-Volterra model.
+
+The Lotka-Volterra model extends the logistic model by allowing multiple species to compete for resources, resulting in both inter-specific and intra-specific competition. In this part we will consider only two competing species (S1 and S2). 
+
+Competition model describe how the number of individuals of each species chenges when other species uses the same resource. 
+
+The parameters considered in Lotka-Volterra model are:
+  $n$ -> number of individuals
+  $r$ ->  Intrinsic growth rates
+  $K$ -> Carrying capacities (max capacity of the environment)
+  $a_{ij}$ -> competition coefficient. The effect of species j on species i
+
+With these parameters, the continuous-time differential equations for the Lotka-Volterra model are:
+
+$$ \frac{dn_1}{dt}= r_1n_1(t)\left(1-\frac{n_1(t)+a_{12}n_2(t)}{K_1}\right)$$
+$$ \frac{dn_2}{dt}= r_2n_2(t)\left(1-\frac{n_2(t)+a_{21}n_1(t)}{K_2}\right)$$
+
+As it is said above, the signs of $a_{12}$ and $a_{21}$ therefore reflect the relationship between the two species:
+      a_12   |   a_21   | Relationship
+    -------- | -------- | -------------
+       -     |    -     | Mutualistic
+       -     |    0     | Commensal
+       0     |    -     | Commensal
+       +     |    -     | Parasitic
+       -     |    +     | Parasitic
+       +     |    +     | Competitive
+       +     |    0     | Amensalism
+       0     |    +     | Amensalism
+       
+.     | S                  |    D       | I
+-     | ------------------ | ---------- | --------------------
+**S** | $0$                | $\alpha$   | $0$
+**D** | $1+\alpha-\beta$   | $1-2\beta$ | $1-\beta+\rho$
+**I** | $1-\gamma$         | $1-\gamma$ | $1-\gamma$
+
+Next, to show the effect of competition coefficients and competition models we will model the scenarios proposed in the book "Analysis and Management of Animal Populations" (Williams, Nichols and Conroy, 2010, 168-171). For the following examples S1 and S2 will be the two species used, and can be interpreted as cellular clones competing for cellular resources or multicellular organisms competing for environmental resources (sexual or asexual reproduction is not relevant as it is incorporated in the birth rate). 
+
+S2 in these examples has a higher rate of growth than S1 ($r2 > r1$) and higher carrying capacity ($K2 > K1$). However, S1 has a stronger competitive effect on S2 ($a_{21} > a_{12}$).
+
+Before seeing the examples, we have to keep in mind that in these models we treat resources as constant and the competition comes from the fight for resources, in any case is one of the species the resource. 
+
+```{r}
+## Lotka-Volterra expressions for competition models
+S1S2_LV <- function(r1, r2, K1, K2, a_12, a_21, awt = 1,
+                    gt = c("WT", "S1", "S2")) {
+  data.frame(Genotype = gt,
+             Fitness = c(
+               paste0("max(0.1, 1 - ", awt, " * (n_2 + n_1))"),
+               paste0("1 + ", r1,
+                      " * ( 1 - (n_1 + ", a_12, " * n_2)/", K1,
+                      ")"),
+               paste0("1 + ", r2,
+                      " * ( 1 - (n_2 + ", a_21, " * n_1)/", K2,
+                      ")")
+             ))
 }
 
-compositionPop2 <- function(objPop) {
-  clon_labels <- c("WT", objPop[[1]]$geneNames)
-  listPop <- sapply(objPop, function(x) tail(x[[1]], 1)[1, -1])
-  dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
-                      "N" = c(listPop))
-  simul_boxplot2(dfPop)
-}
+## Show expressions for birth rates
+S1S2_LV("r1", "r2", "K1", "K2", "a_12", "a_21", "awt")
 
 ```
+
+### Case 1: No competition
+
+There is no competition, the competition coefficients = 0. We see that the populations manage to reach their $K$ (maximum supported population). Due to S2 has greater capacity and growth rate, it reaches a population size greater than S1.
+```{r, message=FALSE}
+## Case 1: No competition effects
+## K2 > K1; r2 > r1 (species 2 has greater capacity and growth rate)
+S1S2_competition <-allFitnessEffects(
+    genotFitness = S1S2_LV(1.2, 1.7, 350, 400, 0, 0, ## a_12, a_21 are 0
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs", ## frequency expressed in absolute terms
+    spPopSizes = c(50, 50, 50)) ## Same population, lower than K
+
+## Plot fitness landscape of genotype "S1, S2" evaluation
+data.frame("S1_fitness" = evalGenotype(genotype = "S1", 
+                                       fitnessEffects = S1S2_competition), 
+           "S2_fitness" = evalGenotype(genotype = "S2", 
+                                       fitnessEffects = S1S2_competition))
+
+S1S2_simulation <- oncoSimulPop(5, S1S2_competition, ## 10 simulations
+                              model = "Exp",
+                              onlyCancer = FALSE,
+                              finalTime = 500,
+                              mu = 1e-1, ## Allows appearance of S1 and S2
+                              initSize = 4000,
+                              seed = NULL,
+                              errorHitMaxTries = FALSE,
+                              errorHitWallTime = FALSE)
+
+
+
+## Fitness values as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(40, 500), 
+     ylab = "Number of individuals",
+     main = "No competition effect", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+plot(S1S2_simulation[[1]], show = "genotypes", 
+     xlim = c(40, 500), 
+     ylab = "Number of individuals",
+     main = "No competition effect", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+```
+
+It is also important to show a boxplot with the results of different simulations to check the reproducibility of the model. 
+
+```{r, message=FALSE}
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(S1S2_simulation, main = "No competition effect", ylab = "Number of individuals")
+```
+
+
+Before continuing with different scenarios, it is interesting to observe how the fitness landscape of the species S1 and S2 is influenced by the load capacity (K). In the absence of competition (exponential model), a fitness value larger than 1 indicates growth; a fitness value smaller than 1 indicates decline. Thus, when fitness is studied for populations of S1 and S2 with the size equal to K1 and K2 respectively, it is observed that the fitness is 1.
+```{r, message=F}
+## Case 1: No competition effects
+S1S2_competition <-allFitnessEffects(
+    genotFitness = S1S2_LV(1.2, 1.7, 350, 400, 0, 0,
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs", 
+    spPopSizes = c(5, 350, 400)) ## spPopSizes equal to K1 and K2 respectively
+
+## Fitness values of genotype "S1, S2" evaluation
+data.frame("S1_fitness" = evalGenotype(genotype = "S1", 
+                                       fitnessEffects = S1S2_competition), 
+           "S2_fitness" = evalGenotype(genotype = "S2", 
+                                       fitnessEffects = S1S2_competition))
+```
+
+In contrast, when spPopsizes is greater than K1 or K2 a population decrease is observed because the environment cannot support that size. 
+```{r, message=F}
+## Case 1: No competition effects
+S1S2_competition <-allFitnessEffects(
+    genotFitness = S1S2_LV(1.2, 1.7, 350, 400, 0, 0,
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs",
+    spPopSizes = c(5, 500, 500)) ## spPopSizes higher than K1 and K2 respectively
+
+## Fitness valuesof genotype "S1, S2" evaluation
+data.frame("S1_fitness" = evalGenotype(genotype = "S1", 
+                                       fitnessEffects = S1S2_competition), 
+           "S2_fitness" = evalGenotype(genotype = "S2", 
+                                       fitnessEffects = S1S2_competition))
+```
+
+### Case 2: Stable coexistence
+As described in page 166 from the book "Analysis and Management of Animal Populations" (Williams, Nichols and Conroy, 2010), if the numerators of the equilibrium formulas are positive, then the populations can coexist in equilibrium:
+
+  $K1 > a_{12}*K2$   
+  $K2 > a_{21}*K1$
+
+In this case, steady-state population (ESS) levels are simply the carrying capacieties K1 and K2, reduced by amounts $a_{12}*K2$ and $a_{21}*K1$, repectively, and scales by $1-a_{12}a_{21}$. Both populations converge to the equilibrium population levels irrespective of the initial population sices. 
+
+Considering: 
+  $K1$ -> 350
+  
+  $K2$ -> 400
+  
+  $a_{12}$ -> 0.25
+  
+  $a_{21}$ -> 0.5
+  
+$350 > 0.25*400$ and $400 > 0.5*350$
+
+In this example we will see the stable coexistance of S1 and S2, which may change the final size of each population  from the previous example. 
+
+```{r, message=FALSE}
+## Case 2: Competition with Stable Coexistance
+## K2 > K1; r2 > r1 (specie 2 has greater capacity and growth rate)
+## a21 > a12 (specie 1 has more effect on specie 2)
+S1S2_competition <-allFitnessEffects(
+    genotFitness = S1S2_LV(1.2, 1.7, 350, 400, 0.25, 0.5,
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs")
+
+
+S1S2_simulation <- oncoSimulPop(5, 
+                                S1S2_competition,
+                              model = "Exp",
+                              onlyCancer = FALSE,
+                              finalTime = 500,
+                              mu = 1e-1,
+                              initSize = 200,
+                              keepPhylog = TRUE,
+                              seed = NULL,
+                              errorHitMaxTries = FALSE,
+                              errorHitWallTime = FALSE)
+
+## Plot first trajectory as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(40, 500), 
+     ylab = "Number of individuals", 
+     main = "Competition with Stable Coexistance", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+plot(S1S2_simulation[[1]], show = "genotypes", 
+     xlim = c(40, 500), 
+     ylab = "Number of individuals", 
+     main = "Competition with Stable Coexistance", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(S1S2_simulation, main = "Competition with Stable Coexistance", ylab = "Number of individuals")
+
+```
+
+As the previous case, if we analyze the fitness values for S1 and S2 we could check that initial population sizes lower than $n_1(t)$ and $n_2(t)$ lead to increases toward the steady-states values, this means fitness values higher than 1.
+```{r, message=FALSE}
+S1S2_competition <-allFitnessEffects(
+    genotFitness = S1S2_LV(1.2, 1.7, 350, 400, 0.25, 0.5,
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs",
+    spPopSizes = c(5, 50, 50)) ## lower initial sizes than ESS
+
+## Fitness values of genotype "S1, S2" evaluation
+data.frame("S1_fitness" = evalGenotype(genotype = "S1",
+                                       fitnessEffects = S1S2_competition), 
+           "S2_fitness" = evalGenotype(genotype = "S2", 
+                                       fitnessEffects = S1S2_competition))
+```
+
+Furthermore, initial population sizes higher than $n_1(t)$ and $n_2(t)$ lead to decreases toward the steady-states values, this means fitness values lower than 1.
+
+```{r, message=FALSE}
+S1S2_competition <-allFitnessEffects(
+    genotFitness = S1S2_LV(1.2, 1.7, 350, 400, 0.25, 0.5,
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs",
+    spPopSizes = c(5, 410, 410)) ## higher initial sizes than ESS
+
+## Fitness values of genotype "S1, S2" evaluation
+data.frame("S1_fitness" = evalGenotype(genotype = "S1",
+                                       fitnessEffects = S1S2_competition), 
+           "S2_fitness" = evalGenotype(genotype = "S2", 
+                                       fitnessEffects = S1S2_competition))
+```
+
+## Case 3: Competitive Exclusion
+If only one of the two conditions $K1 > a_{12}*K2$ or $K2 > a_{21}*K1$ is achivedm the corresponding population eventually approaches its caryying capacity (irrespective of population initial size) and the other population is driven to extinction.
+
+Considering: 
+  $K1$ -> 350
+  $K2$ -> 400
+  $a_{12}$ -> 0.5
+  $a_{21}$ -> 1.2
+  
+$350 > 0.5*400$ and $400 > 1.2*350$
+
+```{r, message=FALSE}
+## Test 3: Estable competition but more aggressive
+# Vemos que las dos especies no son compatibles y el estado no es estable
+## Ambas impactan bastante sobre la otra, pero pueden coexitir
+## Se alejan del K original
+S1S2_competition <-
+  allFitnessEffects(
+    genotFitness =
+      S1S2_LV(1, 1.7, 350, 400, 0.5 , 1.2,
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs")
+
+S1S2_simulation <- oncoSimulPop(5, S1S2_competition,
+                              model = "Exp",
+                              onlyCancer = FALSE,
+                              finalTime = 200,
+                              mu = 1e-1,
+                              initSize = 200,
+                              keepPhylog = TRUE,
+                              seed = NULL,
+                              errorHitMaxTries = FALSE,
+                              errorHitWallTime = FALSE)
+
+## Plot first trajectory as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(10, 200), 
+     ylab = "Number of individuals", 
+     main = "Competitive Exclusion", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+plot(S1S2_simulation[[1]], show = "genotypes", 
+     xlim = c(10, 200), 
+     ylab = "Number of individuals", 
+     main = "Competitive Exclusion", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(S1S2_simulation, main = "Competitive Exclusion", ylab = "Number of individuals")
+```
+
+
+### Case 4: Unstable Population Equilibrium
+If both condition are:
+  $K1 < a_{12}*K2$   
+  $K2 < a_{21}*K1$
+
+The population sizes never reach to equilibrium, so always one of the competitors will be extinct. The extincted competitor will depend on:
+$$n_2 > \frac{K_2-a_{12}K_1}{K_1-a_{21}K_2}\ n_1$$
+where $n_1$ will be extincted. Or:
+
+$$n_2 < \frac{K_2-a_{12}K_1}{K_1-a_{21}K_2}\ n_1 $$
+where $n_2$ will be extincted.
+
+This is because, as we explained before, the steady-state population levels scaled by $1-a_{12}a_{21}$. In these scenarios: $a_{12}a_{21}>1$, so the steady-state population will never be reached.
+
+In the first example we have:
+  $K1$ -> 350
+  $K2$ -> 400
+  $a_{12}$ -> 1
+  $a_{21}$ -> 1.4
+
+$n_2 > 1.8n_1$
+
+Since the mutation rate for S1 and S2 is the same (mu = 0.1), we can conclude that the initial population of n_1 and _n2 will be approximately equal to the same t. Thus the right-hand term is larger than the left-hand term. Therefore, S2 will be extincted:
+
+```{r, message=F}
+## Test 4: Unestable competition
+# Vemos que las dos especies no son compatibles y el estado no es estable
+## Una de ellas se extingue, y la otra llega a un valor cercano a la K.
+## Sobrevive S1 que es la que m?s impacto tiene sobre la otra (a_21 > a_12)
+
+# Aquí gana N2
+S1S2_competition <-
+  allFitnessEffects(
+    genotFitness =
+      S1S2_LV(1.2, 1.7, 350, 400, 1, 1.4, ## notice coefficients
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs")
+
+S1S2_simulation <- oncoSimulPop(2, S1S2_competition,
+                              model = "Exp",
+                              onlyCancer = FALSE,
+                              finalTime = 500,
+                              mu = 1e-1,
+                              initSize = 4000,
+                              keepPhylog = TRUE,
+                              seed = NULL,
+                              errorHitMaxTries = FALSE,
+                              errorHitWallTime = FALSE)
+
+## Plot first trajectory as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(15, 500), 
+     ylab = "Number of individuals", 
+     main = "Unestable competition", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+plot(S1S2_simulation[[1]], show = "genotypes", 
+     xlim = c(15, 500), 
+     ylab = "Number of individuals", 
+     main = "Unestable competition", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(S1S2_simulation, main = "Unestable competition", ylab = "Number of individuals")
+```
+
+In contrast, in the next example we have:
+  $K1$ -> 350
+  $K2$ -> 400
+  $a_{12}$ -> 1
+  $a_{21}$ -> 1.2
+  
+
+$n_2 < 0.4n_1$
+Thus the right-hand term is lower than the left-hand term. Therefore, S1 will be extincted:
+
+```{r, message=F}
+## Test 4: Unestable competition
+S1S2_competition <-
+  allFitnessEffects(
+    genotFitness =
+      S1S2_LV(1.2, 1.7, 350, 400, 1, 1.2, ## notice coefficients
+              gt = c("WT", "S1", "S2")),
+    frequencyDependentFitness = TRUE,
+    frequencyType = "abs")
+
+S1S2_simulation <- oncoSimulPop(2, S1S2_competition,
+                              model = "Exp",
+                              onlyCancer = FALSE,
+                              finalTime = 500,
+                              mu = 1e-1,
+                              initSize = 4000,
+                              keepPhylog = TRUE,
+                              seed = NULL,
+                              errorHitMaxTries = FALSE,
+                              errorHitWallTime = FALSE)
+
+## Plot first trajectory as an example
+plot(S1S2_simulation[[1]], show = "genotypes", type = "line", 
+     xlim = c(10, 500), 
+     ylab = "Number of individuals", 
+     main = "Unestable competition", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+plot(S1S2_simulation[[1]], show = "genotypes", 
+     xlim = c(10, 500), 
+     ylab = "Number of individuals", 
+     main = "Unestable competition", 
+     col=c("black","salmon", "darkgreen"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
+
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(S1S2_simulation, main = "Unestable competition", ylab = "Number of individuals")
+```
+
 
 # Prostate cancer tumour–stroma interactions 
 
