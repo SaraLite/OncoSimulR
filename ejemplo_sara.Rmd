@@ -16,20 +16,24 @@ knitr::opts_chunk$set(echo = TRUE)
 library(OncoSimulR)
 library("ggplot2")
 
-simul_boxplot2 <- function(df) {
-  e <- ggplot(df, aes(x = Genotype, y = N))
-  e + geom_boxplot(aes(fill = Genotype)) +
-    stat_summary(fun.y = mean, geom = "point",
-                 shape = 18, size = 2.5, color = "#FC4E07")
-}
+#simul_boxplot2 <- function(df) {
+#  e <- ggplot(df, aes(x = Genotype, y = N))
+#  e + geom_boxplot(aes(fill = Genotype)) +
+#    stat_summary(fun.y = mean, geom = "point",
+#                 shape = 18, size = 2.5, color = "#FC4E07")
+#}
 
-compositionPop2 <- function(objPop) {
-  clon_labels <- c("WT", objPop[[1]]$geneNames)
-  listPop <- sapply(objPop, function(x) tail(x[[1]], 1)[1, -1])
-  dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
-                      "N" = c(listPop))
-  simul_boxplot2(dfPop)
-}
+#compositionPop2 <- function(objPop) {
+#  clon_labels <- c("WT", objPop[[1]]$geneNames)
+#  listPop <- sapply(objPop, function(x) tail(x[[1]], 1)[1, -1])
+#  dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
+#                      "N" = c(listPop))
+#  simul_boxplot2(dfPop)
+#}  
+  
+## Import functions
+source("./Funciones_plot_markdown.R")
+
 ```
 
 ## Definition of fitness

@@ -1,3 +1,8 @@
+if (!require("devtools"))
+  install.packages("devtools") ## if you don't have it already
+library(devtools)
+install_github("rdiaz02/OncoSimul/OncoSimulR", ref = "freq-dep-fitness")
+
 ## Competitive situations considering resources as a constant
 ## r ->  intrinsic growth rates
 ## K -> carrying capacities (max capacity of the environment)
@@ -219,3 +224,4 @@ competition
 plot(competition, show = "genotypes", type = 'line',
      col = c("black", "green", "red", "blue"),
      xlim = c(20, 500))
+
