@@ -1,5 +1,9 @@
-## Authors: Diego Mañanes, Alejandro Martín, 
-##          Miguel Hernández, Sara Dorado, Álvaro Huertas 
+## Authors: Sara Dorado Alfaro
+##          Miguel Hernández del Valle,
+##          Álvaro Huertas García,
+##          Diego Mañanes Cayero,
+##          Alejandro Martín Muñoz, 
+
 ## Date: 02/01/2020
 
 ## Summary: This script contains functions created for plotting the results
