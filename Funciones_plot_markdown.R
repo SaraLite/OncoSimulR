@@ -2,7 +2,7 @@
 ##          Miguel Hernández, Sara Dorado, Álvaro Huertas 
 ## Date: 02/01/2020
 
-## Summary: This scrip contains functions created for plotting the results
+## Summary: This script contains functions created for plotting the results
 ## from several iteration of oncoSimulPop and modified functions from 
 ## Oncosimul.R for placing the legend outside the plot. 
 
@@ -383,7 +383,7 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
       ## coord[2]*1.02, y = coord[4]+ypos
       ## Right side legend
       legend(x = "right" , title = "Genotypes", lty = lty, 
-             inset = -0.22, col = col, lwd = lwd, legend = ldrv, 
+             inset = -0.2, col = col, lwd = lwd, legend = ldrv, 
              ncol = legend.ncols)
     }
   }
