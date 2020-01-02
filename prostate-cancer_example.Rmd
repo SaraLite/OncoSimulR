@@ -191,7 +191,7 @@ Then, we are going to model different scenarios that represent different
 biological situations. In this case, we are going to explain 
 four possible situations.
 
-**Note:** For these simulations the values of paratemers are normalised
+**Note:** for these simulations the values of paratemers are normalised
 in the range (0 : 1) so 1 represents the maximum value for any parameter
 being positive of negative to fitness depending on the parameter. 
 
@@ -337,7 +337,7 @@ rich (high $\beta$) and the independence costs are very low ($\gamma$)
 in relation with the previous scenarios.
 
 * $\alpha$ (a) = 0.2: low cooperation between D cells. 
-* $\beta$ (b) = 0.35: rich microenvironment, being beneficial for D cells.
+* $\beta$ (b) = 0.3: rich microenvironment, being beneficial for D cells.
 * $\rho$ (r) = 0.1: low benefit of D cells from coexisting with I cells.
 * $\gamma$ (g) = 0.3: independence costs very low, being beneficial for
 I cells. 
@@ -350,7 +350,7 @@ populations, including I cells.
 
 ```{r exampleNscen3, message = FALSE, warning = FALSE}
 
-scen3 <- allFitnessEffects(genotFitness = fitness_rel(a = 0.2, b = 0.30,
+scen3 <- allFitnessEffects(genotFitness = fitness_rel(a = 0.2, b = 0.3,
                                                      r = 0.1, g = 0.3),
                           frequencyDependentFitness = TRUE,
                           frequencyType = "rel")
@@ -399,6 +399,12 @@ This is a variation of the third scenario to illustrate that, if
 we set a microenvironment more rich than in the previous scenario, 
 we get a cooperation between D and I cells, although we can still observe 
 the superiority of D cells over I cells.
+
+* $\alpha$ (a) = 0.2: low cooperation between D cells. 
+* $\beta$ (b) = 0.4: lower richness than in the previous scenario.
+* $\rho$ (r) = 0.1: low benefit of D cells from coexisting with I cells.
+* $\gamma$ (g) = 0.3: independence costs very low, being beneficial for
+I cells. 
 
 ```{r exampleNscen4, message = FALSE, warning = FALSE}
 

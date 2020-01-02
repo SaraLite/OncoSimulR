@@ -2183,7 +2183,7 @@ consider when interpreting the results.</p>
 <p>Then, we are going to model different scenarios that represent different
 biological situations. In this case, we are going to explain
 four possible situations.</p>
-<p><strong>Note:</strong> For these simulations the values of paratemers are normalised
+<p><strong>Note:</strong> for these simulations the values of paratemers are normalised
 in the range (0 : 1) so 1 represents the maximum value for any parameter
 being positive of negative to fitness depending on the parameter.</p>
 <div id="first-scenario" class="section level3" number="2.1.1">
@@ -2308,7 +2308,7 @@ rich (high <span class="math inline">\(\beta\)</span>) and the independence cost
 in relation with the previous scenarios.</p>
 <ul>
 <li><span class="math inline">\(\alpha\)</span> (a) = 0.2: low cooperation between D cells.</li>
-<li><span class="math inline">\(\beta\)</span> (b) = 0.35: rich microenvironment, being beneficial for D cells.</li>
+<li><span class="math inline">\(\beta\)</span> (b) = 0.3: rich microenvironment, being beneficial for D cells.</li>
 <li><span class="math inline">\(\rho\)</span> (r) = 0.1: low benefit of D cells from coexisting with I cells.</li>
 <li><span class="math inline">\(\gamma\)</span> (g) = 0.3: independence costs very low, being beneficial for
 I cells.</li>
@@ -2318,7 +2318,7 @@ I cells will control the tumour, we can observe that the fact that the
 microenvironment is very rich (with a low value of <span class="math inline">\(\beta\)</span>) allows to
 D cells lead the progression of the tumour over the rest of cell
 populations, including I cells.</p>
-<pre class="r"><code>scen3 &lt;- allFitnessEffects(genotFitness = fitness_rel(a = 0.2, b = 0.30,
+<pre class="r"><code>scen3 &lt;- allFitnessEffects(genotFitness = fitness_rel(a = 0.2, b = 0.3,
                                                      r = 0.1, g = 0.3),
                           frequencyDependentFitness = TRUE,
                           frequencyType = &quot;rel&quot;)
@@ -2361,6 +2361,13 @@ compositionPop2(simulScen3Pop)</code></pre>
 we set a microenvironment more rich than in the previous scenario,
 we get a cooperation between D and I cells, although we can still observe
 the superiority of D cells over I cells.</p>
+<ul>
+<li><span class="math inline">\(\alpha\)</span> (a) = 0.2: low cooperation between D cells.</li>
+<li><span class="math inline">\(\beta\)</span> (b) = 0.4: lower richness than in the previous scenario.</li>
+<li><span class="math inline">\(\rho\)</span> (r) = 0.1: low benefit of D cells from coexisting with I cells.</li>
+<li><span class="math inline">\(\gamma\)</span> (g) = 0.3: independence costs very low, being beneficial for
+I cells.</li>
+</ul>
 <pre class="r"><code>scen4 &lt;- allFitnessEffects(genotFitness = fitness_rel(a = 0.2, b = 0.4,
                                                      r = 0.1, g = 0.3),
                           frequencyDependentFitness = TRUE,
