@@ -1,5 +1,5 @@
 ---
-title: "CRS"
+title: "Rock-paper-scissors model in bacterial community"
 output: html_document
 ---
 <style>
@@ -15,19 +15,23 @@ knitr::opts_chunk$set(echo = TRUE)
 suppressPackageStartupMessages(library("OncoSimulR"))
 suppressPackageStartupMessages(library("ggplot2"))
 
+
+## Import functions
+source("./Funciones_plot_markdown.R")
+
 options(stringsAsFactors = FALSE)
 
 stripChartPop <- function(dfPop) {
-  stripchart(dfPop, vertical=TRUE)
+  stripchart(dfPop, vertical = TRUE, method = "stack", ylab = "Number of cells")
   f1 <- function(x) {
     segments(x0 = 1, x1 = 2,
              y0 = x[1],
              y1 = x[2],
-             col = "red")
+             col = rainbow(5))
     segments(x0 = 2, x1 = 3,
              y0 = x[2],
              y1 = x[3],
-             col = "red")
+             col = rainbow(5))
   }
   apply(dfPop, 1, f1)
 }
@@ -35,19 +39,17 @@ stripChartPop <- function(dfPop) {
 meanCompositionPop <- function(objPop) {
   condi <- c("WT", objPop[[1]]$geneNames)
   listPop <- lapply(objPop, function(x) (colMeans(tail(x$pops.by.time, length(x$pops.by.time[,1])/2)[,-1])))
-  dfPop <- data.frame(matrix(unlist(listPop), ncol = length(condi), byrow = TRUE))
+  dfPop <- data.frame(matrix(unlist(listPop), 
+                             ncol = length(condi), byrow = TRUE))
   colnames(dfPop) <- condi
   stripChartPop(dfPop)
   dfPop
 }
 
 set.seed(1)
-
-## Import functions
-source("./Funciones_plot_markdown.R")
 ```
 
-## Rock-paper-scissors model in bacterial community
+## Introduction
 
 This example is inspired by the article (https://www.researchgate.net/publication/11267440_Local_dispersal_promotes_biodiversity_in_a_real_game_of_rock-paper-scissors), which describes the relationship between three populations of Escherichia coli, that turns out to be very similar to a rock-paper-scissors game.
 
@@ -65,7 +67,9 @@ crs <- function (a, b, c){
 }
 ```
 
-First of all, we are going to study the scenario in which all the relationships have the same relative weight.
+
+## Case 1
+We are going to study the scenario in which all the relationships have the same relative weight.
 
 ```{r}
 afcrs <- allFitnessEffects(genotFitness = crs(1, 1, 1), 
@@ -73,18 +77,76 @@ afcrs <- allFitnessEffects(genotFitness = crs(1, 1, 1),
                            frequencyType = "rel")
 
 resultscrs <- oncoSimulIndiv(afcrs,
-                             model = "McFL", #Se puede poner Exp, McFL, McFLD...
+                             model = "McFL", 
                              onlyCancer = FALSE,
-                             finalTime = 100, #Tiempo de la simulacion
+                             finalTime = 100, 
                              mu = 1e-2,
-                             initSize = 4000, #Poblacion inicial
+                             initSize = 4000, 
                              keepPhylog = TRUE,
                              seed = NULL,
                              errorHitMaxTries = FALSE,
                              errorHitWallTime = FALSE)
 
 plot(resultscrs, show = "genotypes", type = "line")
+plot(resultscrs, show = "genotypes", type = "stacked")
 ```
 
 An oscillatory equilibrium is reached, in which the same populations have a similar number of individuals but oscillates. This makes sense, because the rise on a particular strand will lead to a rise in the one that "wins" against it, and then to a rise in the one that "wins" against the second one, creating this cyclical behaviour.
+
+## Case 2
+
+We are going to put a bigger weight in the coefficient "a", so a=10, b=1, c=2.
+
+```{r}
+afcrs <- allFitnessEffects(genotFitness = crs(10, 1, 1), 
+                           frequencyDependentFitness = TRUE,
+                           frequencyType = "rel")
+
+resultscrs <- oncoSimulPop(5,
+                           afcrs,
+                             model = "McFL", 
+                             onlyCancer = FALSE,
+                             finalTime = 100, 
+                             mu = 1e-2,
+                             initSize = 4000, 
+                             keepPhylog = TRUE,
+                             seed = NULL,
+                             errorHitMaxTries = FALSE,
+                             errorHitWallTime = FALSE)
+
+meanCompositionPop(resultscrs)
+
+
+plot(resultscrs[[1]], show = "genotypes", type = "line")
+plot(resultscrs[[3]], show = "genotypes", type = "line")
+```
+
+
+## Case 3
+
+Finally, we are going to put more weight in two coefficients, so a=1, b=10, c=10.
+
+```{r}
+afcrs <- allFitnessEffects(genotFitness = crs(1, 10, 10), 
+                           frequencyDependentFitness = TRUE,
+                           frequencyType = "rel")
+
+resultscrs <- oncoSimulPop(5,
+                           afcrs,
+                             model = "McFL", 
+                             onlyCancer = FALSE,
+                             finalTime = 100, 
+                             mu = 1e-2,
+                             initSize = 4000, 
+                             keepPhylog = TRUE,
+                             seed = NULL,
+                             errorHitMaxTries = FALSE,
+                             errorHitWallTime = FALSE)
+
+meanCompositionPop(resultscrs)
+
+
+plot(resultscrs[[1]], show = "genotypes", type = "line")
+plot(resultscrs[[3]], show = "genotypes", type = "line")
+```
 
