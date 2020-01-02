@@ -1,0 +1,90 @@
+---
+title: "CRS"
+output: html_document
+---
+<style>
+body {
+text-align: justify}
+</style>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+suppressPackageStartupMessages(library("OncoSimulR"))
+suppressPackageStartupMessages(library("ggplot2"))
+
+options(stringsAsFactors = FALSE)
+
+stripChartPop <- function(dfPop) {
+  stripchart(dfPop, vertical=TRUE)
+  f1 <- function(x) {
+    segments(x0 = 1, x1 = 2,
+             y0 = x[1],
+             y1 = x[2],
+             col = "red")
+    segments(x0 = 2, x1 = 3,
+             y0 = x[2],
+             y1 = x[3],
+             col = "red")
+  }
+  apply(dfPop, 1, f1)
+}
+
+meanCompositionPop <- function(objPop) {
+  condi <- c("WT", objPop[[1]]$geneNames)
+  listPop <- lapply(objPop, function(x) (colMeans(tail(x$pops.by.time, length(x$pops.by.time[,1])/2)[,-1])))
+  dfPop <- data.frame(matrix(unlist(listPop), ncol = length(condi), byrow = TRUE))
+  colnames(dfPop) <- condi
+  stripChartPop(dfPop)
+  dfPop
+}
+
+set.seed(1)
+
+## Import functions
+source("./Funciones_plot_markdown.R")
+```
+
+## Rock-paper-scissors model in bacterial community
+
+This example is inspired by the article (https://www.researchgate.net/publication/11267440_Local_dispersal_promotes_biodiversity_in_a_real_game_of_rock-paper-scissors), which describes the relationship between three populations of Escherichia coli, that turns out to be very similar to a rock-paper-scissors game.
+
+An E. coli community can have a specific strain of colicinogenic bacteria, that are capable of creating colicin, a toxin to which this special strain is resistant. The wild-type bacteria is killed by this toxin, but can mutate into a resistant strain. 
+
+So, there are three kinds of bacteria: wild-type (WT), colicinogenic (C) and resistant (R). The presence of C reduces the population of WT, but increases the population of R because R has an advantage over C, since R doesn't have the cost of creating the toxin. At the same time, WT has an advantage over R, because by losing the toxin receptors, R loses also some important functions. Therefore, every strain "wins" against one strain and "loses" against the other, creating a rock-paper-scissors game.
+
+```{r}
+crs <- function (a, b, c){
+  data.frame(Genotype = c("WT", "C", "R"),
+             Fitness = c(paste0("1 + ", a, " * f_2 - ", b, " * f_1"),
+                         paste0("1 + ", b, " * f_ - ", c, " * f_2"),
+                         paste0("1 + ", c, " * f_1 - ", a, " * f_")
+             ))
+}
+```
+
+First of all, we are going to study the scenario in which all the relationships have the same relative weight.
+
+```{r}
+afcrs <- allFitnessEffects(genotFitness = crs(1, 1, 1), 
+                           frequencyDependentFitness = TRUE,
+                           frequencyType = "rel")
+
+resultscrs <- oncoSimulIndiv(afcrs,
+                             model = "McFL", #Se puede poner Exp, McFL, McFLD...
+                             onlyCancer = FALSE,
+                             finalTime = 100, #Tiempo de la simulacion
+                             mu = 1e-2,
+                             initSize = 4000, #Poblacion inicial
+                             keepPhylog = TRUE,
+                             seed = NULL,
+                             errorHitMaxTries = FALSE,
+                             errorHitWallTime = FALSE)
+
+plot(resultscrs, show = "genotypes", type = "line")
+```
+
+An oscillatory equilibrium is reached, in which the same populations have a similar number of individuals but oscillates. This makes sense, because the rise on a particular strand will lead to a rise in the one that "wins" against it, and then to a rise in the one that "wins" against the second one, creating this cyclical behaviour.
+
