@@ -6,7 +6,7 @@ simul_boxplot2 <- function(df) {
                  shape = 18, size = 2.5, color = "#FC4E07") 
 }
 
-## Con vapply
+## Extract and create a data frame with results from several simulations
 compositionPop2 <- function(objPop) {
   clon_labels <- c("WT", objPop[[1]]$geneNames)
   listPop <- vapply(objPop, function(x) tail(x[[1]], 1)[1, -1], as.double(1:length(clon_labels)))
@@ -22,6 +22,115 @@ xlim.pop.data <- function(x, xlim) {
       (x$pops.by.time[, 1] <= xlim[2]),   ]
   return(x)
 }
+
+
+myhsvcols <- function(ndr, ymax, srange = c(0.4, 1),
+                      vrange = c(0.8, 1),
+                      breakSortColors = "oe") {
+  ## Generate a set of colors so that:
+  ##  - easy to tell when we increase number of drivers
+  ##  - reasonably easy to tell in a legend
+  ##  - different clones with same number of drivers have "similar" colors
+  
+  ## I use hsv color specification as this seems the most reasonable.
+  
+  minor <- table(ndr)
+  major <- length(unique(ndr)) ## yeah same as length(minor), but least
+  ## surprise
+  
+  h <- seq(from = 0, to = 1, length.out = major + 1)[-1]
+  ## do not keep similar hues next to each other
+  if(breakSortColors == "oe") {
+    oe <- seq_along(h) %% 2
+    h <- h[order(oe, h)]
+  } else if(breakSortColors == "distave"){
+    sl <- seq_along(h)
+    h <- h[order(-abs(mean(sl) - sl))]
+  } else if(breakSortColors == "random") {
+    rr <- order(runif(length(h)))
+    h <- h[rr]
+  } 
+  
+  hh <- rep(h, minor)
+  
+  sr <- unlist(lapply(minor, function(x) 
+    seq(from = srange[1], to = srange[2], length.out = x)))
+  sv <- unlist(lapply(minor, function(x) 
+    seq(from = vrange[1], to = vrange[2], length.out = x))
+  )
+  
+  colors <- hsv(hh, sr, sv)
+  
+  ## This gives "average" or "median" color for legend
+  ## colorsLegend <- aggregate(list(Color = colors), list(Drivers = ndr),
+  ##                           function(x)
+  ##                               as.character(x[((length(x) %/% 2) + 1 )]))
+  
+  ## Give the most abundant class color as the legend. Simpler to read
+  colorsLegend <- by(data.frame(Color = colors, maxnum = ymax),
+                     list(Drivers = ndr),
+                     function(x) as.character(x$Color[which.max(x$maxnum)]))
+  colorsLegend <- data.frame(Drivers = as.integer(row.names(colorsLegend)),
+                             Color = cbind(colorsLegend)[, 1],
+                             stringsAsFactors = FALSE)
+  ## To show what it would look like
+  ## plot(1:(sum(minor)), col = colors, pch = 16, cex = 3)
+  ## legend(1, length(ndr), col = colorsLegend$Color, legend = names(minor),
+  ##        pch = 16)
+  
+  return(list(colors = colors,
+              colorsLegend = colorsLegend))
+}
+
+
+plot.stacked2 <- function (x, y, order.method = "as.is", ylab = "", 
+          xlab = "", border = NULL, lwd = 1, col = rainbow(length(y[1, 
+                                                                    ])), ylim = NULL, log = "", ...) 
+{
+  if (sum(y < 0) > 0) 
+    stop("y cannot contain negative numbers")
+  if (is.null(border)) 
+    border <- par("fg")
+  border <- as.vector(matrix(border, nrow = ncol(y), ncol = 1))
+  col <- as.vector(matrix(col, nrow = ncol(y), ncol = 1))
+  lwd <- as.vector(matrix(lwd, nrow = ncol(y), ncol = 1))
+  if (order.method == "max") {
+    ord <- order(apply(y, 2, which.max))
+    y <- y[, ord]
+    col <- col[ord]
+    border <- border[ord]
+  }
+  if (order.method == "first") {
+    ord <- order(apply(y, 2, function(x) min(which(x > 0))))
+    y <- y[, ord]
+    col <- col[ord]
+    border <- border[ord]
+  }
+  top.old <- x * 0
+  polys <- vector(mode = "list", ncol(y))
+  for (i in seq(polys)) {
+    top.new <- top.old + y[, i]
+    polys[[i]] <- list(x = c(x, rev(x)), y = c(top.old, rev(top.new)))
+    top.old <- top.new
+  }
+  if (is.null(ylim)) 
+    ylim <- range(sapply(polys, function(x) range(x$y, na.rm = TRUE)), 
+                  na.rm = TRUE)
+  if (grepl("x", log)) 
+    axes <- FALSE
+  else axes <- TRUE
+  plot(x, y[, 1], ylab = ylab, xlab = xlab, ylim = ylim, t = "n", 
+       axes = axes, ...)
+  for (i in seq(polys)) {
+    polygon(polys[[i]], border = border[i], col = col[i], 
+            lwd = lwd[i])
+  }
+  if (!axes) {
+    relabelLogaxis(1)
+    axis(2)
+  }
+}
+
 
 
 plot.oncosimul <- function(x,
@@ -213,8 +322,10 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
       warning("Repeating colors; you might want to", "pass a col vector of more elements")
     col <- rep(col, length.out = (max(ndr)))[ndr]
   }
+  
+  ## Modified
   if (type == "line") {
-    par(mar = c(3, 4.8, 3, 8))
+    par(mar = c(4, 4.8, 3, 6))
     matplot(x = z$pops.by.time[, 1], y = y, log = log, type = "l", 
             col = col, lty = lty, lwd = lwd, xlab = xlab, ylab = ylab, 
             ylim = ylim, xlim = xlim, ...)
@@ -233,11 +344,13 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
           legend.ncols <- 2
         else legend.ncols <- 1
       }
+      ## Plotting outside the plot
       par(xpd = TRUE)
-      coord <- par("usr")
-      # coord[2]*1.02, y = coord[4]+ypos
+      ## coord <- par("usr")
+      ## coord[2]*1.02, y = coord[4]+ypos
+      ## Right side legend
       legend(x = "right" , title = "Genotypes", lty = lty, 
-             inset = -0.29, col = col, lwd = lwd, legend = ldrv, 
+             inset = -0.22, col = col, lwd = lwd, legend = ldrv, 
              ncol = legend.ncols)
     }
   }
@@ -259,12 +372,15 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
     if (grepl("x", log)) {
       x <- log10(x + 1)
     }
+    
     if (type == "stacked") {
+      par(mar = c(4, 4.8, 3, 6))
       plot.stacked2(x = x, y = y, order.method = order.method, 
                     border = border, lwd = lwdStackedStream, col = cll$colors, 
                     log = log, xlab = xlab, ylab = ylab, ylim = ylim, 
                     xlim = xlim, ...)
     }
+    
     else if (type == "stream") {
       plot.stream2(x = x, y = y, order.method = order.method, 
                    border = border, lwd = lwdStackedStream, col = cll$colors, 
@@ -282,6 +398,8 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
              pch = 15, col = cll$colorsLegend$Color, legend = cll$colorsLegend$Drivers, 
              ncol = legend.ncols)
     }
+    
+    ## Modified
     else if (show == "genotypes") {
       if (!inherits(z, "oncosimul2")) {
         ldrv <- genotypeLabel(z)
@@ -296,7 +414,10 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
           legend.ncols <- 2
         else legend.ncols <- 1
       }
-      legend(x = "topleft", title = "Genotypes", pch = 15, 
+      ## Plotting outside the plot
+      par(xpd = TRUE)
+      ## Right side legend
+      legend(x = "right", title = "Genotypes", pch = 15, inset = -0.2, lty = lty, lwd = lwd,
              col = cll$colors, legend = ldrv, ncol = legend.ncols)
     }
   }
