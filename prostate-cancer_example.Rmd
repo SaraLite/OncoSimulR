@@ -92,8 +92,10 @@ HD_competition <-allFitnessEffects(
   spPopSizes = c(5000, 5000, 5000))
 
 ## Plot fitness landscape of genotype "H, D" evaluation
-data.frame("Doves_fitness" = evalGenotype(genotype = "D", fitnessEffects = HD_competition), 
-           "Hawks_fitness" = evalGenotype(genotype = "H", fitnessEffects = HD_competition)) 
+data.frame("Doves_fitness" = evalGenotype(genotype = "D",
+                                          fitnessEffects = HD_competition), 
+           "Hawks_fitness" = evalGenotype(genotype = "H", 
+                                          fitnessEffects = HD_competition)) 
 ```
 
 We observe that the penalty of fighting (C > V) benefits the dove in terms of fitness respect to the hawk. 
@@ -117,7 +119,7 @@ simulation <- oncoSimulPop(2,
 
 oldpar <- par (
   # Change the colors
-  col.main="black", col.lab="blue",
+  col.main="black", col.lab="black",
   # Titles in bold
   font.main=2, font.lab=2,
   # Change font size
@@ -127,12 +129,21 @@ oldpar <- par (
   )
 
 ## Plot first trajectory as an example
-plot(simulation[[1]], show = "genotypes", type = "line", xlim = c(40, 500), lwdClone = 2, ylab = "Number of individuals", main = "Hawk and Dove trajectory")
+plot(simulation[[1]], show = "genotypes", type = "line", xlim = c(40, 500),
+     lwdClone = 2, ylab = "Number of individuals", 
+     main = "Hawk and Dove trajectory",  
+     col = c("#a37acc", "#f8776d", "#7daf00"))
+
+plot(simulation[[1]], show = "genotypes", xlim = c(40, 500), lwdClone = 2,
+     ylab = "Number of individuals", main = "Hawk and Dove", 
+     col = c("#a37acc", "#f8776d", "#7daf00"))
 
 par <- oldpar
 
 ## Agreement: Show boxplot from several simulations. 
-compositionPop2(simulation)
+compositionPop2(simulation, 
+                ylab = "Number of individuals",
+                main = "Hawk and Dove")
 ```
 
 As mentioned above, mathematically when a stationary point (ESS) is reached the relative frequency of hawks is V/C and doves 1-(V/C). Considering f_H as relative frecuency of hawks and f_D = 1-f_H as frequency of doves:
@@ -162,7 +173,8 @@ n_H <- result[4]
 total <- n_WT + n_D + n_H
 
 ## Dove percentage
-data.frame("Doves" = round(n_D/total, 2)*100, "Hawks" = round(n_H/total, 2)*100  )
+data.frame("Doves" = round(n_D/total, 2)*100, 
+           "Hawks" = round(n_H/total, 2)*100  )
 ```
 
 To sum up, this example shows that when the risks of contest injury or death (the Cost C) is significantly greater than the potential reward (the benefit value V), the stable population will be mixed between aggressors and doves, and the proportion of doves will exceed that of the aggressors. This explains behaviours observed in nature.
@@ -274,7 +286,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      xlim = c(40, 500), 
      ylab = "Number of individuals",
      main = "No competition effect", 
-     col=c("black","salmon", "darkgreen"),
+     col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
      cex.main=2, cex.lab=1.2,
      las = 1)
@@ -283,7 +295,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      xlim = c(40, 500), 
      ylab = "Number of individuals",
      main = "No competition effect", 
-     col=c("black","salmon", "darkgreen"),
+     col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
      cex.main=2, cex.lab=1.2,
      las = 1)
@@ -471,7 +483,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      xlim = c(10, 200), 
      ylab = "Number of individuals", 
      main = "Competitive Exclusion", 
-     col=c("black","salmon", "darkgreen"),
+     col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
      cex.main=2, cex.lab=1.2,
      las = 1)
@@ -480,7 +492,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      xlim = c(10, 200), 
      ylab = "Number of individuals", 
      main = "Competitive Exclusion", 
-     col=c("black","salmon", "darkgreen"),
+     col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
      cex.main=2, cex.lab=1.2,
      las = 1)
@@ -560,7 +572,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      xlim = c(15, 500), 
      ylab = "Number of individuals", 
      main = "Unestable competition", 
-     col=c("black","salmon", "darkgreen"),
+     col=c("#a37acc", "salmon", "darkgreen"),
      font.main=2, font.lab=2,
      cex.main=2, cex.lab=1.2,
      las = 1)
@@ -569,7 +581,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      xlim = c(15, 500), 
      ylab = "Number of individuals", 
      main = "Unestable competition", 
-     col=c("black","salmon", "darkgreen"),
+     col=c("#a37acc", "salmon", "darkgreen"),
      font.main=2, font.lab=2,
      cex.main=2, cex.lab=1.2,
      las = 1)
@@ -614,7 +626,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      xlim = c(10, 500), 
      ylab = "Number of individuals", 
      main = "Unestable competition", 
-     col=c("black","salmon", "darkgreen"),
+     col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
      cex.main=2, cex.lab=1.2,
      las = 1)
@@ -623,7 +635,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      xlim = c(10, 500), 
      ylab = "Number of individuals", 
      main = "Unestable competition", 
-     col=c("black","salmon", "darkgreen"),
+     col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
      cex.main=2, cex.lab=1.2,
      las = 1)
