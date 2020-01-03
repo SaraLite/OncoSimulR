@@ -55,7 +55,7 @@ The example we are going to show is one of the first games that Maynar Smith ana
 
 In this game, the two competitors are subtypes of the same species but with different strategies.  The Hawk first displays aggression, then escalates into a fight until it either wins or is injured (loses). The Dove first displays aggression, but if faced with major escalation runs for safety. If not faced with such escalation, the Dove attempts to share the resource.
 
-![Payoff Matrix for Hawk Dove Game](.\Images_markdown\Hawk_Dove_payoff.PNG)
+![Payoff Matrix for Hawk Dove Game](./Images_markdown/Hawk_Dove_payoff.PNG)
 
 Given that the resource is given the value V, the damage from losing a fight is given cost C:[1]
 
@@ -68,7 +68,7 @@ The actual payoff however depends on the probability of meeting a Hawk or Dove, 
 
 In this case we assume a stable equilibrium in the population dynamics, that is, although there are external variations in the model, it recovers and returns to equilibrium (as shown in the image below).
 
-![Stable equilibrium](.\Images_markdown\Stable_equilibrium.jpg)
+![Stable equilibrium](./Images_markdown/Stable_equilibrium.jpg)
 
 We are going to simulate with OncoSimulR the situation in which the cost of losing C is greater than the value of gaining V (C = 10, V = 2). Before performing the simulation, let's look at the fitness of each competitor.
 
@@ -1089,9 +1089,234 @@ compositionPop2(simulScen4Pop,
 
 ```
 
+# Evolutionary Dynamics of Tumor-Stroma Interactions in Multiple Myeloma
+This example is based on the paper _Evolutionary Dynamics of Tumor-Stroma Interactions in Multiple Myeloma_ (**referencia**) available at <https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0168856>. Here the authors provide a frequency-dependent model to study the growth of malignant plasma cells in Multiple Myeloma. Assuming that cancer cells and stromal cells cooperate by exchanging diffusible factors, the study is carried out in the framework of evolutionary game theory. 
+
+We first need to define a payoff strategy for this kind of scenario. The following definitions are needed:
+
+* There are $n$ phenotypes in a population denoted by $\{ P_1, \ldots, P_n \}$.
+* Each phenotype can produce one diffusible factor $\{ G_1, \ldots, G_n \}$.
+* Each diffusible factor $j$ has a different effect $r_{i,j}$ on the other phenotypes $i$.
+* The cost for $P_i$ for growth factor $G_i$ is denoted as $c_i$.
+* $M$ is the number of cells within the diffusion range.
+* There are $M_j$ individuals of type $P_j$ among the other group members.
+
+Then, the payoff for strategy $P_j$ is:
+\begin{align}
+      \pi_{P_j}(M_1,\ldots,M_n)=\frac{(M_j+1)\times c_j}{M}r_{j,j} + \sum_{i=1, i \neq j}^n \frac{M_i \times c_i}{M}r_{j,i} - c_j \;.
+\end{align}
+
+In multiple Myeloma we have three different types of cells that have autocrine and paracrine effects on the cells within their diffusion range: Malignant plasma cells (MM), Osteoblasts (OB) and Osteoclasts (OC). The specification of fitness is the following (see **referencia**):
+
+\begin{align}
+  W_{OC} &= \frac{(f_{1}(M-1)+1)c_{1}}{M}r11+\frac{((1-f_{3})(M-1)-f_{1}(M-1)-1)c_{2}}{M}r12 \\
+  &+\frac{(M-(1-f_3)(M-1))c_{3}}{M}r13-c_{1} \\
+  W_{OB} &= \frac{(f_{2}(M-1)+1)c_{2}}{M}r22+\frac{((1-f_{1})(M-1)-f_{2}(M-1)-1)c_{3}}{M}r23 \\
+  &+\frac{(M-(1-f_{1})(M-1))c_{1}}{M}r21-c_{2} \\
+  W_{MM} &= \frac{(f_{3}(M-1)+1)c_{3}}{M}r33+\frac{((1-f_{2})(M-1)-f_{3}(M-1)-1)c_{1}}{M}r31 \\
+  &+\frac{(M-(1-f_{2})(M-1))c_{2}}{M}r32-c_{3} \;,
+\end{align}
+
+where $f_1$, $f_2$ and $f_3$ denote the frequency of the phenotype OC, OB and MM in the population. The multiplication factors for diffusible factors produced by the cells are shown in the following table:
+
+![Multiplication factor in myeloma interaction](./Images_markdown/Myeloma_interaction.png)
+
+Several scenarios varying the values of the parameters are shown in **referencia**. Here we reproduce some of them.
+
+## Simulations
+
+First, we define the fitness of the different genotypes through the function _fitness_rel_. 
+
+```{r}
+f_cells <- function(c1, c2, c3, r11, r12, r13, 
+                    r21, r22, r23, r31, r32, r33, M, awt = 1e-4,
+                                 gt = c("WT", "OC", "OB", "MM")) {
+    data.frame(Genotype = gt,
+               Fitness = c(
+                  paste0("max(0.1, 1 - ", awt, " * (f_1+f_2+f_3)*N)"),
+                  paste0("1", "+(((f_1*(", M, "-1)+1)*", c1, ")/", M, ")*", r11,
+                          "+((((1-f_3)*(", M, "-1)-f_1*(", M, "-1)-1)*", c2, ")/", M, ")*", r12,
+                          "+(((", M, "-(1-f_3)*(", M, "-1))*", c3, ")/", M, ")*", r13,
+                          "-", c1
+                          ),
+                  paste0("1", "+(((f_2*(", M, "-1)+1)*", c2, ")/", M, ")*", r22,
+                          "+((((1-f_1)*(", M, "-1)-f_2*(", M, "-1)-1)*", c3, ")/", M, ")*", r23,
+                          "+(((", M, "-(1-f_1)*(", M, "-1))*", c1, ")/", M, ")*", r21,
+                          "-", c2
+                          ),
+                  paste0("1", "+(((f_3*(", M, "-1)+1)*", c3, ")/", M, ")*", r33,
+                          "+((((1-f_2)*(", M, "-1)-f_3*(", M, "-1)-1)*", c1, ")/", M, ")*", r31,
+                          "+(((", M, "-(1-f_2)*(", M, "-1))*", c2, ")/", M, ")*", r32,
+                          "-", c3
+                          )
+                  )
+               ,stringsAsFactors = FALSE
+               )
+}
+
+```
+
+It is important to note that, in order to exactly reproduce the experiments of the paper, we need to create an initial population with three different types of cell, but we do not need the presence of a wild type. For this reason, we will increase the probability of mutation of the wild type, which will disappear in early stages of the simulation. This is something that we must consider when interpreting the results. 
+
+### Scenario 1
+
+Here we model a common situation in multiple myeloma in which $c_1<c_2<c_3$. In the presence of a small number of MM cells, the stable point on the OB-OC border becomes a saddle point and clonal selection leads to a stable coexistence of OC and MM cells. Parameters for the simulation can be seen in the R code.
+
+```{r}
+N <- 40000
+M <- 10
+c1 <- 1
+c2 <- 1.2
+c3 <- 1.4
+r11 <- 0
+r12 <- 1
+r13 <- 2.5
+r21 <- 1
+r22 <- 0
+r23 <- -0.3
+r31 <- 2.5
+r32 <- 0
+r33 <- 0
+
+fe_cells <-
+    allFitnessEffects(
+        genotFitness =
+            f_cells(c1, c2, c3, r11, r12, r13, 
+                    r21, r22, r23, r31, r32, r33, M,
+                    gt = c("WT", "OC", "OB", "MM")),
+        frequencyDependentFitness = TRUE,
+        frequencyType = "rel")
+
+## Simulated trajectories
+simulation <- oncoSimulPop(10,
+                           mc.cores = 6,
+                           fe_cells,
+                           model = "McFL",
+                           onlyCancer = FALSE,
+                           finalTime = 100,
+                           mu = c("OC"=1e-1, "OB"=1e-1, "MM"=1e-4),
+                           initSize = N,
+                           keepPhylog = FALSE,
+                           seed = NULL,
+                           errorHitMaxTries = FALSE,
+                           errorHitWallTime = FALSE)
+
+#Plot trajectorie
+plot(simulation[[1]], show = "genotypes")
+plot(simulation[[1]], show = "genotypes", type = "line")
+
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(simulation)
 
 
+```
 
+
+Clearly, the appearance of MM cells quickly brings the system to an equilibrium point, which is stable. OB cells are extinct and cancer has propelled.
+
+### Scenario 2
+
+As in the second scenario of **referencia** ($c1=c2=c3$) configuration A (upper row in the grid of images). We should find one stable point on the OC-OB edge under certain conditions, which are met in the example. Further information about the parameters can be found in the R code shown below.
+
+```{r}
+N <- 40000
+M <- 10
+c1 <- 1
+c2 <- 1
+c3 <- 1
+r11 <- 0
+r12 <- 1
+r13 <- 0.5
+r21 <- 1
+r22 <- 0
+r23 <- -0.3
+r31 <- 0.5
+r32 <- 0
+r33 <- 0
+
+fe_cells <-
+    allFitnessEffects(
+        genotFitness =
+            f_cells(c1, c2, c3, r11, r12, r13, 
+                    r21, r22, r23, r31, r32, r33, M,
+                    gt = c("WT", "OC", "OB", "MM")),
+        frequencyDependentFitness = TRUE,
+        frequencyType = "rel")
+
+## Simulated trajectories
+simulation <- oncoSimulPop(10,
+                           mc.cores = 6,
+                           fe_cells,
+                           model = "McFL",
+                           onlyCancer = FALSE,
+                           finalTime = 100,
+                           mu = c("OC"=1e-1, "OB"=1e-1, "MM"=1e-4),
+                           initSize = N,
+                           keepPhylog = FALSE,
+                           seed = NULL,
+                           errorHitMaxTries = FALSE,
+                           errorHitWallTime = FALSE)
+
+#Plot trajectorie
+plot(simulation[[1]], show = "genotypes")
+plot(simulation[[1]], show = "genotypes", type = "line")
+
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(simulation)
+```
+
+As expected, under these condtitions, MM cells are not able to propagate. The equilibrium point in the OB-OC edge is stable, resisting small variations in the number of MM cells.
+
+### Scenario 3
+
+Here we imitate the conditions presented in the third scenario of **referencia** ($c3<c1<c2$) configuration A (left). If diffusion range increases ($M = 50$) the game has two stable points. See the R code for further information about the parameters of this simulation. As we do not have control in the initial population (it depends on random mutations of the wild type) we will pay special attention to the box plot.
+
+
+```{r}
+N <- 40000
+M <- 50
+c1 <- 1
+c2 <- 1.2
+c3 <- 0.8
+r11 <- 0
+r12 <- 1
+r13 <- 0.5
+r21 <- 1
+r22 <- 0
+r23 <- -0.3
+r31 <- 0.5
+r32 <- 0
+r33 <- 0
+
+fe_cells <-
+    allFitnessEffects(
+        genotFitness =
+            f_cells(c1, c2, c3, r11, r12, r13, 
+                    r21, r22, r23, r31, r32, r33, M,
+                    gt = c("WT", "OC", "OB", "MM")),
+        frequencyDependentFitness = TRUE,
+        frequencyType = "rel")
+
+## Simulated trajectories
+simulation <- oncoSimulPop(20,
+                           mc.cores = 6,
+                           fe_cells,
+                           model = "McFL",
+                           onlyCancer = FALSE,
+                           finalTime = 100,
+                           mu = c("OC"=1e-1, "OB"=1e-1, "MM"=1e-4),
+                           initSize = N,
+                           keepPhylog = FALSE,
+                           seed = NULL,
+                           errorHitMaxTries = FALSE,
+                           errorHitWallTime = FALSE)
+
+## Agreement: Show boxplot from several simulations. 
+compositionPop2(simulation)
+
+```
+
+As specified in **referencia** there are two equilibrium points under this configuration: a monomorphic equilibrium on the MM vertex and a polymorphic equilibrium on the OC-MM edge. This can be clearly seen in our boxplot: there is a huge variance in the results of the $20$ simulations. Sometimes, MM cells become extint; but other times they manage to proliferate, leading to a sharp reduction in the number of OB and OC cells.
 
 # Style macros
 
