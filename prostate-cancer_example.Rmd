@@ -733,9 +733,20 @@ compositionPop2(S1S2_simulation, main = "Unestable competition",
 
 # Game Theory with social dilemmas of tumour acidity and vasculature
 
-This example is based on the paper _Cancer treatment scheduling and dynamic heterogeneity in social dilemmas of tumour acidity and vasculature_ (**referencia**) available at <https://doi.org/10.1038/bjc.2017.5>.
+This example is based on the paper _Cancer treatment scheduling and dynamic_
+_heterogeneity in social dilemmas of tumour acidity and vasculature_ 
+(**referencia**) available at <https://doi.org/10.1038/bjc.2017.5>.
 
-In this work, it is explained that the progression of cancer is marked by the acquisition of a number of hallmarks, including self-sufficiency of growth factor production for angiogenesis and reprogramming energy metabolism for aerobic glycolysis. Moreover, there is evidence of intra-tumour heterogeneity. Given that some cancer cells can not invest in something that benefits the whole tumor while others can free-ride on the benefits created by them (evolutionary social dilemmas), how do these population level traits evolve, and how are they maintained? The authors answer this question with a mathematical model that treats acid production through glycolysis as a tumour-wide public good that is coupled to the club good of oxygen from better vascularisation.
+In this work, it is explained that the progression of cancer is marked by the
+acquisition of a number of hallmarks, including self-sufficiency of growth
+factor production for angiogenesis and reprogramming energy metabolism for
+aerobic glycolysis. Moreover, there is evidence of intra-tumour heterogeneity.
+Given that some cancer cells can not invest in something that benefits the
+whole tumor while others can free-ride on the benefits created by them
+(evolutionary social dilemmas), how do these population level traits evolve,
+and how are they maintained? The authors answer this question with a
+mathematical model that treats acid production through glycolysis as a
+tumour-wide public good that is coupled to the club good of oxygen from better vascularisation.
 
 The cell types of the model are:
 
@@ -765,13 +776,20 @@ The fitness equations derived from those populations and parameters are:
 \end{equation}
 <br>
 
-Where $f_1$ is the frequency of GLY cells and $f_2$ is the frequency of DEF cells at a given time. All fitness equations start from balance by the sum of 1. 
+Where $f_1$ is the GLY cells' frequency and $f_2$ is the DEF cells' frequency
+at a given time. All fitness equations start from balance by the sum of 1.
 
-Finally, depending of the parameter's values, the presented model can lead to three different situations:
+Finally, depending of the parameter's values, the presented model can lead to
+three different situations:
 
 ## Fully glycolytic tumours: 
 
-If the fitness benefit of a single unit of acidification is higher than the maximum benefit from the club good for aerobic cells, then GLY cells will always have a strictly higher fitness than aerobic cells, and be selected for. In this scenario, the population will converge towards all GLY, regardless of the initial proportions (as long as there is at least some GLY in the population).
+If the fitness benefit of a single unit of acidification is higher than the
+maximum benefit from the club good for aerobic cells, then GLY cells will
+always have a strictly higher fitness than aerobic cells, and be selected for.
+In this scenario, the population will converge towards all GLY, regardless of
+the initial proportions (as long as there is at least some GLY in the
+population).
 
 ```{r, message=FALSE}
 
@@ -779,9 +797,9 @@ If the fitness benefit of a single unit of acidification is higher than the maxi
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "GLY", "VOP", "DEF"),
              Fitness = c("1",
-                         paste0("1 + ", a, " * (f_1 + 1)"),
-                         paste0("1 + ", a, " * f_1 + ", v, " * (f_2 + 1) - ", c),
-                         paste0("1 + ", a, " * f_1 + ", v, " * f_2")
+                         paste0("1 + ",a," * (f_1 + 1)"),
+                         paste0("1 + ",a," * f_1 + ",v," * (f_2 + 1) - ",c),
+                         paste0("1 + ",a," * f_1 + ",v," * f_2")
                          ))
                           }
 
@@ -808,10 +826,11 @@ simulation <- oncoSimulPop(20,
 
 ```{r, message=FALSE}
 
-# Representation of the plot of one simulation as an example (the others are highly similar).
-plot(simulation[[1]], show = "genotypes", type = "line", ylab = "Number of individuals",
-     main = "Fully glycolytic tumours", font.main=2, font.lab=2, cex.main=2, cex.lab=1.2,
-     las = 1)
+# Representation of the plot of one simulation as an example (the others are
+# highly similar).
+plot(simulation[[1]], show = "genotypes", type = "line",
+     ylab = "Number of individuals", main = "Fully glycolytic tumours",
+     font.main=2, font.lab=2, cex.main=2, cex.lab=1.2, las = 1)
 
 ```
 
@@ -825,7 +844,13 @@ compositionPop2(simulation, ylab = "Number of individuals",
 
 ## Fully angiogenic tumours: 
 
-If the benefit to VOP from their extra unit of vascularisation is higher than the cost c to produce that unit, then VOP will always have a strictly higher fitness than DEF, selecting the proportion of VOP cells towards 1. In addition, if the maximum possible benefit of the club good to aerobic cells is higher than the benefit of an extra unit of acidification, then for sufficiently high number of VOP, GLY will have lower fitness than aerobic cells. When both conditions are satisfied, the population will converge towards all VOP. 
+If the benefit to VOP from their extra unit of vascularisation is higher than
+the cost c to produce that unit, then VOP will always have a strictly higher
+fitness than DEF, selecting the proportion of VOP cells towards 1. In addition,
+if the maximum possible benefit of the club good to aerobic cells is higher
+than the benefit of an extra unit of acidification, then for sufficiently high
+number of VOP, GLY will have lower fitness than aerobic cells. When both
+conditions are satisfied, the population will converge towards all VOP. 
 
 ```{r, message=FALSE}
 
@@ -833,14 +858,14 @@ If the benefit to VOP from their extra unit of vascularisation is higher than th
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "GLY", "VOP", "DEF"),
              Fitness = c("1",
-                         paste0("1 + ", a, " * (f_1 + 1)"),
-                         paste0("1 + ", a, " * f_1 + ", v, " * (f_2 + 1) - ", c),
-                         paste0("1 + ", a, " * f_1 + ", v, " * f_2")
+                         paste0("1 + ",a," * (f_1 + 1)"),
+                         paste0("1 + ",a," * f_1 + ",v, " * (f_2 + 1) - ",c),
+                         paste0("1 + ",a," * f_1 + ",v, " * f_2")
                          ))
                           }
 
 # Specification of the different effects on fitness.
-afavc <- allFitnessEffects(genotFitness = avc(2.5, 7, 1), # Parametros de la interaccion
+afavc <- allFitnessEffects(genotFitness = avc(2.5, 7, 1),
                            frequencyDependentFitness = TRUE,
                            frequencyType = "rel")
 
@@ -862,10 +887,11 @@ simulation <- oncoSimulPop(20,
 
 ```{r, message=FALSE}
 
-# Representation of the plot of one simulation as an example (the others are highly similar).
-plot(simulation[[1]], show = "genotypes", type = "line", ylab = "Number of individuals",
-     main = "Fully angiogenic tumours", font.main=2, font.lab=2, cex.main=2, cex.lab=1.2,
-     las = 1)
+# Representation of the plot of one simulation as an example (the others are
+# highly similar).
+plot(simulation[[1]], show = "genotypes", type = "line",
+     ylab = "Number of individuals", main = "Fully angiogenic tumours",
+     font.main=2, font.lab=2, cex.main=2, cex.lab=1.2, las = 1)
 
 ```
 
@@ -879,7 +905,15 @@ compositionPop2(simulation, ylab = "Number of individuals",
 
 ## Heterogeneous tumours:
 
-If the benefit from an extra unit of vascularisation in a fully aerobic group is lower than the cost c to produce that unit, then for a sufficiently low proportion of GLY and thus sufficiently large number of aerobic cells sharing the club good, DEF will have higher fitness than VOP. This will lead to a decrease in the proportion of VOP among aerobic cells and thus a decrease in the average fitness of aerobic cells. A lower fitness in aerobic cells will lead to an increase in the proportion of GLY until the aerobic groups (among which the club good is split) get sufficiently small and fitness starts to favour VOP over DEF, swinging the dynamics back.
+If the benefit from an extra unit of vascularisation in a fully aerobic group
+is lower than the cost c to produce that unit, then for a sufficiently low
+proportion of GLY and thus sufficiently large number of aerobic cells sharing
+the club good, DEF will have higher fitness than VOP. This will lead to a
+decrease in the proportion of VOP among aerobic cells and thus a decrease in
+the average fitness of aerobic cells. A lower fitness in aerobic cells will
+lead to an increase in the proportion of GLY until the aerobic groups (among
+which the club good is split) get sufficiently small and fitness starts to
+favour VOP over DEF, swinging the dynamics back.
 
 ```{r, message=FALSE}
 
@@ -887,14 +921,14 @@ If the benefit from an extra unit of vascularisation in a fully aerobic group is
 avc <- function (a, v, c) {
   data.frame(Genotype = c("WT", "GLY", "VOP", "DEF"),
              Fitness = c("1",
-                         paste0("1 + ", a, " * (f_1 + 1)"),
-                         paste0("1 + ", a, " * f_1 + ", v, " * (f_2 + 1) - ", c),
-                         paste0("1 + ", a, " * f_1 + ", v, " * f_2")
+                         paste0("1 + ",a," * (f_1 + 1)"),
+                         paste0("1 + ",a," * f_1 + ",v," * (f_2 + 1) - ",c),
+                         paste0("1 + ",a," * f_1 + ",v," * f_2")
                          ))
                           }
 
 # Specification of the different effects on fitness.
-afavc <- allFitnessEffects(genotFitness = avc(7.5, 2, 1), # Parametros de la interaccion
+afavc <- allFitnessEffects(genotFitness = avc(7.5, 2, 1),
                            frequencyDependentFitness = TRUE,
                            frequencyType = "rel")
 
@@ -916,10 +950,11 @@ simulation <- oncoSimulPop(20,
 
 ```{r, message=FALSE}
 
-# Representation of the plot of one simulation as an example (the others are highly similar).
-plot(simulation[[1]], show = "genotypes", type = "line", ylab = "Number of individuals",
-     main = "Heterogeneous tumours", font.main=2, font.lab=2, cex.main=2, cex.lab=1.2,
-     las = 1)
+# Representation of the plot of one simulation as an example (the others are
+# highly similar).
+plot(simulation[[1]], show = "genotypes", type = "line",
+     ylab = "Number of individuals", main = "Heterogeneous tumours",
+     font.main=2, font.lab=2, cex.main=2, cex.lab=1.2, las = 1)
 
 ```
 
