@@ -14,7 +14,8 @@
 ############## Functions for plotting several simulations ###################
 
 ## Plot box plot
-simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N") {
+simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N", 
+                           colors) {
   ## Create box plot, title and axis parameters
   e <- ggplot(df, aes(x = Genotype, y = N)) +
     theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
@@ -23,31 +24,53 @@ simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N") {
           axis.text.x = element_text(size = 11),
           axis.text.y = element_text(size = 11)
     )
+  
   ## No title
-  if (main ==FALSE) {
+  if (main == FALSE) {
     e + geom_boxplot(aes(fill = Genotype)) +
       stat_summary(fun.y = mean, geom = "point",
                    shape = 18, size = 2.5, color = "#FC4E07") +
-      xlab(xlab) + ylab(ylab)
+      xlab(xlab) + ylab(ylab) + scale_fill_manual(values = colors)
   }
   ## Title
-  else{
+  else {
     e + geom_boxplot(aes(fill = Genotype)) +
       stat_summary(fun.y = mean, geom = "point",
                    shape = 18, size = 2.5, color = "#FC4E07") +
       labs(title = main) +
-      xlab(xlab) + ylab(ylab)
+      xlab(xlab) + ylab(ylab) + scale_fill_manual(values = colors)
   }
 }
 
 ## Extract and create a data frame with results from several simulations
-compositionPop2 <- function(objPop, ...) {
+compositionPop2 <- function(objPop, cols = NULL, ...) {
+  ## Extract the information to create a data frame
   clon_labels <- c("WT", objPop[[1]]$geneNames)
-  listPop <- vapply(objPop, function(x) tail(x[[1]], 1)[1, -1], as.double(1:length(clon_labels)))
-  dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
+  n_labels <- length(clon_labels)
+  listPop <- vapply(objPop, function(x) tail(x[[1]], 1)[1, -1], 
+                    as.double(1:n_labels))
+  dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/n_labels),
                       "N" = c(listPop))
-  simul_boxplot2(dfPop, ...)
+  
+  ## Colors of boxplot
+  ## Extract the colors generate by myhsvcols
+  if (is.null(cols)) {
+    ndr <- 1:n_labels
+    y <- objPop[[1]]$pops.by.time[, 2:ncol(objPop[[1]]$pops.by.time), 
+                                  drop = FALSE]
+    ymax <- colSums(y)
+    cols <- myhsvcols(ndr, ymax)
+    # Reorder the colors
+    cols <- c(cols$colors[-1], cols$colors[1])
+    ## Get the colors given by the user
+  } else {
+    if (length(cols) != n_labels)
+      stop("The number of colors is not equal to the number of items")
+  }
+  
+  simul_boxplot2(dfPop, colors = cols, ...)
 }
+
 
 ##########################################################
 ############## Modified plot.oncosimul ###################
