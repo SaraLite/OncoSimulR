@@ -1,12 +1,14 @@
 ---
 title: "OncoSimulR: Frequency-dependent fitness"
 author:
-- name: First Author
-  affiliation: First Author's Affiliation
-- name: Second Author
-  affiliation: Second Author's Affiliation
+- name: Sara Dorado Alfaro
+- name: Miguel Hernandez del Valle
+- name: Alvaro Huertas Garcia 
+- name: Diego Mañanes Cayero
+- name: Alejandro Martin Muñoz
+  affiliation: Universidad Autonoma de Madrid (UAM)
   email: corresponding@author.com
-package: packageName
+package: "OncoSimulR_Project"
 output:
   BiocStyle::html_document:
     css: "./css/style.css"
@@ -51,26 +53,43 @@ source("./Funciones_plot_markdown.R")
 ```
 
 # Evolutionary games theory: Hawk and Dove example
-The example we are going to show is one of the first games that Maynar Smith analyzed. This classic game is: _Hawk and Dove_ available <https://en.wikipedia.org/wiki/Chicken_(game))>
+The example we are going to show is one of the first games that Maynar Smith 
+analyzed. This classic game is: _Hawk and Dove_ available <https://en.wikipedia.org/wiki/Chicken_(game))>
 
-In this game, the two competitors are subtypes of the same species but with different strategies.  The Hawk first displays aggression, then escalates into a fight until it either wins or is injured (loses). The Dove first displays aggression, but if faced with major escalation runs for safety. If not faced with such escalation, the Dove attempts to share the resource.
+In this game, the two competitors are subtypes of the same species but with 
+different strategies.  The Hawk first displays aggression, then escalates into 
+a fight until it either wins or is injured (loses). The Dove first displays 
+aggression, but if faced with major escalation runs for safety. If not faced
+with such escalation, the Dove attempts to share the resource.
 
 ![Payoff Matrix for Hawk Dove Game](./Images_markdown/Hawk_Dove_payoff.PNG)
 
-Given that the resource is given the value V, the damage from losing a fight is given cost C:[1]
+Given that the resource is given the value V, the damage from losing a fight 
+is given cost C:[1]
 
 * If a Hawk meets a Dove he gets the full resource V to himself
-* If a Hawk meets a Hawk – half the time he wins, half the time he loses...so his average outcome is then V/2 minus C/2
+* If a Hawk meets a Hawk – half the time he wins, half the time he loses... so 
+his average outcome is then V/2 minus C/2
 * If a Dove meets a Hawk he will back off and get nothing – 0
 * If a Dove meets a Dove both share the resource and get V/2
 
-The actual payoff however depends on the probability of meeting a Hawk or Dove, which in turn is a representation of the percentage of Hawks and Doves in the population when a particular contest takes place. That in turn is determined by the results of all of the previous contests. If the cost of losing C is greater than the value of winning V (the normal situation in the natural world) the mathematics ends in an stationary point (ESS), a mix of the two strategies where the population of Hawks is V/C.
+The actual payoff however depends on the probability of meeting a Hawk or Dove,
+which in turn is a representation of the percentage of Hawks and Doves in the 
+population when a particular contest takes place. That in turn is determined by 
+the results of all of the previous contests. If the cost of losing C is greater
+than the value of winning V (the normal situation in the natural world) the 
+mathematics ends in an stationary point (ESS), a mix of the two strategies
+where the population of Hawks is V/C.
 
-In this case we assume a stable equilibrium in the population dynamics, that is, although there are external variations in the model, it recovers and returns to equilibrium (as shown in the image below).
+In this case we assume a stable equilibrium in the population dynamics, that is, 
+although there are external variations in the model, it recovers and returns 
+to equilibrium (as shown in the image below).
 
 ![Stable equilibrium](./Images_markdown/Stable_equilibrium.jpg)
 
-We are going to simulate with OncoSimulR the situation in which the cost of losing C is greater than the value of gaining V (C = 10, V = 2). Before performing the simulation, let's look at the fitness of each competitor.
+We are going to simulate with OncoSimulR the situation in which the cost 
+of losing C is greater than the value of gaining V (C = 10, V = 2). 
+Before performing the simulation, let's look at the fitness of each competitor.
 
 ```{r, message=F}
 ## Stablish Genotype-Fitnees mapping. D = Dove, H = Hawk
@@ -98,7 +117,8 @@ data.frame("Doves_fitness" = evalGenotype(genotype = "D",
                                           fitnessEffects = HD_competition)) 
 ```
 
-We observe that the penalty of fighting (C > V) benefits the dove in terms of fitness respect to the hawk. 
+We observe that the penalty of fighting (C > V) benefits the dove in terms of 
+fitness respect to the hawk. 
 
 ``` {r, message=F}
 options(stringsAsFactors = FALSE)
@@ -146,7 +166,9 @@ compositionPop2(simulation,
                 main = "Hawk and Dove")
 ```
 
-As mentioned above, mathematically when a stationary point (ESS) is reached the relative frequency of hawks is V/C and doves 1-(V/C). Considering f_H as relative frecuency of hawks and f_D = 1-f_H as frequency of doves:
+As mentioned above, mathematically when a stationary point (ESS) is reached 
+the relative frequency of hawks is V/C and doves 1-(V/C). Considering f_H as 
+relative frecuency of hawks and f_D = 1-f_H as frequency of doves:
 
 Hawk:
 $$1 + f_H*(v-c)/2 + (1-f_H)*v$$
@@ -160,7 +182,8 @@ $$1 + f_H*(v-c)/2 + (1-f_H)*v = 1 + (1-f_H)*v/2$$
 Resolving for f_H:
 $$f_H = v/c$$
 
-Therefore, the relative frequency of hawks in equilibrium is equal to V/C. In our case it would be 20% (C = 10, V = 2). Let's check it:
+Therefore, the relative frequency of hawks in equilibrium is equal to V/C. 
+In our case it would be 20% (C = 10, V = 2). Let's check it:
 
 ```{r}
 ## Recover the final result from first simulation
@@ -177,16 +200,29 @@ data.frame("Doves" = round(n_D/total, 2)*100,
            "Hawks" = round(n_H/total, 2)*100  )
 ```
 
-To sum up, this example shows that when the risks of contest injury or death (the Cost C) is significantly greater than the potential reward (the benefit value V), the stable population will be mixed between aggressors and doves, and the proportion of doves will exceed that of the aggressors. This explains behaviours observed in nature.
+To sum up, this example shows that when the risks of contest injury or death
+(the Cost C) is significantly greater than the potential reward 
+(the benefit value V), the stable population will be mixed between aggressors 
+and doves, and the proportion of doves will exceed that of the aggressors. 
+This explains behaviours observed in nature.
 
 
 # The Lotka-Volterra model of competition between two competing species
 
-Species do not exist in isolation of one another. The simple models of exponential and logistic growth fail to capture the fact that the growth of a species must depend on its interactions with other species (Otto and Day 2007). Including all possible factors in a model is very complex. However, there are models that focus on specific interactions and how they affect population growth, for example, Lotka-Volterra model.
+Species do not exist in isolation of one another. The simple models of 
+exponential and logistic growth fail to capture the fact that the growth of 
+a species must depend on its interactions with other species 
+(Otto and Day 2007). Including all possible factors in a model is very complex. 
+However, there are models that focus on specific interactions and how they 
+affect population growth, for example, Lotka-Volterra model.
 
-The Lotka-Volterra model extends the logistic model by allowing multiple species to compete for resources, resulting in both inter-specific and intra-specific competition. In this part we will consider only two competing species (S1 and S2). 
+The Lotka-Volterra model extends the logistic model by allowing multiple 
+species to compete for resources, resulting in both inter-specific and 
+intra-specific competition. In this part we will consider only two competing 
+species (S1 and S2). 
 
-Competition model describe how the number of individuals of each species chenges when other species uses the same resource. 
+Competition model describe how the number of individuals of each species 
+changes when other species uses the same resource. 
 
 The parameters considered in Lotka-Volterra model are:
   $n$ -> number of individuals
@@ -194,7 +230,8 @@ The parameters considered in Lotka-Volterra model are:
   $K$ -> Carrying capacities (max capacity of the environment)
   $a_{ij}$ -> competition coefficient. The effect of species j on species i
 
-With these parameters, the continuous-time differential equations for the Lotka-Volterra model are:
+With these parameters, the continuous-time differential equations for the 
+Lotka-Volterra model are:
 
 <br>
 \begin{align} \label{eq:Lotka_Volterra_1}
@@ -206,7 +243,8 @@ With these parameters, the continuous-time differential equations for the Lotka-
 \end{align}
 <br>
 
-As it is said above, the signs of $a_{12}$ and $a_{21}$ therefore reflect the relationship between the two species:
+As it is said above, the signs of $a_{12}$ and $a_{21}$ therefore reflect 
+the relationship between the two species:
 
 Table  \@ref(tab:table1) Relationship between the two species
 
@@ -223,11 +261,21 @@ Table  \@ref(tab:table1) Relationship between the two species
 
 : (\#tab:table1) Relationship between the two species
 
-Next, to show the effect of competition coefficients and competition models we will model the scenarios proposed in the book _"Analysis and Management of Animal Populations"_ (Williams, Nichols and Conroy, 2010, 168-171). For the following examples S1 and S2 will be the two species used, and can be interpreted as cellular clones competing for cellular resources or multicellular organisms competing for environmental resources (sexual or asexual reproduction is not relevant as it is incorporated in the birth rate). 
+Next, to show the effect of competition coefficients and competition models 
+we will model the scenarios proposed in the book
+_"Analysis and Management of Animal Populations"_ (Williams, Nichols and Conroy, 
+2010, 168-171). For the following examples S1 and S2 will be the two species
+used, and can be interpreted as cellular clones competing for cellular resources 
+or multicellular organisms competing for environmental resources (sexual or 
+asexual reproduction is not relevant as it is incorporated in the birth rate). 
 
-S2 in these examples has a higher rate of growth than S1 ($r2 > r1$) and higher carrying capacity ($K2 > K1$). However, S1 has a stronger competitive effect on S2 ($a_{21} > a_{12}$).
+S2 in these examples has a higher rate of growth than S1 ($r2 > r1$) and 
+higher carrying capacity ($K2 > K1$). However, S1 has a stronger competitive 
+effect on S2 ($a_{21} > a_{12}$).
 
-Before seeing the examples, we have to keep in mind that in these models we treat resources as constant and the competition comes from the fight for resources, in any case is one of the species the resource. 
+Before seeing the examples, we have to keep in mind that in these models we 
+treat resources as constant and the competition comes from the fight for 
+resources, in any case is one of the species the resource. 
 
 ```{r}
 ## Lotka-Volterra expressions for competition models
@@ -252,7 +300,11 @@ S1S2_LV("r1", "r2", "K1", "K2", "a_12", "a_21", "awt")
 
 ## Case 1: No competition
 
-There is no competition, the competition coefficients are equal to 0. We see that the populations manage to reach their $K$ (maximum supported population). Due to S2 has greater capacity and growth rate, it reaches a population size greater than S1.
+There is no competition, the competition coefficients are equal to 0. We see
+that the populations manage to reach their $K$ (maximum supported population). 
+Due to S2 has greater capacity and growth rate, it reaches a population size 
+greater than S1.
+
 ```{r, message=FALSE}
 ## Case 1: No competition effects
 ## K2 > K1; r2 > r1 (species 2 has greater capacity and growth rate)
@@ -301,15 +353,23 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      las = 1)
 ```
 
-It is also important to show a boxplot with the results of different simulations to check the reproducibility of the model. 
+It is also important to show a boxplot with the results of different simulations
+to check the reproducibility of the model. 
 
 ```{r, message=FALSE}
 ## Agreement: Show boxplot from several simulations. 
-compositionPop2(S1S2_simulation, main = "No competition effect", ylab = "Number of individuals")
+compositionPop2(S1S2_simulation, main = "No competition effect", 
+                ylab = "Number of individuals")
 ```
 
 
-Before continuing with different scenarios, it is interesting to observe how the fitness landscape of the species S1 and S2 is influenced by the load capacity (K). In the absence of competition (exponential model), a fitness value larger than 1 indicates growth; a fitness value smaller than 1 indicates decline. Thus, when fitness is studied for populations of S1 and S2 with the size equal to K1 and K2 respectively, it is observed that the fitness is 1.
+Before continuing with different scenarios, it is interesting to observe how 
+the fitness landscape of the species S1 and S2 is influenced by the load 
+capacity ($K$). In the absence of competition (exponential model), a fitness 
+value larger than 1 indicates growth; a fitness value smaller than 1 indicates
+decline. Thus, when fitness is studied for populations of S1 and S2 with the 
+size equal to K1 and K2 respectively, it is observed that the fitness is 1.
+
 ```{r, message=F}
 ## Case 1: No competition effects
 S1S2_competition <-allFitnessEffects(
@@ -326,7 +386,8 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
                                        fitnessEffects = S1S2_competition))
 ```
 
-In contrast, when spPopsizes is greater than K1 or K2 a population decrease is observed because the environment cannot support that size. 
+In contrast, when spPopsizes is greater than K1 or K2 a population decrease is 
+observed because the environment cannot support that size. 
 ```{r, message=F}
 ## Case 1: No competition effects
 S1S2_competition <-allFitnessEffects(
@@ -334,7 +395,7 @@ S1S2_competition <-allFitnessEffects(
               gt = c("WT", "S1", "S2")),
     frequencyDependentFitness = TRUE,
     frequencyType = "abs",
-    spPopSizes = c(5, 500, 500)) ## spPopSizes higher than K1 and K2 respectively
+    spPopSizes = c(5, 500, 500)) ## spPopSizes higher than K1 and K2 
 
 ## Fitness valuesof genotype "S1, S2" evaluation
 data.frame("S1_fitness" = evalGenotype(genotype = "S1", 
@@ -344,12 +405,19 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
 ```
 
 ## Case 2: Stable coexistence
-As described in page 166 from the book "Analysis and Management of Animal Populations" (Williams, Nichols and Conroy, 2010), if the numerators of the equilibrium formulas are positive, then the populations can coexist in equilibrium:
+As described in page 166 from the book
+_"Analysis and Management of Animal Populations"_ (Williams, Nichols and Conroy, 
+2010), if the numerators of the equilibrium formulas are positive, then the 
+populations can coexist in equilibrium:
 
   $$K1 > a_{12}*K2$$   
   $$K2 > a_{21}*K1$$
 
-In this case, steady-state population (ESS) levels are simply the carrying capacieties K1 and K2, reduced by amounts $a_{12}*K2$ and $a_{21}*K1$, repectively, and scales by $1-a_{12}a_{21}$. Both populations converge to the equilibrium population levels irrespective of the initial population sices. 
+In this case, steady-state population (ESS) levels are simply the carrying 
+capacieties K1 and K2, reduced by amounts $a_{12}*K2$ and $a_{21}*K1$, 
+repectively, and scales by $1-a_{12}a_{21}$. Both populations converge
+to the equilibrium population levels irrespective of the initial 
+population sices. 
 
 Considering: 
 
@@ -360,7 +428,8 @@ Considering:
 
 $350 > 0.25*400$ and $400 > 0.5*350$
 
-In this example we will see the stable coexistance of S1 and S2, which may change the final size of each population  from the previous example. 
+In this example we will see the stable coexistance of S1 and S2, which may
+change the final size of each population  from the previous example. 
 
 ```{r, message=FALSE}
 ## Case 2: Competition with Stable Coexistance
@@ -405,11 +474,15 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
-compositionPop2(S1S2_simulation, main = "Competition with Stable Coexistance", ylab = "Number of individuals")
+compositionPop2(S1S2_simulation, main = "Competition with Stable Coexistance", 
+                ylab = "Number of individuals")
 
 ```
 
-As the previous case, if we analyze the fitness values for S1 and S2 we could check that initial population sizes lower than $n_1(t)$ and $n_2(t)$ lead to increases toward the steady-states values, this means fitness values higher than 1.
+As the previous case, if we analyze the fitness values for S1 and S2 we could 
+check that initial population sizes lower than $n_1(t)$ and $n_2(t)$ lead to 
+increases toward the steady-states values, this means fitness values higher 
+than 1.
 ```{r, message=FALSE}
 S1S2_competition <-allFitnessEffects(
     genotFitness = S1S2_LV(1.2, 1.7, 350, 400, 0.25, 0.5,
@@ -425,7 +498,9 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
                                        fitnessEffects = S1S2_competition))
 ```
 
-Furthermore, initial population sizes higher than $n_1(t)$ and $n_2(t)$ lead to decreases toward the steady-states values, this means fitness values lower than 1.
+Furthermore, initial population sizes higher than $n_1(t)$ and $n_2(t)$ 
+lead to decreases toward the steady-states values, this means fitness values
+lower than 1.
 
 ```{r, message=FALSE}
 S1S2_competition <-allFitnessEffects(
@@ -443,7 +518,9 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
 ```
 
 ## Case 3: Competitive Exclusion
-If only one of the two conditions $K1 > a_{12}*K2$ or $K2 > a_{21}*K1$ is achivedm the corresponding population eventually approaches its caryying capacity (irrespective of population initial size) and the other population is driven to extinction.
+If only one of the two conditions $K1 > a_{12}*K2$ or $K2 > a_{21}*K1$ is 
+achived the corresponding population eventually approaches its caryying capacity (irrespective of population initial size) and the other population is driven 
+to extinction.
 
 Considering: 
 
@@ -498,7 +575,8 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
-compositionPop2(S1S2_simulation, main = "Competitive Exclusion", ylab = "Number of individuals")
+compositionPop2(S1S2_simulation, main = "Competitive Exclusion",
+                ylab = "Number of individuals")
 ```
 
 
@@ -508,7 +586,8 @@ If both condition are:
   $K1 < a_{12}*K2$   
   $K2 < a_{21}*K1$
 
-The population sizes never reach to equilibrium, so always one of the competitors will be extinct. The extincted competitor will depend on:
+The population sizes never reach to equilibrium, so always one of the 
+competitors will be extinct. The extincted competitor will depend on:
 
 <br>
 \begin{align} \label{Unstable Population}
@@ -527,7 +606,9 @@ where $n_1$ will be extincted. Or:
 
 where $n_2$ will be extincted.
 
-This is because, as we explained before, the steady-state population levels scaled by $1-a_{12}a_{21}$. In these scenarios: $a_{12}a_{21}>1$, so the steady-state population will never be reached.
+This is because, as we explained before, the steady-state population levels 
+scaled by $1-a_{12}a_{21}$. In these scenarios: $a_{12}a_{21}>1$, so the 
+steady-state population will never be reached.
 
 In the first example we have:
 
@@ -539,7 +620,10 @@ In the first example we have:
 
 $n_2 > 1.8n_1$
 
-Since the mutation rate for S1 and S2 is the same (mu = 0.1), we can conclude that the initial population of n_1 and _n2 will be approximately equal to the same t. Thus the right-hand term is larger than the left-hand term. Therefore, S2 will be extincted:
+Since the mutation rate for S1 and S2 is the same (mu = 0.1), we can 
+conclude that the initial population of n_1 and _n2 will be approximately 
+equal to the same t. Thus the right-hand term is larger than the left-hand term.
+Therefore, S2 will be extincted:
 
 ```{r, message=F}
 ## Test 4: Unestable competition
@@ -587,7 +671,8 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
-compositionPop2(S1S2_simulation, main = "Unestable competition", ylab = "Number of individuals")
+compositionPop2(S1S2_simulation, main = "Unestable competition",
+                ylab = "Number of individuals")
 ```
 
 In contrast, in the next example we have:
@@ -598,7 +683,8 @@ In contrast, in the next example we have:
 * $a_{21}$: 1.2 
 
 $n_2 < 0.4n_1$
-Thus the right-hand term is lower than the left-hand term. Therefore, S1 will be extincted:
+Thus the right-hand term is lower than the left-hand term. 
+Therefore, S1 will be extincted:
 
 ```{r, message=F}
 ## Test 4: Unestable competition
@@ -641,7 +727,8 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
-compositionPop2(S1S2_simulation, main = "Unestable competition", ylab = "Number of individuals")
+compositionPop2(S1S2_simulation, main = "Unestable competition",
+                ylab = "Number of individuals")
 ```
 
 # Game Theory with social dilemmas of tumour acidity and vasculature
