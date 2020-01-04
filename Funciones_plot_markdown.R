@@ -1,8 +1,8 @@
 ## Authors: Sara Dorado Alfaro
 ##          Miguel Hern?ndez del Valle,
-##          ?lvaro Huertas Garc?a,
-##          Diego Ma?anes Cayero,
-##          Alejandro Mart?n Mu?oz, 
+##          Alvaro Huertas Garcia,
+##          Diego Mañanes Cayero,
+##          Alejandro Martin Muñoz, 
 
 ## Date: 02/01/2020
 
@@ -13,9 +13,10 @@
 #############################################################################
 ############## Functions for plotting several simulations ###################
 
-## Plot box plot
-simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N") {
-  ## Create box plot, title and axis parameters
+## Plot box-plot
+simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N", 
+                           colors) {
+  ## Create box-plot, title and axis parameters
   e <- ggplot(df, aes(x = Genotype, y = N)) +
     theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
           axis.title.x = element_text(size = 12, face = "bold"),
@@ -23,31 +24,60 @@ simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N") {
           axis.text.x = element_text(size = 11),
           axis.text.y = element_text(size = 11)
     )
+  
   ## No title
-  if (main ==FALSE) {
+  if (main == FALSE) {
     e + geom_boxplot(aes(fill = Genotype)) +
-      stat_summary(fun.y = mean, geom = "point",
-                   shape = 18, size = 2.5, color = "#FC4E07") +
-      xlab(xlab) + ylab(ylab)
+      ## Show mean
+      stat_summary(fun.y = mean, 
+                   geom = "point",
+                   shape = 18, 
+                   size = 2.5, 
+                   color = "#FC4E07") +
+      ## x and y axis label
+      xlab(xlab) + ylab(ylab) +
+      scale_fill_manual(values = colors)
   }
   ## Title
-  else{
+  else {
     e + geom_boxplot(aes(fill = Genotype)) +
+      ## Show mean
       stat_summary(fun.y = mean, geom = "point",
                    shape = 18, size = 2.5, color = "#FC4E07") +
       labs(title = main) +
-      xlab(xlab) + ylab(ylab)
+      xlab(xlab) + ylab(ylab) + scale_fill_manual(values = colors)
   }
 }
 
 ## Extract and create a data frame with results from several simulations
-compositionPop2 <- function(objPop, ...) {
+compositionPop2 <- function(objPop, cols = NULL, ...) {
+  ## Extract the information to create a data frame
   clon_labels <- c("WT", objPop[[1]]$geneNames)
-  listPop <- vapply(objPop, function(x) tail(x[[1]], 1)[1, -1], as.double(1:length(clon_labels)))
-  dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/length(clon_labels)),
+  n_labels <- length(clon_labels)
+  listPop <- vapply(objPop, function(x) tail(x[[1]], 1)[1, -1], 
+                    as.double(1:n_labels))
+  dfPop <- data.frame("Genotype" = rep(clon_labels, length(listPop)/n_labels),
                       "N" = c(listPop))
-  simul_boxplot2(dfPop, ...)
+  
+  ## Colors of boxplot
+  ## Extract the colors generate by myhsvcols
+  if (is.null(cols)) {
+    ndr <- 1:n_labels
+    y <- objPop[[1]]$pops.by.time[, 2:ncol(objPop[[1]]$pops.by.time), 
+                                  drop = FALSE]
+    ymax <- colSums(y)
+    cols <- myhsvcols(ndr, ymax)
+    # Reorder the colors
+    cols <- c(cols$colors[-1], cols$colors[1])
+    ## Get the colors given by the user
+  } else {
+    if (length(cols) != n_labels)
+      stop("The number of colors is not equal to the number of items")
+  }
+  
+  simul_boxplot2(dfPop, colors = cols, ...)
 }
+
 
 ##########################################################
 ############## Modified plot.oncosimul ###################
@@ -122,8 +152,8 @@ myhsvcols <- function(ndr, ymax, srange = c(0.4, 1),
 
 ## Function used by plot.oncosimul. Not modified
 plot.stacked2 <- function (x, y, order.method = "as.is", ylab = "", 
-          xlab = "", border = NULL, lwd = 1, col = rainbow(length(y[1, 
-                                                                    ])), ylim = NULL, log = "", ...) 
+          xlab = "", border = NULL, lwd = 1,
+          col = rainbow(length(y[1, ])), ylim = NULL, log = "", ...) 
 {
   if (sum(y < 0) > 0) 
     stop("y cannot contain negative numbers")
@@ -333,13 +363,31 @@ plot.oncosimul <- function(x,
   
 }
 
-plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y", 
-                          lwd = 1, lty = 1:8, col = 1:9, order.method = "as.is", stream.center = TRUE, 
-                          stream.frac.rand = 0.01, stream.spar = 0.2, border = NULL, 
-                          srange = c(0.4, 1), vrange = c(0.8, 1), type = "stacked", 
-                          breakSortColors = "oe", colauto = TRUE, legend.ncols = "auto", 
-                          lwdStackedStream = 1, xlab = "Time units", ylab = "Number of cells", 
-                          ylim = NULL, xlim = NULL, ypos = max(tail(z[[1]], 1)), ...) 
+plotClonesSt <- function (z,
+                          ndr, 
+                          show = "drivers",
+                          na.subs = TRUE, 
+                          log = "y", 
+                          lwd = 1, 
+                          lty = 1:8, 
+                          col = 1:9, 
+                          order.method = "as.is",
+                          stream.center = TRUE, 
+                          stream.frac.rand = 0.01, 
+                          stream.spar = 0.2, 
+                          border = NULL, 
+                          srange = c(0.4, 1), 
+                          vrange = c(0.8, 1), 
+                          type = "stacked", 
+                          breakSortColors = "oe",
+                          colauto = TRUE, 
+                          legend.ncols = "auto", 
+                          lwdStackedStream = 1, 
+                          xlab = "Time units",
+                          ylab = "Number of cells", 
+                          ylim = NULL, 
+                          xlim = NULL, 
+                          ypos = max(tail(z[[1]], 1)), ...) 
 {
   y <- z$pops.by.time[, 2:ncol(z$pops.by.time), drop = FALSE]
   if (type %in% c("stacked", "stream")) 
@@ -432,7 +480,8 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
         else legend.ncols <- 1
       }
       legend(x = "topleft", title = "Number of drivers", 
-             pch = 15, col = cll$colorsLegend$Color, legend = cll$colorsLegend$Drivers, 
+             pch = 15, col = cll$colorsLegend$Color, 
+             legend = cll$colorsLegend$Drivers, 
              ncol = legend.ncols)
     }
     
@@ -454,7 +503,8 @@ plotClonesSt <- function (z, ndr, show = "drivers", na.subs = TRUE, log = "y",
       ## Plotting outside the plot
       par(xpd = TRUE)
       ## Right side legend
-      legend(x = "right", title = "Genotypes", pch = 15, inset = -0.2, lty = lty, lwd = lwd,
+      legend(x = "right", title = "Genotypes", pch = 15,
+             inset = -0.2, lty = lty, lwd = lwd,
              col = cll$colors, legend = ldrv, ncol = legend.ncols)
     }
   }
