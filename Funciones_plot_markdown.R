@@ -13,17 +13,12 @@
 #############################################################################
 ############## Functions for plotting several simulations ###################
 
-<<<<<<< HEAD
-## Plot box-plot
-simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N", 
-                           colors) {
-  ## Create box-plot, title and axis parameters
-=======
+
+## Create box-plot, title and axis parameters
 ## Plot box plot
 simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N", 
                            colors) {
   ## Create box plot, title and axis parameters
->>>>>>> 628215c84881b1e8e52b7ae685fd7beb3a6d0f1f
   e <- ggplot(df, aes(x = Genotype, y = N)) +
     theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
           axis.title.x = element_text(size = 12, face = "bold"),
@@ -35,7 +30,6 @@ simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N",
   ## No title
   if (main == FALSE) {
     e + geom_boxplot(aes(fill = Genotype)) +
-<<<<<<< HEAD
       ## Show mean
       stat_summary(fun.y = mean, 
                    geom = "point",
@@ -45,11 +39,9 @@ simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N",
       ## x and y axis label
       xlab(xlab) + ylab(ylab) +
       scale_fill_manual(values = colors)
-=======
       stat_summary(fun.y = mean, geom = "point",
                    shape = 18, size = 2.5, color = "#FC4E07") +
       xlab(xlab) + ylab(ylab) + scale_fill_manual(values = colors)
->>>>>>> 628215c84881b1e8e52b7ae685fd7beb3a6d0f1f
   }
   ## Title
   else {
