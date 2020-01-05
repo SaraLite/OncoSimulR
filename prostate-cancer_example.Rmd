@@ -7,7 +7,6 @@ author:
 - name: Diego Mañanes Cayero
 - name: Alejandro Martin Muñoz
   affiliation: Universidad Autonoma de Madrid (UAM)
-  email: corresponding@author.com
 package: "OncoSimulR_Project"
 output:
   BiocStyle::html_document:
@@ -123,7 +122,7 @@ fitness respect to the hawk.
 ``` {r, message=F}
 options(stringsAsFactors = FALSE)
 ## Simulated trajectories
-simulation <- oncoSimulPop(2,
+simulation <- oncoSimulPop(20,
                            mc.cores = 6,
                            HD_competition,
                            model = "McFL", # There is no collapse
@@ -321,7 +320,7 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
            "S2_fitness" = evalGenotype(genotype = "S2", 
                                        fitnessEffects = S1S2_competition))
 
-S1S2_simulation <- oncoSimulPop(5, S1S2_competition, ## 10 simulations
+S1S2_simulation <- oncoSimulPop(20, S1S2_competition, ## 10 simulations
                               model = "Exp",
                               onlyCancer = FALSE,
                               finalTime = 500,
@@ -442,7 +441,7 @@ S1S2_competition <-allFitnessEffects(
     frequencyType = "abs")
 
 
-S1S2_simulation <- oncoSimulPop(5, 
+S1S2_simulation <- oncoSimulPop(20, 
                                 S1S2_competition,
                               model = "Exp",
                               onlyCancer = FALSE,
@@ -519,7 +518,8 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
 
 ## Case 3: Competitive Exclusion
 If only one of the two conditions $K1 > a_{12}*K2$ or $K2 > a_{21}*K1$ is 
-achived the corresponding population eventually approaches its caryying capacity (irrespective of population initial size) and the other population is driven 
+achived the corresponding population eventually approaches its carrying capacity
+(irrespective of population initial size) and the other population is driven 
 to extinction.
 
 Considering: 
@@ -544,7 +544,7 @@ S1S2_competition <-
     frequencyDependentFitness = TRUE,
     frequencyType = "abs")
 
-S1S2_simulation <- oncoSimulPop(5, S1S2_competition,
+S1S2_simulation <- oncoSimulPop(20, S1S2_competition,
                               model = "Exp",
                               onlyCancer = FALSE,
                               finalTime = 200,
@@ -640,7 +640,7 @@ S1S2_competition <-
     frequencyDependentFitness = TRUE,
     frequencyType = "abs")
 
-S1S2_simulation <- oncoSimulPop(2, S1S2_competition,
+S1S2_simulation <- oncoSimulPop(20, S1S2_competition,
                               model = "Exp",
                               onlyCancer = FALSE,
                               finalTime = 500,
@@ -696,7 +696,7 @@ S1S2_competition <-
     frequencyDependentFitness = TRUE,
     frequencyType = "abs")
 
-S1S2_simulation <- oncoSimulPop(2, S1S2_competition,
+S1S2_simulation <- oncoSimulPop(20, S1S2_competition,
                               model = "Exp",
                               onlyCancer = FALSE,
                               finalTime = 500,
@@ -746,7 +746,8 @@ whole tumor while others can free-ride on the benefits created by them
 (evolutionary social dilemmas), how do these population level traits evolve,
 and how are they maintained? The authors answer this question with a
 mathematical model that treats acid production through glycolysis as a
-tumour-wide public good that is coupled to the club good of oxygen from better vascularisation.
+tumour-wide public good that is coupled to the club good of oxygen from better 
+vascularisation.
 
 The cell types of the model are:
 
