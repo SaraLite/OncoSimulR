@@ -31,14 +31,11 @@ simul_boxplot2 <- function(df, main = FALSE, xlab = "Genotype", ylab = "N",
   if (main == FALSE) {
     e + geom_boxplot(aes(fill = Genotype)) +
       ## Show mean
-      stat_summary(fun.y = mean, 
-                   geom = "point",
-                   shape = 18, 
-                   size = 2.5, 
-                   color = "#FC4E07") +
+      stat_summary(fun.y = mean, geom = "point", shape = 18, 
+                   size = 2.5, color = "#FC4E07") +
       ## x and y axis label
       xlab(xlab) + ylab(ylab) +
-      scale_fill_manual(values = colors)
+      scale_fill_manual(values = colors) +
       stat_summary(fun.y = mean, geom = "point",
                    shape = 18, size = 2.5, color = "#FC4E07") +
       xlab(xlab) + ylab(ylab) + scale_fill_manual(values = colors)
