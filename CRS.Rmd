@@ -22,7 +22,7 @@ source("./Funciones_plot_markdown.R")
 options(stringsAsFactors = FALSE)
 
 stripChartPop <- function(dfPop) {
-  stripchart(dfPop, vertical = TRUE, method = "stack", ylab = "Number of cells")
+  stripchart(dfPop, vertical = TRUE, ylab = "Number of cells")
   f1 <- function(x) {
     segments(x0 = 1, x1 = 2,
              y0 = x[1],
@@ -67,16 +67,22 @@ crs <- function (a, b, c){
 }
 ```
 
+The equations are:
+
+```{r}
+crs("a", "b", "c")
+```
+
 
 ## Case 1
 We are going to study the scenario in which all the relationships have the same relative weight.
 
 ```{r}
-afcrs <- allFitnessEffects(genotFitness = crs(1, 1, 1), 
+afcrs1 <- allFitnessEffects(genotFitness = crs(1, 1, 1), 
                            frequencyDependentFitness = TRUE,
                            frequencyType = "rel")
 
-resultscrs <- oncoSimulIndiv(afcrs,
+resultscrs1 <- oncoSimulIndiv(afcrs1,
                              model = "McFL", 
                              onlyCancer = FALSE,
                              finalTime = 100, 
@@ -87,23 +93,27 @@ resultscrs <- oncoSimulIndiv(afcrs,
                              errorHitMaxTries = FALSE,
                              errorHitWallTime = FALSE)
 
-plot(resultscrs, show = "genotypes", type = "line")
-plot(resultscrs, show = "genotypes", type = "stacked")
+plot(resultscrs1, show = "genotypes", type = "line")
 ```
 
 An oscillatory equilibrium is reached, in which the same populations have a similar number of individuals but oscillates. This makes sense, because the rise on a particular strand will lead to a rise in the one that "wins" against it, and then to a rise in the one that "wins" against the second one, creating this cyclical behaviour.
+```{r}
+plot(resultscrs1, show = "genotypes", type = "stacked")
+```
+In the stacked plot we can see that the total population remains almost constant.
+
 
 ## Case 2
 
-We are going to put a bigger weight in the coefficient "a", so a=10, b=1, c=2.
+We are going to put a bigger weight in one of the coefficients, so a=10, b=1, c=2.
 
 ```{r}
-afcrs <- allFitnessEffects(genotFitness = crs(10, 1, 1), 
+afcrs2 <- allFitnessEffects(genotFitness = crs(10, 1, 1), 
                            frequencyDependentFitness = TRUE,
                            frequencyType = "rel")
 
-resultscrs <- oncoSimulPop(5,
-                           afcrs,
+resultscrs2 <- oncoSimulPop(10,
+                           afcrs2,
                              model = "McFL", 
                              onlyCancer = FALSE,
                              finalTime = 100, 
@@ -113,26 +123,38 @@ resultscrs <- oncoSimulPop(5,
                              seed = NULL,
                              errorHitMaxTries = FALSE,
                              errorHitWallTime = FALSE)
+```
 
-meanCompositionPop(resultscrs)
+The following chart represents the average number of cells of each type during the last half of each simulation. As a boxplot would lose the informationof the different scenarios, so we decided to plot the data as points and join with lines the ones that come from the same simulation.
 
+```{r}
+meanCompositionPop(resultscrs2)
+```
 
-plot(resultscrs[[1]], show = "genotypes", type = "line")
-plot(resultscrs[[3]], show = "genotypes", type = "line")
+There are two scenarios. The first one is the one in which all the strains coexist, with the colicinogenic bacteria having a much bigger population.
+
+```{r}
+plot(resultscrs2[[3]], show = "genotypes", type = "line")
+```
+
+In the second one, the wild type and the colicinogenic bacteria dissapear, so the resistant strain is the only one that survives.
+
+```{r}
+plot(resultscrs2[[1]], show = "genotypes", type = "line")
 ```
 
 
 ## Case 3
 
-Finally, we are going to put more weight in two coefficients, so a=1, b=10, c=10.
+Finally, we are going to put more weight in two coefficients, so a=1, b=5, c=5.
 
 ```{r}
-afcrs <- allFitnessEffects(genotFitness = crs(1, 10, 10), 
+afcrs3 <- allFitnessEffects(genotFitness = crs(1, 5, 5), 
                            frequencyDependentFitness = TRUE,
                            frequencyType = "rel")
 
-resultscrs <- oncoSimulPop(5,
-                           afcrs,
+resultscrs3 <- oncoSimulPop(10,
+                           afcrs3,
                              model = "McFL", 
                              onlyCancer = FALSE,
                              finalTime = 100, 
@@ -143,10 +165,9 @@ resultscrs <- oncoSimulPop(5,
                              errorHitMaxTries = FALSE,
                              errorHitWallTime = FALSE)
 
-meanCompositionPop(resultscrs)
+meanCompositionPop(resultscrs3)
 
-
-plot(resultscrs[[1]], show = "genotypes", type = "line")
-plot(resultscrs[[3]], show = "genotypes", type = "line")
+plot(resultscrs3[[3]], show = "genotypes", type = "line")
 ```
 
+In all the cases all three strains survive, with C having a much smaller population than the other two.

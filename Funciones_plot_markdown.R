@@ -80,6 +80,30 @@ compositionPop2 <- function(objPop, cols = NULL, ...) {
   simul_boxplot2(dfPop, colors = cols, ...)
 }
 
+stripChartPop <- function(dfPop) {
+  stripchart(dfPop, vertical = TRUE, ylab = "Number of cells")
+  f1 <- function(x) {
+    segments(x0 = 1, x1 = 2,
+             y0 = x[1],
+             y1 = x[2],
+             col = rainbow(5))
+    segments(x0 = 2, x1 = 3,
+             y0 = x[2],
+             y1 = x[3],
+             col = rainbow(5))
+  }
+  apply(dfPop, 1, f1)
+}
+
+meanCompositionPop <- function(objPop) {
+  condi <- c("WT", objPop[[1]]$geneNames)
+  listPop <- lapply(objPop, function(x) (colMeans(tail(x$pops.by.time, length(x$pops.by.time[,1])/2)[,-1])))
+  dfPop <- data.frame(matrix(unlist(listPop), 
+                             ncol = length(condi), byrow = TRUE))
+  colnames(dfPop) <- condi
+  stripChartPop(dfPop)
+  dfPop
+}
 
 ##########################################################
 ############## Modified plot.oncosimul ###################
