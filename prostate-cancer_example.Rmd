@@ -31,6 +31,7 @@ header-includes:
 **Lo hará Alejandro**
 **Explicar por encima cosas nuevas (lo de la leyenda), los paquetes cargados y las funciones incorporadas**
 
+
 ```{r message = FALSE, warning = FALSE}
 
 # Packages
@@ -47,10 +48,18 @@ RNGkind("L'Ecuyer-CMRG")
 # get rid of the messages
 options(stringsAsFactors = FALSE)
 
-## Import functions
-source("./Funciones_plot_markdown.R")
+
 ```
 
+In the project we have added two new functions (compositionPop2 and simul_boxplot2) to plot the reproducibility and distribution of the results of various simulations using boxplots (using ggplot2) . You can find these functions at _Functions_plot_markdown.R_. 
+
+```{r}
+## Import functions to plot box-plots and stripcharts
+source("./Funciones_plot_markdown.R")
+
+## Import modified plot.oncosimul for plotting legend outside the plot
+source("legend_outside.R")
+```
 #Rock-paper-scissors model in bacterial community
 
 ## Introduction
@@ -134,7 +143,7 @@ resultscrs2 <- oncoSimulPop(10,
 The following chart represents the average number of cells of each type during the last half of each simulation. As a boxplot would lose the informationof the different scenarios, so we decided to plot the data as points and join with lines the ones that come from the same simulation.
 
 ```{r message=F}
-meanCompositionPop(resultscrs2)
+meanCompositionPop(resultscrs2, ylab = "Number of cells")
 ```
 
 There are two scenarios. The first one is the one in which all the strains coexist, with the colicinogenic bacteria having a much bigger population.
