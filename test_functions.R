@@ -168,4 +168,18 @@ test_that("There is the same number of genotypes results for each
 ## Be careful. When the mutation rate is too low, the WT disappears 
 ## too quickly and the simulation does not last long enough, there 
 ## may not be time for all the genotypes to appear.  Raising the 
-## mutation rate may be a solution, or increasing the birth rate of the WT. 
+## mutation rate may be a solution, or increasing the birth rate of the WT.
+
+
+###############################################################################
+
+
+
+
+
+
+
+
+
+
+
