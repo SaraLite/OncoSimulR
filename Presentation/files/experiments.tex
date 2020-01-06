@@ -1,7 +1,79 @@
+\subsection{List of experiments}
+\begin{frame}{List of experiments}
+	\begin{enumerate}
+		\item<alert@2> Rock-paper-scissors model in bacterial community
+		\item Evolutionary games theory: Hawk and Dove example
+		\item The Lotka-Volterra model of competition between two competing species
+		\item Game Theory with social dilemmas of tumour acidity and vasculature
+		\item Prostate cancer tumour–stroma interactions
+		\item<alert@2> Evolutionary Dynamics of Tumor-Stroma Interactions in Multiple Myeloma
+	\end{enumerate}
+\end{frame}
+
 \subsection{An experiment with bacteria}
 
-\begin{frame}{Experiments}
-    
+\begin{frame}{Rock-paper-scissors game in bacterial community}
+
+    \begin{itemize}
+        \item \textbf{Title:} Local dispersal promotes biodiversity in a real-life game of rock–paper–scissors.
+        \item \textbf{Authors:} Benjamin Kerr, Margaret A. Riley, Marcus W. Feldman, Brendan J. M. Bohannan.
+        \item Three competing species of bacterias with relationships similar to rock-paper-scissors game.
+    \end{itemize}
+            \begin{figure}[t]
+    			\includegraphics[scale=0.7]{img/paper_bacteria.jpg}
+    		\end{figure}
+\end{frame}
+
+\begin{frame}{Rock-paper-scissors game in bacterial community}
+    \begin{itemize}
+		\item Three types of populations of \textit{E. coli}: 
+		\begin{itemize}
+			\item Wild-type bacterias (WT): colicin-sensitive bacterias, hence, they are killed by colicin. 
+			\item Colicinogenic bacterias (C): produce colicin toxin, a colicin-specific inmunity protein and a lysis protein which causes partial cell lysis and the release of the colicin.
+			\item Colicin-resistant bacterias (R): WT bacterias who have mutated getting membrane translocators of colicin.
+		\end{itemize}
+		\item Parameters that describe the relationships of WT-C-R community:
+		\begin{itemize}
+			\item $a$: advantage of WT over R $\Rightarrow$ R have costs in their fitness because the resistance consumes a lot of energy and WT have not this problem.
+			\item $b$: advantage of C over WT $\Rightarrow$ C are able to kill WT.
+			\item $c$: advantage of R over C $\Rightarrow$ R are resistant to colicin produced by C. 
+		\end{itemize}
+		
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Rock-paper-scissors game in bacterial community}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				In summary, we have the relationships of rock-paper-scissors game:
+			\end{center}
+			\begin{figure}
+				\includegraphics[scale=0.12]{img/figure_rock-scissor-paper.jpg}			
+			\end{figure}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				And the resulting equations:
+			\begin{align*}
+				W\left(WT\right) = 1 + af_3 - bf_2\\
+				W\left(C\right) = 1 + bf_1 - cf_3\\
+				W\left(R\right) = 1 + cf_2 - af_1\\
+			\end{align*}
+			where $f_1$, $f_2$ and $f_3$ are the frequencies of WT, C and R, respectively. 
+			\end{center}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		{\LARGE $\Downarrow$\\}
+		%% Meter alert %%
+		\begin{block}
+			{\centering
+				\textit{allFitnessEffect} and \textit{oncoSimulIndiv} functions
+			}
+		\end{block}
+	\end{center}	
 \end{frame}
 
 \subsection{An experiment with cells}
