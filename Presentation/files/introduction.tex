@@ -1,53 +1,53 @@
-\begin{frame}{Introduction -> 2 Frequency dependent fitness}
+\begin{frame}{Introduction $\rightarrow$ 2 Frequency dependent fitness}
 
-    \begin{itemize1}    
+    \begin{itemize}    
         \item Game theory.
         \item $OncoSimulR$ is intended to create a model taking into account the interactions between different subpopulations (individual or common benefit).
         \item Frequency dependent selection: the fitness of a subpopulation will depend on the relative abundance of the different subpopulations.
-        \item With $OncoSimulR$ -> fitness of each subpopulation as an arbitrary function of the genetic interactions between multiple genes.       
-    \end{itemize1}
+        \item With $OncoSimulR$ $\rightarrow$ fitness of each subpopulation as an arbitrary function of the genetic interactions between multiple genes.       
+    \end{itemize}
     
 \end{frame}
 
-\begin{frame}{Introduction -> Effects on fitness}
+\begin{frame}{Introduction $\rightarrow$ Effects on fitness}
 
-    \begin{itemize1}
+    \begin{itemize}
         \item $allFitnessEffects$ function:
-        \begin{itemize2}
+        \begin{itemize}
             \item $genoFitness$ = dataframe
-            \begin{itemize3}
+            \begin{itemize}
                 \item First column: genotypes.
                 \item Second column: expressions for the functions that relate fitness to frequencies of other genotypes.
-            \end{itemize3}
+            \end{itemize}
             \item $frequencyDependentFitness$ = TRUE
             \item $frequencyType$ = “rel” or $frequencyType$ = “abs”
             \item $spPopSizes$
-        \end{itemize2}        
-    \end{itemize1}
+        \end{itemize}        
+    \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Introduction -> Assess fitness}
+\begin{frame}{Introduction $\rightarrow$ Assess fitness}
 
-    \begin{itemize1}
+    \begin{itemize}
         \item $evalGenotype$ function:
-        \begin{itemize2}
+        \begin{itemize}
             \item $fitnessEffects$ = $allFitnessEffects$ object
             \item $genotype$
-        \end{itemize2}
+        \end{itemize}
         \item $evalAllGenotypes$ function:
-        \begin{itemize2}
+        \begin{itemize}
             \item $fitnessEffects$ = $allFitnessEffects$ object
-        \end{itemize2}
-    \end{itemize1}
+        \end{itemize}
+    \end{itemize}
     
 \end{frame}
 
-\begin{frame}{Introduction -> Perform simulations}
+\begin{frame}{Introduction $\rightarrow$ Perform simulations}
 
-    \begin{itemize1}
+    \begin{itemize}
         \item $oncoSimulIndiv$ and $oncoSimulPop$ functions.
-    \end{itemize1}
+    \end{itemize}
     \begin{columns}
         \begin{column}{0.5\textwidth}
             \begin{figure}[t]
@@ -60,6 +60,5 @@
             \end{figure}
         \end{column}
     \end{columns}
-\end{frame}
     
 \end{frame}
