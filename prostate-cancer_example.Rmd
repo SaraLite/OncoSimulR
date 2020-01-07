@@ -1570,7 +1570,8 @@ phenotypes $i$.
 
 Then, the payoff for strategy $P_j$ is:
 \begin{align}
-      \pi_{P_j}(M_1,\ldots,M_n)=\frac{(M_j+1)\times c_j}{M}r_{j,j} + \sum_{i=1, i \neq j}^n \frac{M_i \times c_i}{M}r_{j,i} - c_j \;.
+      \pi_{P_j}(M_1,\ldots,M_n)=\frac{(M_j+1)\times c_j}{M}r_{j,j} + 
+      \sum_{i=1, i \neq j}^n \frac{M_i \times c_i}{M}r_{j,i} - c_j \;.
 \end{align}
 
 In multiple Myeloma we have three different types of cells that have autocrine
@@ -1579,11 +1580,14 @@ plasma cells (MM), Osteoblasts (OB) and Osteoclasts (OC). The specification of
 fitness is the following (see **referencia**):
 
 \begin{align}
-  W_{OC} &= \frac{(f_{1}(M-1)+1)c_{1}}{M}r11+\frac{((1-f_{3})(M-1)-f_{1}(M-1)-1)c_{2}}{M}r12 \\
+  W_{OC} &= \frac{(f_{1}(M-1)+1)c_{1}}{M}r11+
+  \frac{((1-f_{3})(M-1)-f_{1}(M-1)-1)c_{2}}{M}r12 \\
   &+\frac{(M-(1-f_3)(M-1))c_{3}}{M}r13-c_{1} \\
-  W_{OB} &= \frac{(f_{2}(M-1)+1)c_{2}}{M}r22+\frac{((1-f_{1})(M-1)-f_{2}(M-1)-1)c_{3}}{M}r23 \\
+  W_{OB} &= \frac{(f_{2}(M-1)+1)c_{2}}{M}r22+
+  \frac{((1-f_{1})(M-1)-f_{2}(M-1)-1)c_{3}}{M}r23 \\
   &+\frac{(M-(1-f_{1})(M-1))c_{1}}{M}r21-c_{2} \\
-  W_{MM} &= \frac{(f_{3}(M-1)+1)c_{3}}{M}r33+\frac{((1-f_{2})(M-1)-f_{3}(M-1)-1)c_{1}}{M}r31 \\
+  W_{MM} &= \frac{(f_{3}(M-1)+1)c_{3}}{M}r33+
+  \frac{((1-f_{2})(M-1)-f_{3}(M-1)-1)c_{1}}{M}r31 \\
   &+\frac{(M-(1-f_{2})(M-1))c_{2}}{M}r32-c_{3} \;,
 \end{align}
 
@@ -1598,7 +1602,8 @@ Several scenarios varying the values of the parameters are shown in
 
 ## Simulations
 
-First, we define the fitness of the different genotypes through the function _fitness_rel_. 
+First, we define the fitness of the different genotypes 
+through the function _fitness_rel_. 
 
 ```{r}
 f_cells <- function(c1, c2, c3, r11, r12, r13, 
@@ -1670,7 +1675,7 @@ fe_cells <-
         frequencyType = "rel")
 
 ## Simulated trajectories
-simulation <- oncoSimulPop(10,
+simulation <- oncoSimulPop(20,
                            mc.cores = n_cores,
                            fe_cells,
                            model = "McFL",
@@ -1729,7 +1734,7 @@ fe_cells <-
         frequencyType = "rel")
 
 ## Simulated trajectories
-simulation <- oncoSimulPop(10,
+simulation <- oncoSimulPop(20,
                            mc.cores = n_cores,
                            fe_cells,
                            model = "McFL",
@@ -1819,26 +1824,37 @@ reduction in the number of OB and OC cells.
 *Referencias manualmente. Hay que ordenarlas alfabéticamente y seguir*
 *el mismo formato. Respecto al formato, elegid el que queráis.*
 
-1. Archetti, M., Pienta, K.J. Cooperation among cancer cells: applying game
+[1]. Archetti, M., Pienta, K.J. Cooperation among cancer cells: applying game
 theory to cancer. Nat Rev Cancer 19, 110–117 (2019)
 doi:10.1038/s41568-018-0083-7
-2. Basanta, D., Scott, J., Fishman, M. _et al._ Investigating prostate cancer
+
+[2]. Basanta, D., Scott, J., Fishman, M. _et al._ Investigating prostate cancer
 tumour–stroma interactions: clinical and biological insights from an 
 evolutionary game. _Br J Cancer_ 106, 174–181 (2012) doi:10.1038/bjc.2011.517
-X. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
+
+[X]. Chicken (game) [Internet]. En.wikipedia.org. 2020 [cited 7 January 2020]. 
+Available from: https://en.wikipedia.org/wiki/Chicken_(game)
+
+[X]. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
 scheduling and dynamic heterogeneity in social dilemmas of tumour acidity and
 vasculature. Br J Cancer 116, 785–792 (2017) doi:10.1038/bjc.2017.5
-X. Kerr, B., Riley, M., Feldman, M. _et al._ Local dispersal promotes 
+
+[X]. Kerr, B., Riley, M., Feldman, M. _et al._ Local dispersal promotes 
 biodiversity in a real-life game of rock–paper–scissors. Nature 418, 171–174 
 (2002) doi:10.1038/nature00823
-X.  Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
-dependiente de la frecuencia genética en el paquete OncoSimulR (2018). -> TFM
-X. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
+
+[X]. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
 simulation in asexual populations with arbitrary epistatic interactions and a
 focus on modeling tumor progression (2019). -> Vignette
-X. Chicken (game) [Internet]. En.wikipedia.org. 2020 [cited 7 January 2020]. 
-Available from: https://en.wikipedia.org/wiki/Chicken_(game)
-X. Williams BK, Nichols JD, Conroy MJ (Michael J. Analysis and management of 
+
+[X]. Sartakhti, J. S., Manshaei, M. H., Bateni, S., & Archetti, M. (2016). 
+Evolutionary dynamics of tumor-stroma interactions in multiple myeloma. 
+PloS one, 11(12), e0168856.
+
+[X]. Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
+dependiente de la frecuencia genética en el paquete OncoSimulR (2018). -> TFM
+
+[X]. Williams BK, Nichols JD, Conroy MJ (Michael J. Analysis and management of 
 animal  populations: modeling, estimation, and decision making. 
 Academic Press; 2002. 817 p
 
