@@ -176,16 +176,12 @@ meanCompositionPop(resultscrs2, ylab = "Number of cells")
 There are two scenarios. The first one is the one in which all the strains
 coexist, with the colicinogenic bacteria having a much bigger population.
 
-```{r message=F}
-plot(resultscrs2[[3]], show = "genotypes", type = "line")
-```
+![Coexistance scenario](./Images_markdown/CRS_caso2_2.png)
 
 In the second one, the wild type and the colicinogenic bacteria dissapear, so
 the resistant strain is the only one that survives.
 
-```{r message=F}
-plot(resultscrs2[[1]], show = "genotypes", type = "line")
-```
+![Only resistant strain](./Images_markdown/CRS_caso2_3.png)
 
 ## Case 3
 
