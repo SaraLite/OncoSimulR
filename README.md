@@ -1,4 +1,4 @@
-# R programming exercise (Group X)
+# R programming exercise (Group 5)
 
 - Project: OncoSimulR, frequency-dependent fitness
 
