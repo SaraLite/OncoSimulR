@@ -70,11 +70,24 @@ source("legend_outside.R")
 
 ## Introduction
 
-This example is inspired by the article (<https://www.researchgate.net/publication/11267440_Local_dispersal_promotes_biodiversity_in_a_real_game_of_rock-paper-scissors>), which describes the relationship between three populations of _Escherichia coli_, that turns out to be very similar to a rock-paper-scissors game.
+This example is inspired by the article _Local dispersal promotes biodiversity_
+_in a real game of rock paper scissors_, available at
+<https://doi.org/10.1038/nature00823>. It describes the relationship between
+three populations of _Escherichia coli_, that turns out to be very similar to a
+rock-paper-scissors game.
 
-An E. coli community can have a specific strain of colicinogenic bacteria, that are capable of creating colicin, a toxin to which this special strain is resistant. The wild-type bacteria is killed by this toxin, but can mutate into a resistant strain. 
+An E. coli community can have a specific strain of colicinogenic bacteria,
+that are capable of creating colicin, a toxin to which this special strain is
+resistant. The wild-type bacteria is killed by this toxin, but can mutate into
+a resistant strain. 
 
-So, there are three kinds of bacteria: wild-type (WT), colicinogenic (C) and resistant (R). The presence of C reduces the population of WT, but increases the population of R because R has an advantage over C, since R doesn't have the cost of creating the toxin. At the same time, WT has an advantage over R, because by losing the toxin receptors, R loses also some important functions. Therefore, every strain "wins" against one strain and "loses" against the other, creating a rock-paper-scissors game.
+So, there are three kinds of bacteria: wild-type (WT), colicinogenic (C) and
+resistant (R). The presence of C reduces the population of WT, but increases
+the population of R because R has an advantage over C, since R doesn't have the
+cost of creating the toxin. At the same time, WT has an advantage over R,
+because by losing the toxin receptors, R loses also some important functions.
+Therefore, every strain "wins" against one strain and "loses" against the
+other, creating a rock-paper-scissors game.
 
 ```{r message=F}
 crs <- function (a, b, c){
@@ -92,9 +105,10 @@ The equations are:
 crs("a", "b", "c")
 ```
 
-
 ## Case 1
-We are going to study the scenario in which all the relationships have the same relative weight.
+
+We are going to study the scenario in which all the relationships have the same
+relative weight.
 
 ```{r message=F}
 afcrs1 <- allFitnessEffects(genotFitness = crs(1, 1, 1), 
@@ -115,18 +129,23 @@ resultscrs1 <- oncoSimulIndiv(afcrs1,
 plot(resultscrs1, show = "genotypes", type = "line")
 ```
 
-An oscillatory equilibrium is reached, in which the same populations have a similar number of individuals but oscillates. This makes sense, because the rise on a particular strand will lead to a rise in the one that "wins" against it, and then to a rise in the one that "wins" against the second one, creating this cyclical behaviour.
+An oscillatory equilibrium is reached, in which the same populations have a
+similar number of individuals but oscillates. This makes sense, because the
+rise on a particular strand will lead to a rise in the one that "wins" against
+it, and then to a rise in the one that "wins" against the second one, creating
+this cyclical behaviour.
 
 ```{r message=F}
 plot(resultscrs1, show = "genotypes", type = "stacked")
 ```
 
-In the stacked plot we can see that the total population remains almost constant.
-
+In the stacked plot we can see that the total population remains almost
+constant.
 
 ## Case 2
 
-We are going to put a bigger weight in one of the coefficients, so a=10, b=1, c=2.
+We are going to put a bigger weight in one of the coefficients, so a=10, b=1,
+c=2.
 
 ```{r message=F}
 afcrs2 <- allFitnessEffects(genotFitness = crs(10, 1, 1), 
@@ -146,24 +165,28 @@ resultscrs2 <- oncoSimulPop(10,
                              errorHitWallTime = FALSE)
 ```
 
-The following chart represents the average number of cells of each type during the last half of each simulation. As a boxplot would lose the informationof the different scenarios, so we decided to plot the data as points and join with lines the ones that come from the same simulation.
+The following chart represents the average number of cells of each type during
+the last half of each simulation. As a boxplot would lose the informationof the
+different scenarios, so we decided to plot the data as points and join with
+lines the ones that come from the same simulation.
 
 ```{r message=F}
 meanCompositionPop(resultscrs2, ylab = "Number of cells")
 ```
 
-There are two scenarios. The first one is the one in which all the strains coexist, with the colicinogenic bacteria having a much bigger population.
+There are two scenarios. The first one is the one in which all the strains
+coexist, with the colicinogenic bacteria having a much bigger population.
 
 ```{r message=F}
 plot(resultscrs2[[3]], show = "genotypes", type = "line")
 ```
 
-In the second one, the wild type and the colicinogenic bacteria dissapear, so the resistant strain is the only one that survives.
+In the second one, the wild type and the colicinogenic bacteria dissapear, so
+the resistant strain is the only one that survives.
 
 ```{r message=F}
 plot(resultscrs2[[1]], show = "genotypes", type = "line")
 ```
-
 
 ## Case 3
 
@@ -191,10 +214,12 @@ meanCompositionPop(resultscrs3)
 plot(resultscrs3[[3]], show = "genotypes", type = "line")
 ```
 
-In all the cases all three strains survive, with C having a much smaller population than the other two.
+In all the cases all three strains survive, with C having a much smaller
+population than the other two.
 
 
 # Evolutionary games theory: Hawk and Dove example
+
 The example we are going to show is one of the first games that Maynar Smith 
 analyzed. This classic game is: _Hawk and Dove_ available <https://en.wikipedia.org/wiki/Chicken_(game))>
 
@@ -1537,13 +1562,22 @@ compositionPop2(simulScen4Pop,
 ```
 
 # Evolutionary Dynamics of Tumor-Stroma Interactions in Multiple Myeloma
-This example is based on the paper _Evolutionary Dynamics of Tumor-Stroma Interactions in Multiple Myeloma_ (**referencia**) available at <https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0168856>. Here the authors provide a frequency-dependent model to study the growth of malignant plasma cells in Multiple Myeloma. Assuming that cancer cells and stromal cells cooperate by exchanging diffusible factors, the study is carried out in the framework of evolutionary game theory. 
 
-We first need to define a payoff strategy for this kind of scenario. The following definitions are needed:
+This example is based on the paper _Evolutionary Dynamics of Tumor-Stroma_
+_Interactions in Multiple Myeloma_ (**referencia**) available at
+<https://doi.org/10.1371/journal.pone.0168856>. Here the authors provide a
+frequency-dependent model to study the growth of malignant plasma cells in
+Multiple Myeloma. Assuming that cancer cells and stromal cells cooperate by
+exchanging diffusible factors, the study is carried out in the framework of
+evolutionary game theory. 
+
+We first need to define a payoff strategy for this kind of scenario. The
+following definitions are needed:
 
 * There are $n$ phenotypes in a population denoted by $\{ P_1, \ldots, P_n \}$.
 * Each phenotype can produce one diffusible factor $\{ G_1, \ldots, G_n \}$.
-* Each diffusible factor $j$ has a different effect $r_{i,j}$ on the other phenotypes $i$.
+* Each diffusible factor $j$ has a different effect $r_{i,j}$ on the other
+phenotypes $i$.
 * The cost for $P_i$ for growth factor $G_i$ is denoted as $c_i$.
 * $M$ is the number of cells within the diffusion range.
 * There are $M_j$ individuals of type $P_j$ among the other group members.
@@ -1553,7 +1587,10 @@ Then, the payoff for strategy $P_j$ is:
       \pi_{P_j}(M_1,\ldots,M_n)=\frac{(M_j+1)\times c_j}{M}r_{j,j} + \sum_{i=1, i \neq j}^n \frac{M_i \times c_i}{M}r_{j,i} - c_j \;.
 \end{align}
 
-In multiple Myeloma we have three different types of cells that have autocrine and paracrine effects on the cells within their diffusion range: Malignant plasma cells (MM), Osteoblasts (OB) and Osteoclasts (OC). The specification of fitness is the following (see **referencia**):
+In multiple Myeloma we have three different types of cells that have autocrine
+and paracrine effects on the cells within their diffusion range: Malignant
+plasma cells (MM), Osteoblasts (OB) and Osteoclasts (OC). The specification of
+fitness is the following (see **referencia**):
 
 \begin{align}
   W_{OC} &= \frac{(f_{1}(M-1)+1)c_{1}}{M}r11+\frac{((1-f_{3})(M-1)-f_{1}(M-1)-1)c_{2}}{M}r12 \\
@@ -1564,11 +1601,14 @@ In multiple Myeloma we have three different types of cells that have autocrine a
   &+\frac{(M-(1-f_{2})(M-1))c_{2}}{M}r32-c_{3} \;,
 \end{align}
 
-where $f_1$, $f_2$ and $f_3$ denote the frequency of the phenotype OC, OB and MM in the population. The multiplication factors for diffusible factors produced by the cells are shown in the following table:
+where $f_1$, $f_2$ and $f_3$ denote the frequency of the phenotype OC, OB and
+MM in the population. The multiplication factors for diffusible factors
+produced by the cells are shown in the following table:
 
 ![Multiplication factor in myeloma interaction](./Images_markdown/Myeloma_interaction.png)
 
-Several scenarios varying the values of the parameters are shown in **referencia**. Here we reproduce some of them.
+Several scenarios varying the values of the parameters are shown in
+**referencia**. Here we reproduce some of them.
 
 ## Simulations
 
@@ -1581,7 +1621,7 @@ f_cells <- function(c1, c2, c3, r11, r12, r13,
     data.frame(Genotype = gt,
                Fitness = c(
                   paste0("max(0.1, 1 - ", awt, " * (f_1+f_2+f_3)*N)"),
-                  paste0("1", "+(((f_1*(", M, "-1)+1)*", c1, ")/", M, ")*", r11,
+                  paste0("1", "+(((f_1*(", M, "-1)+1)*", c1, ")/", M, ")*",r11,
                           "+((((1-f_3)*(", M, "-1)-f_1*(", M, "-1)-1)*", c2, ")/", M, ")*", r12,
                           "+(((", M, "-(1-f_3)*(", M, "-1))*", c3, ")/", M, ")*", r13,
                           "-", c1
@@ -1603,11 +1643,20 @@ f_cells <- function(c1, c2, c3, r11, r12, r13,
 
 ```
 
-It is important to note that, in order to exactly reproduce the experiments of the paper, we need to create an initial population with three different types of cell, but we do not need the presence of a wild type. For this reason, we will increase the probability of mutation of the wild type, which will disappear in early stages of the simulation. This is something that we must consider when interpreting the results. 
+It is important to note that, in order to exactly reproduce the experiments of
+the paper, we need to create an initial population with three different types
+of cell, but we do not need the presence of a wild type. For this reason, we
+will increase the probability of mutation of the wild type, which will
+disappear in early stages of the simulation. This is something that we must
+consider when interpreting the results. 
 
 ### Scenario 1
 
-Here we model a common situation in multiple myeloma in which $c_1<c_2<c_3$. In the presence of a small number of MM cells, the stable point on the OB-OC border becomes a saddle point and clonal selection leads to a stable coexistence of OC and MM cells. Parameters for the simulation can be seen in the R code.
+Here we model a common situation in multiple myeloma in which $c_1<c_2<c_3$. In
+the presence of a small number of MM cells, the stable point on the OB-OC
+border becomes a saddle point and clonal selection leads to a stable
+coexistence of OC and MM cells. Parameters for the simulation can be seen in
+the R code.
 
 ```{r}
 N <- 40000
@@ -1658,12 +1707,15 @@ compositionPop2(simulation)
 
 ```
 
-
-Clearly, the appearance of MM cells quickly brings the system to an equilibrium point, which is stable. OB cells are extinct and cancer has propelled.
+Clearly, the appearance of MM cells quickly brings the system to an equilibrium
+point, which is stable. OB cells are extinct and cancer has propelled.
 
 ### Scenario 2
 
-As in the second scenario of **referencia** ($c1=c2=c3$) configuration A (upper row in the grid of images). We should find one stable point on the OC-OB edge under certain conditions, which are met in the example. Further information about the parameters can be found in the R code shown below.
+As in the second scenario of **referencia** ($c1=c2=c3$) configuration A (upper
+row in the grid of images). We should find one stable point on the OC-OB edge
+under certain conditions, which are met in the example. Further information
+about the parameters can be found in the R code shown below.
 
 ```{r}
 N <- 40000
@@ -1712,12 +1764,18 @@ plot(simulation[[1]], show = "genotypes", type = "line")
 compositionPop2(simulation)
 ```
 
-As expected, under these condtitions, MM cells are not able to propagate. The equilibrium point in the OB-OC edge is stable, resisting small variations in the number of MM cells.
+As expected, under these condtitions, MM cells are not able to propagate. The
+equilibrium point in the OB-OC edge is stable, resisting small variations in
+the number of MM cells.
 
 ### Scenario 3
 
-Here we imitate the conditions presented in the third scenario of **referencia** ($c3<c1<c2$) configuration A (left). If diffusion range increases ($M = 50$) the game has two stable points. See the R code for further information about the parameters of this simulation. As we do not have control in the initial population (it depends on random mutations of the wild type) we will pay special attention to the box plot.
-
+Here we imitate the conditions presented in the third scenario of
+**referencia** ($c3<c1<c2$) configuration A (left). If diffusion range
+increases ($M = 50$) the game has two stable points. See the R code for further
+information about the parameters of this simulation. As we do not have control
+in the initial population (it depends on random mutations of the wild type) we
+will pay special attention to the box plot.
 
 ```{r}
 N <- 40000
@@ -1763,17 +1821,32 @@ compositionPop2(simulation)
 
 ```
 
-As specified in **referencia** there are two equilibrium points under this configuration: a monomorphic equilibrium on the MM vertex and a polymorphic equilibrium on the OC-MM edge. This can be clearly seen in our boxplot: there is a huge variance in the results of the $20$ simulations. Sometimes, MM cells become extint; but other times they manage to proliferate, leading to a sharp reduction in the number of OB and OC cells.
+As specified in **referencia** there are two equilibrium points under this
+configuration: a monomorphic equilibrium on the MM vertex and a polymorphic
+equilibrium on the OC-MM edge. This can be clearly seen in our boxplot: there
+is a huge variance in the results of the $20$ simulations. Sometimes, MM cells
+become extint; but other times they manage to proliferate, leading to a sharp
+reduction in the number of OB and OC cells.
 
 # References
 
 *Referencias manualmente. Hay que ordenarlas alfabéticamente y seguir*
 *el mismo formato. Respecto al formato, elegid el que queráis.*
 
-1. Basanta, D., Scott, J., Fishman, M. _et al._ Investigating prostate cancer
+1. Archetti, M., Pienta, K.J. Cooperation among cancer cells: applying game
+theory to cancer. Nat Rev Cancer 19, 110–117 (2019)
+doi:10.1038/s41568-018-0083-7
+2. Basanta, D., Scott, J., Fishman, M. _et al._ Investigating prostate cancer
 tumour–stroma interactions: clinical and biological insights from an 
 evolutionary game. _Br J Cancer_ 106, 174–181 (2012) doi:10.1038/bjc.2011.517
-
+X. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
+scheduling and dynamic heterogeneity in social dilemmas of tumour acidity and
+vasculature. Br J Cancer 116, 785–792 (2017) doi:10.1038/bjc.2017.5
+X.  Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
+dependiente de la frecuencia genética en el paquete OncoSimulR (2018). -> TFM
+X. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
+simulation in asexual populations with arbitrary epistatic interactions and a
+focus on modeling tumor progression (2019). -> Vignette
 
 # Session info {.unnumbered}
 
