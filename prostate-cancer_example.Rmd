@@ -71,10 +71,9 @@ source("legend_outside.R")
 ## Introduction
 
 This example is inspired by the article _Local dispersal promotes biodiversity_
-_in a real game of rock paper scissors_, available at
-<https://doi.org/10.1038/nature00823>. It describes the relationship between
-three populations of _Escherichia coli_, that turns out to be very similar to a
-rock-paper-scissors game.
+_in a real game of rock paper scissors_ (Kerr _et al._). It describes the 
+relationship between three populations of _Escherichia coli_, that turns out 
+to be very similar to a rock-paper-scissors game.
 
 An E. coli community can have a specific strain of colicinogenic bacteria,
 that are capable of creating colicin, a toxin to which this special strain is
@@ -145,7 +144,7 @@ constant.
 ## Case 2
 
 We are going to put a bigger weight in one of the coefficients, so a=10, b=1,
-c=2.
+c=1.
 
 ```{r message=F}
 afcrs2 <- allFitnessEffects(genotFitness = crs(10, 1, 1), 
@@ -1833,6 +1832,9 @@ evolutionary game. _Br J Cancer_ 106, 174–181 (2012) doi:10.1038/bjc.2011.517
 X. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
 scheduling and dynamic heterogeneity in social dilemmas of tumour acidity and
 vasculature. Br J Cancer 116, 785–792 (2017) doi:10.1038/bjc.2017.5
+X. Kerr, B., Riley, M., Feldman, M. _et al._ Local dispersal promotes 
+biodiversity in a real-life game of rock–paper–scissors. Nature 418, 171–174 
+(2002) doi:10.1038/nature00823
 X.  Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
 dependiente de la frecuencia genética en el paquete OncoSimulR (2018). -> TFM
 X. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
