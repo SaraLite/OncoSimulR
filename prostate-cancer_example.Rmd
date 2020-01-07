@@ -2,10 +2,10 @@
 title: "OncoSimulR: Frequency-dependent fitness"
 author:
 - name: Sara Dorado Alfaro
-- name: Miguel Hernandez del Valle
-- name: Alvaro Huertas Garcia 
+- name: Miguel Hernández del Valle
+- name: Álvaro Huertas García 
 - name: Diego Mañanes Cayero
-- name: Alejandro Martin Muñoz
+- name: Alejandro Martín Muñoz
   affiliation: Universidad Autonoma de Madrid (UAM)
 package: "OncoSimulR_Project"
 output:
@@ -27,31 +27,36 @@ vignette: |
 header-includes:
   - \usepackage{amsmath}
 ---
+
 # News and functions used
 **Lo hará Alejandro**
 **Explicar por encima cosas nuevas (lo de la leyenda), los paquetes cargados y las funciones incorporadas**
 
 
 ```{r message = FALSE, warning = FALSE}
-
-# Packages
+## Packages
 library(OncoSimulR)
 library(ggplot2)
 
-# Set a seed to oncoSimulIndiv 
+## Set a seed to oncoSimulIndiv 
 set.seed(1)
 
-# Set a seed to oncoSimulPop to allow reproducibility
+## Set a seed to oncoSimulPop to allow reproducibility
 library(parallel)
 RNGkind("L'Ecuyer-CMRG")
 
-# get rid of the messages
+## To allow modify the number of cores used in the cases of parallelization, 
+## this macro can be set as the user wants
+n_cores <- 4
+
+## Get rid of the messages
 options(stringsAsFactors = FALSE)
-
-
 ```
 
-In the project we have added two new functions (compositionPop2 and simul_boxplot2) to plot the reproducibility and distribution of the results of various simulations using boxplots (using ggplot2) . You can find these functions at _Functions_plot_markdown.R_. 
+In the project we have added two new functions (compositionPop2 and 
+simul_boxplot2) to plot the reproducibility and distribution of the results of 
+various simulations using boxplots (using ggplot2) . You can find these 
+functions at _Functions_plot_markdown.R_. 
 
 ```{r}
 ## Import functions to plot box-plots and stripcharts
@@ -60,11 +65,12 @@ source("./Funciones_plot_markdown.R")
 ## Import modified plot.oncosimul for plotting legend outside the plot
 source("legend_outside.R")
 ```
-#Rock-paper-scissors model in bacterial community
+
+# Rock-paper-scissors model in bacterial community
 
 ## Introduction
 
-This example is inspired by the article (https://www.researchgate.net/publication/11267440_Local_dispersal_promotes_biodiversity_in_a_real_game_of_rock-paper-scissors), which describes the relationship between three populations of Escherichia coli, that turns out to be very similar to a rock-paper-scissors game.
+This example is inspired by the article (<https://www.researchgate.net/publication/11267440_Local_dispersal_promotes_biodiversity_in_a_real_game_of_rock-paper-scissors>), which describes the relationship between three populations of _Escherichia coli_, that turns out to be very similar to a rock-paper-scissors game.
 
 An E. coli community can have a specific strain of colicinogenic bacteria, that are capable of creating colicin, a toxin to which this special strain is resistant. The wild-type bacteria is killed by this toxin, but can mutate into a resistant strain. 
 
@@ -257,10 +263,9 @@ We observe that the penalty of fighting (C > V) benefits the dove in terms of
 fitness respect to the hawk. 
 
 ``` {r, message=F}
-options(stringsAsFactors = FALSE)
 ## Simulated trajectories
 simulation <- oncoSimulPop(20,
-                           mc.cores = 6,
+                           mc.cores = n_cores,
                            HD_competition,
                            model = "McFL", # There is no collapse
                            onlyCancer = FALSE,
@@ -533,7 +538,7 @@ S1S2_competition <-allFitnessEffects(
     frequencyType = "abs",
     spPopSizes = c(5, 500, 500)) ## spPopSizes higher than K1 and K2 
 
-## Fitness valuesof genotype "S1, S2" evaluation
+## Fitness values of genotype "S1, S2" evaluation
 data.frame("S1_fitness" = evalGenotype(genotype = "S1", 
                                        fitnessEffects = S1S2_competition), 
            "S2_fitness" = evalGenotype(genotype = "S2", 
@@ -823,7 +828,7 @@ $n_2 < 0.4n_1$
 Thus the right-hand term is lower than the left-hand term. 
 Therefore, S1 will be extincted:
 
-```{r, message=F}
+```{r, message=FALSE}
 ## Test 4: Unestable competition
 S1S2_competition <-
   allFitnessEffects(
@@ -948,7 +953,7 @@ afavc <- allFitnessEffects(genotFitness = avc(2.5, 2, 1),
 
 # Launching of the simulation (20 times).
 simulation <- oncoSimulPop(20,
-                           mc.cores = 6,
+                           mc.cores = n_cores,
                            afavc,
                            model = "McFL",
                            onlyCancer = FALSE,
@@ -1009,7 +1014,7 @@ afavc <- allFitnessEffects(genotFitness = avc(2.5, 7, 1),
 
 # Launching of the simulation (20 times).
 simulation <- oncoSimulPop(20,
-                           mc.cores = 6,
+                           mc.cores = n_cores,
                            afavc,
                            model = "McFL",
                            onlyCancer = FALSE,
@@ -1072,7 +1077,7 @@ afavc <- allFitnessEffects(genotFitness = avc(7.5, 2, 1),
 
 # Launching of the simulation (20 times).
 simulation <- oncoSimulPop(20,
-                           mc.cores = 6,
+                           mc.cores = n_cores,
                            afavc,
                            model = "McFL",
                            onlyCancer = FALSE,
@@ -1143,8 +1148,7 @@ the context of the game and spatial considerations will not affect the outcome.
 **D** | $1+\alpha-\beta$   | $1-2\beta$ | $1-\beta+\rho$
 **I** | $1-\gamma$         | $1-\gamma$ | $1-\gamma$
 
-: (\#tab:table) Playoff table that represents the interactions between 
-the three cell types considered in de model
+: (\#tab:table) Playoff table that represents the interactions between the three cell types considered by de model
 
 The I cells are relatively independent from the microenvironment and 
 produce their own growth factors (e.g. testosterone) and thus are
@@ -1185,14 +1189,16 @@ $(W\left(S\right), W\left(I\right), W\left(D\right))$ is as follows:
 \end{equation}
 <br>
 \begin{equation}
-  W\left(D\right) = 1 + \left(1 - f_2 - f_3\right)\left(1 - \beta + \alpha\right) +\\
+  W\left(D\right) = 1 + \left(1 - f_2 - f_3\right)\left(1 - \beta + 
+  \alpha\right) +\\
     f_2\left(1 - \beta + \rho\right) + f_3(1 - 2\beta) + \\
-    1 - \beta + \alpha + f_2\left(\rho - \alpha\right) - f_3\left(\beta + \alpha\right)
+    1 - \beta + \alpha + f_2\left(\rho - \alpha\right) - f_3\left(\beta + 
+    \alpha\right)
   (\#eq:fitnessD)
 \end{equation}
 <br>
 
-Where $f_2$ is the frequency of I cells and $f_3$ is the
+where $f_2$ is the frequency of I cells and $f_3$ is the
 frequency of D cells at a given time. All fitness equations
 start from balance by the sum of 1. 
 
@@ -1210,8 +1216,7 @@ interacting with it. Hence, for this model, we can not represent
 scenarios with total biological accuracy, something that we must
 consider when interpreting the results. 
 
-```{r exampleN_fitness}
-
+```{r example5_fitness, message=FALSE}
 fitness_rel <- function(a, b, r, g, gt = c("WT", "S", "I", "D")) {
     data.frame(
       Genotype = gt,
@@ -1222,11 +1227,9 @@ fitness_rel <- function(a, b, r, g, gt = c("WT", "S", "I", "D")) {
                          a, ") + f_2 * (1 - ", b, " + ", r,
                          ") + f_3 * (1 - 2 * ", b, ") + 1 - ", b, 
                          " + ", a, " + f_2 * (", r, " - ",
-                         a, ") - f_3 * (", b, " + ", a, ")")
-                    )
-             )
+                         a, ") - f_3 * (", b, " + ", a, ")"))
+                  )
 }
-
 ```
 
 
@@ -1257,8 +1260,7 @@ independence of I cells ($\gamma$), it is not surprise that this population
 ends up becoming extinct. Finally, the tumour is composed by two cellular 
 types: D and S cells. 
 
-```{r exampleNscen1, message = FALSE, warning = FALSE}
-
+```{r example5scen1, message=FALSE}
 scen1 <- allFitnessEffects(genotFitness = fitness_rel(a = 0.5, b = 0.7,
                                                      r = 0.1, g = 0.8),
                           frequencyDependentFitness = TRUE,
@@ -1269,7 +1271,7 @@ simulScen1 <- oncoSimulIndiv(scen1,
                               onlyCancer = FALSE,
                               finalTime = 150,
                               mu = 1e-4,
-                              initSize = 40000,
+                              initSize = 4000,
                               keepPhylog = TRUE,
                               seed = NULL,
                               errorHitMaxTries = FALSE,
@@ -1279,16 +1281,13 @@ plot(simulScen1, show = "genotypes", type = "line",
      main = "First scenario",
      cex.main = 1.3, cex.lab = 1.1,
      las = 1)
-
 ```
 
-```{r exampleNscen1plot}
-
+```{r example5scen1plot, message=FALSE}
 plot(simulScen1, show = "genotypes",
-     main = "Third scenario",
+     main = "First scenario",
      cex.main = 1.3, cex.lab = 1.1,
      las = 1)
-
 ```
 
 In order to know the composition of the cell populations if we execute 
@@ -1297,13 +1296,12 @@ boxplot with _compositionPop_ function after execute _oncoSimulPop_
 with N = 20. We can observe that the median of D and S cells are clearly
 greater than I cells in most simulations, so the results are stable.
 
-```{r exampleNscenPop1}
-
-simulScen1Pop <- oncoSimulPop(10,
+```{r example5scenPop1, message=FALSE}
+simulScen1Pop <- oncoSimulPop(20,
                               scen1,
                               model = "McFL",
                               onlyCancer = FALSE,
-                              mc.cores = detectCores(),
+                              mc.cores = n_cores,
                               finalTime = 150,
                               mu = 1e-4,
                               initSize = 4000,
@@ -1315,7 +1313,6 @@ simulScen1Pop <- oncoSimulPop(10,
 compositionPop2(simulScen1Pop,
                 main = "First scenario",
                 ylab = "Number of cells")
-
 ```
 
 
@@ -1339,8 +1336,7 @@ bigger than the population of D cells, being at the end of
 the simulation in balance. On the other hand, stromal cells 
 drop at the beginning of the simulation.
 
-```{r exampleNscen2, message = FALSE, warning = FALSE}
-
+```{r example5scen2, message=FALSE}
 scen2 <- allFitnessEffects(genotFitness = fitness_rel(a = 0.3, b = 0.7,
                                                      r = 0.1, g = 0.7),
                           frequencyDependentFitness = TRUE,
@@ -1361,16 +1357,14 @@ plot(simulScen2, show = "genotypes", type = "line",
      main = "Second scenario",
      cex.main = 1.3, cex.lab = 1.1,
      las = 1)
-
 ```
 
-```{r exampleNscen2plot}
+```{r example5scen2plot, message=FALSE}
 
 plot(simulScen2, show = "genotypes",
      main = "Second scenario",
      cex.main = 1.3, cex.lab = 1.1,
      las = 1)
-
 ```
 
 About the composition of the populations, if we simulate the
@@ -1379,13 +1373,12 @@ with the previous plot, highlighting the fact that the
 population of I cells is always greater than the population 
 of D cells.
 
-```{r exampleNscenPop2}
-
-simulScen2Pop <- oncoSimulPop(10,
+```{r example5scenPop2, message=FALSE}
+simulScen2Pop <- oncoSimulPop(20,
                               scen2,
                               model = "McFL",
                               onlyCancer = FALSE,
-                              mc.cores = detectCores(),
+                              mc.cores = n_cores,
                               finalTime = 150,
                               mu = 1e-4,
                               initSize = 4000,
@@ -1397,7 +1390,6 @@ simulScen2Pop <- oncoSimulPop(10,
 compositionPop2(simulScen2Pop,
                 main = "Second scenario",
                 ylab = "Number of cells")
-
 ```
 
 
@@ -1419,8 +1411,7 @@ microenvironment is very rich (with a low value of $\beta$) allows to
 D cells lead the progression  of the tumour over the rest of cell
 populations, including I cells.
 
-```{r exampleNscen3, message = FALSE, warning = FALSE}
-
+```{r example5scen3, message=FALSE}
 scen3 <- allFitnessEffects(genotFitness = fitness_rel(a = 0.2, b = 0.3,
                                                      r = 0.1, g = 0.3),
                           frequencyDependentFitness = TRUE,
@@ -1441,30 +1432,26 @@ plot(simulScen3, show = "genotypes", type = "line",
      main = "Third scenario",
      cex.main = 1.3, cex.lab = 1.1,
      las = 1)
-
 ```
 
 
-```{r exampleNscen3plot}
-
+```{r example5scen3plot, message=FALSE}
 plot(simulScen3, show = "genotypes",
      main = "Third scenario",
      cex.main = 1.3, cex.lab = 1.1,
      las = 1)
-
 ```
 
 About the composition of populations, we can observe that the results 
 are stable, showing that D cell population is bigger than the rest 
 of cell populations.
 
-```{r exampleNscenPop3}
-
-simulScen3Pop <- oncoSimulPop(10,
+```{r example5scenPop3, message=FALSE}
+simulScen3Pop <- oncoSimulPop(20,
                               scen3,
                               model = "McFL",
                               onlyCancer = FALSE,
-                              mc.cores = 8,
+                              mc.cores = n_cores,
                               finalTime = 150,
                               mu = 1e-3,
                               initSize = 4000,
@@ -1476,8 +1463,8 @@ simulScen3Pop <- oncoSimulPop(10,
 compositionPop2(simulScen3Pop, 
                 main = "Third scenario",
                 ylab = "Number of cells")
-
 ```
+
 
 ### Fourth scenario
 
@@ -1492,8 +1479,7 @@ the superiority of D cells over I cells.
 * $\gamma$ (g) = 0.3: independence costs very low, being beneficial for
 I cells. 
 
-```{r exampleNscen4, message = FALSE, warning = FALSE}
-
+```{r example5scen4, message=FALSE}
 scen4 <- allFitnessEffects(genotFitness = fitness_rel(a = 0.2, b = 0.4,
                                                      r = 0.1, g = 0.3),
                           frequencyDependentFitness = TRUE,
@@ -1518,29 +1504,25 @@ plot(simulScen4, show = "genotypes", type = "line",
      main = "Fourth scenario",
      cex.main = 1.3, cex.lab = 1.1,
      las = 1)
-
 ```
 
-```{r exampleNscen4plot}
-
+```{r example5scen4plot, message=FALSE}
 plot(simulScen4, show = "genotypes",
      main = "Fourth scenario",
      cex.main = 1.3, cex.lab = 1.1,
      las = 1)
-
 ```
 
 In this case, we can see that there is more variation in the size of
 population of I cells. There are cases where the I cell population
 cooperates with D cells and, in others, there is not cooperation. 
 
-```{r exampleNscenPop4}
-
-simulScen4Pop <- oncoSimulPop(10,
+```{r example5scenPop4, message=FALSE}
+simulScen4Pop <- oncoSimulPop(20,
                               scen4,
                               model = "McFL",
                               onlyCancer = FALSE,
-                              mc.cores = detectCores(),
+                              mc.cores = n_cores,
                               finalTime = 150,
                               mu = 1e-3,
                               initSize = 4000,
@@ -1552,7 +1534,6 @@ simulScen4Pop <- oncoSimulPop(10,
 compositionPop2(simulScen4Pop,
                 main ="Fourth scenario",
                 ylab = "Number of cells")
-
 ```
 
 # Evolutionary Dynamics of Tumor-Stroma Interactions in Multiple Myeloma
@@ -1655,7 +1636,7 @@ fe_cells <-
 
 ## Simulated trajectories
 simulation <- oncoSimulPop(10,
-                           mc.cores = 6,
+                           mc.cores = n_cores,
                            fe_cells,
                            model = "McFL",
                            onlyCancer = FALSE,
@@ -1711,7 +1692,7 @@ fe_cells <-
 
 ## Simulated trajectories
 simulation <- oncoSimulPop(10,
-                           mc.cores = 6,
+                           mc.cores = n_cores,
                            fe_cells,
                            model = "McFL",
                            onlyCancer = FALSE,
@@ -1765,7 +1746,7 @@ fe_cells <-
 
 ## Simulated trajectories
 simulation <- oncoSimulPop(20,
-                           mc.cores = 6,
+                           mc.cores = n_cores,
                            fe_cells,
                            model = "McFL",
                            onlyCancer = FALSE,
@@ -1784,66 +1765,14 @@ compositionPop2(simulation)
 
 As specified in **referencia** there are two equilibrium points under this configuration: a monomorphic equilibrium on the MM vertex and a polymorphic equilibrium on the OC-MM edge. This can be clearly seen in our boxplot: there is a huge variance in the results of the $20$ simulations. Sometimes, MM cells become extint; but other times they manage to proliferate, leading to a sharp reduction in the number of OB and OC cells.
 
-# Style macros
+# References
 
-_BiocStyle_ introduces the following macros for referring to _R_ packages:
+*Referencias manualmente. Hay que ordenarlas alfabéticamente y seguir*
+*el mismo formato. Respecto al formato, elegid el que queráis.*
 
-* `r Biocpkg("IRanges")`, for _Bioconductor_ software, annotation and experiment data packages,
-* `r CRANpkg("data.table")`, for _R_ packages available on CRAN,
-* `r Githubpkg("rstudio/rmarkdown")`, for _R_ packages available on GitHub,
-* `r Rpackage("MyPkg")`, for _R_ packages that are _not_ available on _Bioconductor_, CRAN or GitHub.
-
-
-# Figures
-
-Assign captions to figures in the code chunk option `fig.cap` to automatically number them, and to be able to reference them, see Figure \@ref(fig:plot). The figure label is generated from the code chunk label by prefixing it with `fig:`.
-
-```{r plot, fig.cap="Regular figure. The first sentence of the figure caption is automatically emphasized to serve as figure title.", echo=FALSE}
-plot(cars)
-```
-
-Small and wide figures can be specified by `fig.small` and `fig.wide` code chunk options.
-
-```{r small, fig.cap="Small figure. A plot produced by a code chunk with option `fig.small = TRUE`.", fig.small=TRUE, echo=FALSE}
-plot(cars)
-```
-
-```{r wide, fig.cap="Wide figure. A plot produced by a code chunk with option `fig.wide = TRUE`.", fig.wide=TRUE, echo=FALSE}
-plot(cars)
-```
-
-
-# Equations
-
-To number and reference equations, put them in equation environments and assign labels to them, see Equation \@ref(eq:binom).
-
-\begin{equation}
-  f\left(k\right) = \binom{n}{k} p^k\left(1-p\right)^{n-k}
-  (\#eq:binom)
-\end{equation}
-
-
-# Tables
-
-Like figures, tables with captions will also be numbered and can be referenced, see Table \@ref(tab:table).
-
-Fruit   | Price
-------- | -----
-bananas | 1.2
-apples  | 1.0
-oranges | 2.5
-
-: (\#tab:table) A simple table. With caption.
-
-
-# Cross-references
-
-Apart from referencing figures (Section \@ref(figures)), tables (Section \@ref(tables)), and equations (Section \@ref(equations)), you can also use the same syntax to refer to sections by their default labels generated by pandoc.
-
-
-# Side notes
-
-Footnotes are displayed as side notes on the right margin^[this is a side note entered as a footnote], which has the advantage that they appear close to the place where they are defined.
+1. Basanta, D., Scott, J., Fishman, M. _et al._ Investigating prostate cancer
+tumour–stroma interactions: clinical and biological insights from an 
+evolutionary game. _Br J Cancer_ 106, 174–181 (2012) doi:10.1038/bjc.2011.517
 
 
 # Session info {.unnumbered}
