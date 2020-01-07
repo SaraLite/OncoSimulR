@@ -303,28 +303,22 @@ simulation <- oncoSimulPop(20,
                            errorHitWallTime = FALSE)
 
 
-oldpar <- par (
-  # Change the colors
-  col.main="black", col.lab="black",
-  # Titles in bold
-  font.main=2, font.lab=2,
-  # Change font size
-  cex.main=2, cex.lab=1.2,
-  # Vertically
-  las = 1
-  )
 
 ## Plot first trajectory as an example
 plot(simulation[[1]], show = "genotypes", type = "line", xlim = c(40, 500),
      lwdClone = 2, ylab = "Number of individuals", 
      main = "Hawk and Dove trajectory",  
-     col = c("#a37acc", "#f8776d", "#7daf00"))
+     col = c("#a37acc", "#f8776d", "#7daf00"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
 
 plot(simulation[[1]], show = "genotypes", xlim = c(40, 500), lwdClone = 2,
      ylab = "Number of individuals", main = "Hawk and Dove", 
-     col = c("#a37acc", "#f8776d", "#7daf00"))
-
-par <- oldpar
+     col = c("#a37acc", "#f8776d", "#7daf00"),
+     font.main=2, font.lab=2,
+     cex.main=2, cex.lab=1.2,
+     las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
 compositionPop2(simulation, 
@@ -489,6 +483,7 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
 
 S1S2_simulation <- oncoSimulPop(20, S1S2_competition, ## 10 simulations
                               model = "Exp",
+                              mc.cores = n_cores,
                               onlyCancer = FALSE,
                               finalTime = 500,
                               mu = 1e-1, ## Allows appearance of S1 and S2
@@ -611,6 +606,7 @@ S1S2_competition <-allFitnessEffects(
 S1S2_simulation <- oncoSimulPop(20, 
                                 S1S2_competition,
                               model = "Exp",
+                              mc.cores = n_cores,
                               onlyCancer = FALSE,
                               finalTime = 500,
                               mu = 1e-1,
@@ -700,9 +696,6 @@ $350 > 0.5*400$ and $400 > 1.2*350$
 
 ```{r, message=FALSE}
 ## Test 3: Estable competition but more aggressive
-# Vemos que las dos especies no son compatibles y el estado no es estable
-## Ambas impactan bastante sobre la otra, pero pueden coexitir
-## Se alejan del K original
 S1S2_competition <-
   allFitnessEffects(
     genotFitness =
@@ -713,6 +706,7 @@ S1S2_competition <-
 
 S1S2_simulation <- oncoSimulPop(20, S1S2_competition,
                               model = "Exp",
+                              mc.cores = n_cores,
                               onlyCancer = FALSE,
                               finalTime = 200,
                               mu = 1e-1,
@@ -794,11 +788,6 @@ Therefore, S2 will be extincted:
 
 ```{r, message=F}
 ## Test 4: Unestable competition
-# Vemos que las dos especies no son compatibles y el estado no es estable
-## Una de ellas se extingue, y la otra llega a un valor cercano a la K.
-## Sobrevive S1 que es la que m?s impacto tiene sobre la otra (a_21 > a_12)
-
-# Aquí gana N2
 S1S2_competition <-
   allFitnessEffects(
     genotFitness =
@@ -809,6 +798,7 @@ S1S2_competition <-
 
 S1S2_simulation <- oncoSimulPop(20, S1S2_competition,
                               model = "Exp",
+                              mc.cores = n_cores,
                               onlyCancer = FALSE,
                               finalTime = 500,
                               mu = 1e-1,
@@ -865,6 +855,7 @@ S1S2_competition <-
 
 S1S2_simulation <- oncoSimulPop(20, S1S2_competition,
                               model = "Exp",
+                              mc.cores = n_cores,
                               onlyCancer = FALSE,
                               finalTime = 500,
                               mu = 1e-1,
@@ -1847,6 +1838,12 @@ dependiente de la frecuencia genética en el paquete OncoSimulR (2018). -> TFM
 X. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
 simulation in asexual populations with arbitrary epistatic interactions and a
 focus on modeling tumor progression (2019). -> Vignette
+X. Chicken (game) [Internet]. En.wikipedia.org. 2020 [cited 7 January 2020]. 
+Available from: https://en.wikipedia.org/wiki/Chicken_(game)
+X. Williams BK, Nichols JD, Conroy MJ (Michael J. Analysis and management of 
+animal  populations: modeling, estimation, and decision making. 
+Academic Press; 2002. 817 p
+
 
 # Session info {.unnumbered}
 

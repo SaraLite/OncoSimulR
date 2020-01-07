@@ -1,6 +1,6 @@
 ## Authors: Sara Dorado Alfaro
-##          Miguel Hern?ndez del Valle,
-##          Alvaro Huertas Garcia,
+##          Miguel Hernández del Valle,
+##          Álvaro Huertas García,
 ##          Diego Mañanes Cayero,
 ##          Alejandro Martin Muñoz, 
 
