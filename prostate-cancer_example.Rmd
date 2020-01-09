@@ -27,9 +27,28 @@ vignette: |
 header-includes:
   - \usepackage{amsmath}
 ---
+# Introduction
+In the current bullet point, several examples are shown below from the 
+literature on frequency-dependent fitness corresponding to the proposed exercise
+2 programming for the subject Programming and Statistics with R (Master's Degree
+in Bioinformatics and Computational Biology, Universidad Autónoma de Madrid) 
+[[1]](#Archetti) [[2]](#Basanta) [[3]](#Chicken) [[7]](#Kaznatcheev) 
+[[8]](#Kerr) [[10]](#Sartakhi) [[12]](#Williams).  
+The OncoSimulR package [[4]](#Onco1)[[5]](#Onco2)[[6]](#Onco3) with the 
+frequency-dependent fitness functionality has been used [[11]](#Sergio). 
 
-# News and functions used
+To generate the current vignette, the cascading style sheets (CSS) from the 
+OncoSimulR package have been used with slight modifications to keep as 
+much similarity as possible. 
 
+## News and functions used
+The OncoSimulR package and ggplot2 are required to generate the vignette plots. 
+For reproducible vignette results the seed has been fixed. The number of cores 
+used to run the simulations has also been set to 4 (in case of Windows it will 
+always be 1 by default), although the user can modify it if he wishes. 
+The parallel programming package named parallel is used with  _L’Ecuyer-CMRG_
+random number generator (RNG) in order to take advantege of the benefit of 
+parallel computing. 
 ```{r message = FALSE, warning = FALSE}
 ## Packages
 library(OncoSimulR)
@@ -50,10 +69,17 @@ n_cores <- 4
 options(stringsAsFactors = FALSE)
 ```
 
-In the project we have added two new functions (compositionPop2 and 
-simul_boxplot2) to plot the reproducibility and distribution of the results of 
-various simulations using boxplots (using ggplot2) . You can find these 
+In the project we have added new functions (compositionPop2, simul_boxplot2, 
+stripChartPop and meanCompositionPop) to plot the reproducibility
+and distribution of the results of various simulations using boxplots 
+(using ggplot2) and stripcharts. You can find these 
 functions at _Functions_plot_markdown.R_. 
+
+Box-plots allow representing the consensus of the last result between different
+simulations. This type of representation is not always the desired one. In cases
+with oscillating trajectories, it is preferable to represent the consensus 
+between the means of the results from the middle of the simulation to its end 
+between several simulations.
 
 ```{r}
 ## Import functions to plot box-plots and stripcharts
@@ -68,7 +94,7 @@ source("legend_outside.R")
 ## Introduction
 
 This example is inspired by the article _Local dispersal promotes biodiversity_
-_in a real game of rock paper scissors_ [5]. It describes the relationship
+_in a real game of rock paper scissors_ [[8]](#Kerr). It describes the relationship
 between three populations of _Escherichia coli_, that turns out to be very
 similar to a rock-paper-scissors game.
 
@@ -212,7 +238,8 @@ population than the other two.
 # Evolutionary games theory: Hawk and Dove example
 
 The example we are going to show is one of the first games that Maynar Smith 
-analyzed. This classic game is: _Hawk and Dove_ [3], available at <https://en.wikipedia.org/wiki/Chicken_(game))>.
+analyzed. This classic game is: _Hawk and Dove_ [3](#Chicken), 
+available at <https://en.wikipedia.org/wiki/Chicken_(game))>.
 
 In this game, the two competitors are subtypes of the same species but with 
 different strategies.  The Hawk first displays aggression, then escalates into 
@@ -413,11 +440,11 @@ Table  \@ref(tab:table1) Relationship between the two species
 
 Next, to show the effect of competition coefficients and competition models 
 we will model the scenarios proposed in the book _"Analysis and Management of_
-_Animal Populations"_ [9]. For the following examples S1 and S2 will be the two
-species used, and can be interpreted as cellular clones competing for cellular
-resources or multicellular organisms competing for environmental resources
-(sexual or asexual reproduction is not relevant as it is incorporated in the
-birth rate). 
+_Animal Populations"_ [[12]](#Williams). For the following examples S1 and S2 will
+be the two species used, and can be interpreted as cellular clones competing 
+for cellular resources or multicellular organisms competing for environmental 
+resources (sexual or asexual reproduction is not relevant as it is incorporated 
+in the birth rate). 
 
 S2 in these examples has a higher rate of growth than S1 ($r2 > r1$) and 
 higher carrying capacity ($K2 > K1$). However, S1 has a stronger competitive 
@@ -884,7 +911,7 @@ compositionPop2(S1S2_simulation, main = "Unestable competition",
 
 This example is based on the paper _Cancer treatment scheduling and dynamic_
 _heterogeneity in social dilemmas of tumour acidity and vasculature_ 
-[4], available at <https://doi.org/10.1038/bjc.2017.5>.
+[[7]](#Kaznatcheev), available at <https://doi.org/10.1038/bjc.2017.5>.
 
 In this work, it is explained that the progression of cancer is marked by the
 acquisition of a number of hallmarks, including self-sufficiency of growth
@@ -1120,7 +1147,7 @@ compositionPop2(simulation, ylab = "Number of individuals",
 
 This example is based on the paper _Investigating prostate cancer tumour–stroma_
 _interactions: clinical and biological insights from an evolutionary game_ 
-[2], available at <http://dx.doi.org/10.1038/bjc.2011.517>. 
+[2](#Basanta), available at <http://dx.doi.org/10.1038/bjc.2011.517>. 
 The authors apply an Evolutionary Game Theory to modelling the behavior and
 progression of a prostate tumour formed by three different cell populations: 
 stromal cells, a dependant tumour phenotype capable of co-opting stromal cells
@@ -1539,7 +1566,7 @@ compositionPop2(simulScen4Pop,
 # Evolutionary Dynamics of Tumor-Stroma Interactions in Multiple Myeloma
 
 This example is based on the paper _Evolutionary Dynamics of Tumor-Stroma_
-_Interactions in Multiple Myeloma_ [7], available at
+_Interactions in Multiple Myeloma_ [[10]](#Sartakhti), available at
 <https://doi.org/10.1371/journal.pone.0168856>. Here the authors provide a
 frequency-dependent model to study the growth of malignant plasma cells in
 Multiple Myeloma. Assuming that cancer cells and stromal cells cooperate by
@@ -1812,37 +1839,55 @@ reduction in the number of OB and OC cells.
 
 [1]. Archetti, M., Pienta, K.J. Cooperation among cancer cells: applying game
 theory to cancer. Nat Rev Cancer 19, 110–117 (2019)
-doi:10.1038/s41568-018-0083-7
+doi:10.1038/s41568-018-0083-7 <a id="Archetti"></a>
 
 [2]. Basanta, D., Scott, J., Fishman, M. et al. Investigating prostate cancer
 tumour–stroma interactions: clinical and biological insights from an 
-evolutionary game. Br J Cancer 106, 174–181 (2012) doi:10.1038/bjc.2011.517
+evolutionary game. Br J Cancer 106, 174–181 (2012) 
+doi:10.1038/bjc.2011.517 <a id="Basanta"></a>
 
 [3]. Chicken (game) [Internet]. En.wikipedia.org. 2020 [cited 7 January 2020]. 
-Available from: https://en.wikipedia.org/wiki/Chicken_(game)
+Available from: https://en.wikipedia.org/wiki/Chicken_(game) <a id="Chicken"></a>
 
-[4]. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
+[4]. Diaz-Uriarte R (2017). “OncoSimulR: genetic simulation with arbitrary 
+epistasis and mutator genes in asexual populations.” Bioinformatics, 33(12), 
+1898–1899. doi: 10.1093/bioinformatics/btx077, 
+https://doi.org/10.1093/bioinformatics/btx077. <a id="Onco1"></a>
+
+[5] Diaz-Uriarte R (2017). “Cancer progression models and fitness landscapes:
+a many-to-many relationship.” Bioinformatics. doi: 10.1093/bioinformatics/btx663, https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btx663/.
+<a id="Onco2"></a>
+
+[6] Diaz-Uriarte R (2015). “Identifying restrictions in the order of 
+accumulation of mutations during tumor progression: effects of passengers,
+evolutionary models, and sampling.” BMC Bioinformatics, 16(41). 
+doi: 10.1186/s12859-015-0466-7, http://www.biomedcentral.com/1471-2105/16/41/abstract.
+<a id="Onco3"></a>
+
+[7]. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
 scheduling and dynamic heterogeneity in social dilemmas of tumour acidity and
-vasculature. Br J Cancer 116, 785–792 (2017) doi:10.1038/bjc.2017.5
+vasculature. Br J Cancer 116, 785–792 (2017) 
+doi:10.1038/bjc.2017.5 <a id="Kaznatcheev"></a>
 
-[5]. Kerr, B., Riley, M., Feldman, M. et al. Local dispersal promotes 
+[8]. Kerr, B., Riley, M., Feldman, M. et al. Local dispersal promotes 
 biodiversity in a real-life game of rock–paper–scissors. Nature 418, 171–174 
-(2002) doi:10.1038/nature00823
+(2002) doi:10.1038/nature00823 <a id="Kerr"></a>
 
-[6]. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
+[9]. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
 simulation in asexual populations with arbitrary epistatic interactions and a
-focus on modeling tumor progression (2019). -> Vignette
+focus on modeling tumor progression (2019). -> Vignette <a id="Ramon"></a>
 
-[7]. Sartakhti, J. S., Manshaei, M. H., Bateni, S., & Archetti, M. (2016). 
+[10]. Sartakhti, J. S., Manshaei, M. H., Bateni, S., & Archetti, M. (2016). 
 Evolutionary dynamics of tumor-stroma interactions in multiple myeloma. 
-PloS one, 11(12), e0168856.
+PloS one, 11(12), e0168856. <a id="Sartakhi"></a>
 
-[8]. Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
+[11]. Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
 dependiente de la frecuencia genética en el paquete OncoSimulR (2018). -> TFM
+<a id="Sergio"></a>
 
-[9]. Williams BK, Nichols JD, Conroy MJ Michael J. Analysis and management of
+[12]. Williams BK, Nichols JD, Conroy MJ Michael J. Analysis and management of
 animal  populations: modeling, estimation, and decision making. 
-Academic Press; 2002. 817 p
+Academic Press; 2002. 817 p <a id="Williams"></a>
 
 # Session info {.unnumbered}
 
