@@ -1836,58 +1836,66 @@ become extint; but other times they manage to proliferate, leading to a sharp
 reduction in the number of OB and OC cells.
 
 # References
-
+<a id="Archetti"></a>
 [1]. Archetti, M., Pienta, K.J. Cooperation among cancer cells: applying game
 theory to cancer. Nat Rev Cancer 19, 110–117 (2019)
-doi:10.1038/s41568-018-0083-7 <a id="Archetti"></a>
+doi:10.1038/s41568-018-0083-7 
 
+<a id="Basanta"></a>
 [2]. Basanta, D., Scott, J., Fishman, M. et al. Investigating prostate cancer
 tumour–stroma interactions: clinical and biological insights from an 
 evolutionary game. Br J Cancer 106, 174–181 (2012) 
-doi:10.1038/bjc.2011.517 <a id="Basanta"></a>
+doi:10.1038/bjc.2011.517 
 
+<a id="Chicken"></a>
 [3]. Chicken (game) [Internet]. En.wikipedia.org. 2020 [cited 7 January 2020]. 
-Available from: https://en.wikipedia.org/wiki/Chicken_(game) <a id="Chicken"></a>
+Available from: https://en.wikipedia.org/wiki/Chicken_(game) 
 
+<a id="Onco1"></a>
 [4]. Diaz-Uriarte R (2017). “OncoSimulR: genetic simulation with arbitrary 
 epistasis and mutator genes in asexual populations.” Bioinformatics, 33(12), 
 1898–1899. doi: 10.1093/bioinformatics/btx077, 
-https://doi.org/10.1093/bioinformatics/btx077. <a id="Onco1"></a>
+https://doi.org/10.1093/bioinformatics/btx077. 
 
+<a id="Onco2"></a>
 [5] Diaz-Uriarte R (2017). “Cancer progression models and fitness landscapes:
 a many-to-many relationship.” Bioinformatics. doi: 10.1093/bioinformatics/btx663, https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btx663/.
-<a id="Onco2"></a>
 
+<a id="Onco3"></a>
 [6] Diaz-Uriarte R (2015). “Identifying restrictions in the order of 
 accumulation of mutations during tumor progression: effects of passengers,
 evolutionary models, and sampling.” BMC Bioinformatics, 16(41). 
 doi: 10.1186/s12859-015-0466-7, http://www.biomedcentral.com/1471-2105/16/41/abstract.
-<a id="Onco3"></a>
 
+<a id="Kaznatcheev"></a>
 [7]. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
 scheduling and dynamic heterogeneity in social dilemmas of tumour acidity and
 vasculature. Br J Cancer 116, 785–792 (2017) 
-doi:10.1038/bjc.2017.5 <a id="Kaznatcheev"></a>
+doi:10.1038/bjc.2017.5 
 
+<a id="Kerr"></a>
 [8]. Kerr, B., Riley, M., Feldman, M. et al. Local dispersal promotes 
 biodiversity in a real-life game of rock–paper–scissors. Nature 418, 171–174 
-(2002) doi:10.1038/nature00823 <a id="Kerr"></a>
+(2002) doi:10.1038/nature00823 
 
+<a id="Ramon"></a>
 [9]. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
 simulation in asexual populations with arbitrary epistatic interactions and a
-focus on modeling tumor progression (2019). -> Vignette <a id="Ramon"></a>
+focus on modeling tumor progression (2019). -> Vignette 
 
+<a id="Sartakhi"></a>
 [10]. Sartakhti, J. S., Manshaei, M. H., Bateni, S., & Archetti, M. (2016). 
 Evolutionary dynamics of tumor-stroma interactions in multiple myeloma. 
-PloS one, 11(12), e0168856. <a id="Sartakhi"></a>
+PloS one, 11(12), e0168856. 
 
+<a id="Sergio"></a>
 [11]. Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
 dependiente de la frecuencia genética en el paquete OncoSimulR (2018). -> TFM
-<a id="Sergio"></a>
 
+<a id="Williams"></a>
 [12]. Williams BK, Nichols JD, Conroy MJ Michael J. Analysis and management of
 animal  populations: modeling, estimation, and decision making. 
-Academic Press; 2002. 817 p <a id="Williams"></a>
+Academic Press; 2002. 817 p 
 
 # Session info {.unnumbered}
 
