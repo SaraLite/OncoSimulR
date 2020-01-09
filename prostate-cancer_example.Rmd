@@ -29,9 +29,6 @@ header-includes:
 ---
 
 # News and functions used
-**Lo hará Alejandro**
-**Explicar por encima cosas nuevas (lo de la leyenda), los paquetes cargados y las funciones incorporadas**
-
 
 ```{r message = FALSE, warning = FALSE}
 ## Packages
@@ -71,9 +68,9 @@ source("legend_outside.R")
 ## Introduction
 
 This example is inspired by the article _Local dispersal promotes biodiversity_
-_in a real game of rock paper scissors_ (Kerr _et al._). It describes the 
-relationship between three populations of _Escherichia coli_, that turns out 
-to be very similar to a rock-paper-scissors game.
+_in a real game of rock paper scissors_ [5]. It describes the relationship
+between three populations of _Escherichia coli_, that turns out to be very
+similar to a rock-paper-scissors game.
 
 An E. coli community can have a specific strain of colicinogenic bacteria,
 that are capable of creating colicin, a toxin to which this special strain is
@@ -212,11 +209,10 @@ plot(resultscrs3[[3]], show = "genotypes", type = "line")
 In all the cases all three strains survive, with C having a much smaller
 population than the other two.
 
-
 # Evolutionary games theory: Hawk and Dove example
 
 The example we are going to show is one of the first games that Maynar Smith 
-analyzed. This classic game is: _Hawk and Dove_ available <https://en.wikipedia.org/wiki/Chicken_(game))>
+analyzed. This classic game is: _Hawk and Dove_ [3], available at <https://en.wikipedia.org/wiki/Chicken_(game))>.
 
 In this game, the two competitors are subtypes of the same species but with 
 different strategies.  The Hawk first displays aggression, then escalates into 
@@ -361,7 +357,6 @@ To sum up, this example shows that when the risks of contest injury or death
 and doves, and the proportion of doves will exceed that of the aggressors. 
 This explains behaviours observed in nature.
 
-
 # The Lotka-Volterra model of competition between two competing species
 
 Species do not exist in isolation of one another. The simple models of 
@@ -417,12 +412,12 @@ Table  \@ref(tab:table1) Relationship between the two species
 : (\#tab:table1) Relationship between the two species
 
 Next, to show the effect of competition coefficients and competition models 
-we will model the scenarios proposed in the book
-_"Analysis and Management of Animal Populations"_ (Williams, Nichols and Conroy, 
-2010, 168-171). For the following examples S1 and S2 will be the two species
-used, and can be interpreted as cellular clones competing for cellular resources 
-or multicellular organisms competing for environmental resources (sexual or 
-asexual reproduction is not relevant as it is incorporated in the birth rate). 
+we will model the scenarios proposed in the book _"Analysis and Management of_
+_Animal Populations"_ [9]. For the following examples S1 and S2 will be the two
+species used, and can be interpreted as cellular clones competing for cellular
+resources or multicellular organisms competing for environmental resources
+(sexual or asexual reproduction is not relevant as it is incorporated in the
+birth rate). 
 
 S2 in these examples has a higher rate of growth than S1 ($r2 > r1$) and 
 higher carrying capacity ($K2 > K1$). However, S1 has a stronger competitive 
@@ -518,7 +513,6 @@ compositionPop2(S1S2_simulation, main = "No competition effect",
                 ylab = "Number of individuals")
 ```
 
-
 Before continuing with different scenarios, it is interesting to observe how 
 the fitness landscape of the species S1 and S2 is influenced by the load 
 capacity ($K$). In the absence of competition (exponential model), a fitness 
@@ -543,7 +537,8 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
 ```
 
 In contrast, when spPopsizes is greater than K1 or K2 a population decrease is 
-observed because the environment cannot support that size. 
+observed because the environment cannot support that size.
+
 ```{r, message=F}
 ## Case 1: No competition effects
 S1S2_competition <-allFitnessEffects(
@@ -561,10 +556,10 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
 ```
 
 ## Case 2: Stable coexistence
-As described in page 166 from the book
-_"Analysis and Management of Animal Populations"_ (Williams, Nichols and Conroy, 
-2010), if the numerators of the equilibrium formulas are positive, then the 
-populations can coexist in equilibrium:
+
+As described in page 166 from the book _"Analysis and Management of Animal_
+_Populations"_ [9], if the numerators of the equilibrium formulas are positive,
+then the populations can coexist in equilibrium:
 
   $$K1 > a_{12}*K2$$   
   $$K2 > a_{21}*K1$$
@@ -640,6 +635,7 @@ As the previous case, if we analyze the fitness values for S1 and S2 we could
 check that initial population sizes lower than $n_1(t)$ and $n_2(t)$ lead to 
 increases toward the steady-states values, this means fitness values higher 
 than 1.
+
 ```{r, message=FALSE}
 S1S2_competition <-allFitnessEffects(
     genotFitness = S1S2_LV(1.2, 1.7, 350, 400, 0.25, 0.5,
@@ -675,6 +671,7 @@ data.frame("S1_fitness" = evalGenotype(genotype = "S1",
 ```
 
 ## Case 3: Competitive Exclusion
+
 If only one of the two conditions $K1 > a_{12}*K2$ or $K2 > a_{21}*K1$ is 
 achived the corresponding population eventually approaches its carrying capacity
 (irrespective of population initial size) and the other population is driven 
@@ -735,8 +732,8 @@ compositionPop2(S1S2_simulation, main = "Competitive Exclusion",
                 ylab = "Number of individuals")
 ```
 
-
 ## Case 4: Unstable Population Equilibrium
+
 If both condition are:
 
   $K1 < a_{12}*K2$   
@@ -750,7 +747,6 @@ competitors will be extinct. The extincted competitor will depend on:
    n_2 > \frac{K_2-a_{12}K_1}{K_1-a_{21}K_2}\ n_1
 \end{align}
 <br>
-
 
 where $n_1$ will be extincted. Or:
 
@@ -888,7 +884,7 @@ compositionPop2(S1S2_simulation, main = "Unestable competition",
 
 This example is based on the paper _Cancer treatment scheduling and dynamic_
 _heterogeneity in social dilemmas of tumour acidity and vasculature_ 
-(**referencia**) available at <https://doi.org/10.1038/bjc.2017.5>.
+[4], available at <https://doi.org/10.1038/bjc.2017.5>.
 
 In this work, it is explained that the progression of cancer is marked by the
 acquisition of a number of hallmarks, including self-sufficiency of growth
@@ -1120,12 +1116,11 @@ compositionPop2(simulation, ylab = "Number of individuals",
 
 ```
 
-
 # Prostate cancer tumour–stroma interactions 
 
 This example is based on the paper _Investigating prostate cancer tumour–stroma_
 _interactions: clinical and biological insights from an evolutionary game_ 
-(**referencia**) available at <http://dx.doi.org/10.1038/bjc.2011.517>. 
+[2], available at <http://dx.doi.org/10.1038/bjc.2011.517>. 
 The authors apply an Evolutionary Game Theory to modelling the behavior and
 progression of a prostate tumour formed by three different cell populations: 
 stromal cells, a dependant tumour phenotype capable of co-opting stromal cells
@@ -1243,7 +1238,6 @@ fitness_rel <- function(a, b, r, g, gt = c("WT", "S", "I", "D")) {
 }
 ```
 
-
 Then, we are going to model different scenarios that represent different
 biological situations. In this case, we are going to explain 
 four possible situations.
@@ -1251,7 +1245,6 @@ four possible situations.
 **Note:** for these simulations the values of paratemers are normalised
 in the range (0 : 1) so 1 represents the maximum value for any parameter
 being positive of negative to fitness depending on the parameter. 
-
 
 ### First scenario
 
@@ -1325,7 +1318,6 @@ compositionPop2(simulScen1Pop,
                 main = "First scenario",
                 ylab = "Number of cells")
 ```
-
 
 ### Second scenario
 
@@ -1403,7 +1395,6 @@ compositionPop2(simulScen2Pop,
                 ylab = "Number of cells")
 ```
 
-
 ### Third scenario
 
 In this case, we have a extreme situation where the microenvironment is 
@@ -1445,7 +1436,6 @@ plot(simulScen3, show = "genotypes", type = "line",
      las = 1)
 ```
 
-
 ```{r example5scen3plot, message=FALSE}
 plot(simulScen3, show = "genotypes",
      main = "Third scenario",
@@ -1475,7 +1465,6 @@ compositionPop2(simulScen3Pop,
                 main = "Third scenario",
                 ylab = "Number of cells")
 ```
-
 
 ### Fourth scenario
 
@@ -1550,7 +1539,7 @@ compositionPop2(simulScen4Pop,
 # Evolutionary Dynamics of Tumor-Stroma Interactions in Multiple Myeloma
 
 This example is based on the paper _Evolutionary Dynamics of Tumor-Stroma_
-_Interactions in Multiple Myeloma_ (**referencia**) available at
+_Interactions in Multiple Myeloma_ [7], available at
 <https://doi.org/10.1371/journal.pone.0168856>. Here the authors provide a
 frequency-dependent model to study the growth of malignant plasma cells in
 Multiple Myeloma. Assuming that cancer cells and stromal cells cooperate by
@@ -1821,43 +1810,39 @@ reduction in the number of OB and OC cells.
 
 # References
 
-*Referencias manualmente. Hay que ordenarlas alfabéticamente y seguir*
-*el mismo formato. Respecto al formato, elegid el que queráis.*
-
 [1]. Archetti, M., Pienta, K.J. Cooperation among cancer cells: applying game
 theory to cancer. Nat Rev Cancer 19, 110–117 (2019)
 doi:10.1038/s41568-018-0083-7
 
-[2]. Basanta, D., Scott, J., Fishman, M. _et al._ Investigating prostate cancer
+[2]. Basanta, D., Scott, J., Fishman, M. et al. Investigating prostate cancer
 tumour–stroma interactions: clinical and biological insights from an 
-evolutionary game. _Br J Cancer_ 106, 174–181 (2012) doi:10.1038/bjc.2011.517
+evolutionary game. Br J Cancer 106, 174–181 (2012) doi:10.1038/bjc.2011.517
 
-[X]. Chicken (game) [Internet]. En.wikipedia.org. 2020 [cited 7 January 2020]. 
+[3]. Chicken (game) [Internet]. En.wikipedia.org. 2020 [cited 7 January 2020]. 
 Available from: https://en.wikipedia.org/wiki/Chicken_(game)
 
-[X]. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
+[4]. Kaznatcheev, A., Vander Velde, R., Scott, J. et al. Cancer treatment
 scheduling and dynamic heterogeneity in social dilemmas of tumour acidity and
 vasculature. Br J Cancer 116, 785–792 (2017) doi:10.1038/bjc.2017.5
 
-[X]. Kerr, B., Riley, M., Feldman, M. _et al._ Local dispersal promotes 
+[5]. Kerr, B., Riley, M., Feldman, M. et al. Local dispersal promotes 
 biodiversity in a real-life game of rock–paper–scissors. Nature 418, 171–174 
 (2002) doi:10.1038/nature00823
 
-[X]. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
+[6]. Ramon Diaz-Uriarte, Sergio Sanchez-Carrillo. OncoSimulR: forward genetic
 simulation in asexual populations with arbitrary epistatic interactions and a
 focus on modeling tumor progression (2019). -> Vignette
 
-[X]. Sartakhti, J. S., Manshaei, M. H., Bateni, S., & Archetti, M. (2016). 
+[7]. Sartakhti, J. S., Manshaei, M. H., Bateni, S., & Archetti, M. (2016). 
 Evolutionary dynamics of tumor-stroma interactions in multiple myeloma. 
 PloS one, 11(12), e0168856.
 
-[X]. Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
+[8]. Sergio Sánchez Carrillo, Ramón Díaz Uriarte. Implementación del fitness
 dependiente de la frecuencia genética en el paquete OncoSimulR (2018). -> TFM
 
-[X]. Williams BK, Nichols JD, Conroy MJ (Michael J. Analysis and management of 
+[9]. Williams BK, Nichols JD, Conroy MJ Michael J. Analysis and management of
 animal  populations: modeling, estimation, and decision making. 
 Academic Press; 2002. 817 p
-
 
 # Session info {.unnumbered}
 
