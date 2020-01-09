@@ -47,7 +47,7 @@ For reproducible vignette results the seed has been fixed. The number of cores
 used to run the simulations has also been set to 4 (in case of Windows it will 
 always be 1 by default), although the user can modify it if he wishes. 
 The parallel programming package named parallel is used with  _L’Ecuyer-CMRG_
-random number generator (RNG) in order to take advantege of the benefit of 
+random number generator (RNG) in order to take advantage of the benefit of 
 parallel computing. 
 ```{r message = FALSE, warning = FALSE}
 ## Packages
