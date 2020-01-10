@@ -59,6 +59,14 @@ ol, ul {
   list-style: square;
 }
 
+img {
+  padding-right: 0px;
+  max-width: 100%;
+  padding-right: 5px;
+  padding-left: 5px;
+  margin-bottom: 13px;
+}
+
 /*---------------*/
 
 p, pre { 

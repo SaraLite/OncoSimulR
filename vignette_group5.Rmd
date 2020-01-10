@@ -1213,7 +1213,8 @@ the context of the game and spatial considerations will not affect the outcome.
 
 : (\#tab:table) Playoff table that represents the interactions between the three cell types considered by de model
 
-The I cells are relatively independent from the microenvironment and 
+As is specified in the reference [[2]](#Basanta), 
+the I cells are relatively independent from the microenvironment and 
 produce their own growth factors (e.g. testosterone) and thus are
 considered to have a comparatively constant fitness $(1-\gamma)$, where
 $\gamma$ represents the fitness cost for I cells to be independent. The
