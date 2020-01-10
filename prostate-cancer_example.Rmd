@@ -1593,7 +1593,7 @@ Then, the payoff for strategy $P_j$ is:
 In multiple Myeloma we have three different types of cells that have autocrine
 and paracrine effects on the cells within their diffusion range: Malignant
 plasma cells (MM), Osteoblasts (OB) and Osteoclasts (OC). The specification of
-fitness is the following (see **referencia**):
+fitness is the following (see [[2]](#Basanta)):
 
 \begin{align}
   W_{OC} &= \frac{(f_{1}(M-1)+1)c_{1}}{M}r11+
@@ -1614,7 +1614,7 @@ produced by the cells are shown in the following table:
 ![Multiplication factor in myeloma interaction](./Images_markdown/Myeloma_interaction.png)
 
 Several scenarios varying the values of the parameters are shown in
-**referencia**. Here we reproduce some of them.
+[[2]](#Basanta). Here we reproduce some of them.
 
 ## Simulations
 
@@ -1719,7 +1719,7 @@ point, which is stable. OB cells are extinct and cancer has propelled.
 
 ### Scenario 2
 
-As in the second scenario of **referencia** ($c1=c2=c3$) configuration A (upper
+As in the second scenario of [[2]](#Basanta) ($c1=c2=c3$) configuration A (upper
 row in the grid of images). We should find one stable point on the OC-OB edge
 under certain conditions, which are met in the example. Further information
 about the parameters can be found in the R code shown below.
@@ -1778,7 +1778,7 @@ the number of MM cells.
 ### Scenario 3
 
 Here we imitate the conditions presented in the third scenario of
-**referencia** ($c3<c1<c2$) configuration A (left). If diffusion range
+[[2]](#Basanta) ($c3<c1<c2$) configuration A (left). If diffusion range
 increases ($M = 50$) the game has two stable points. See the R code for further
 information about the parameters of this simulation. As we do not have control
 in the initial population (it depends on random mutations of the wild type) we
@@ -1828,7 +1828,7 @@ compositionPop2(simulation)
 
 ```
 
-As specified in **referencia** there are two equilibrium points under this
+As specified in [[2]](#Basanta) there are two equilibrium points under this
 configuration: a monomorphic equilibrium on the MM vertex and a polymorphic
 equilibrium on the OC-MM edge. This can be clearly seen in our boxplot: there
 is a huge variance in the results of the $20$ simulations. Sometimes, MM cells
