@@ -94,9 +94,9 @@ source("legend_outside.R")
 ## Introduction
 
 This example is inspired by the article _Local dispersal promotes biodiversity_
-_in a real game of rock paper scissors_ [[8]](#Kerr). It describes the relationship
-between three populations of _Escherichia coli_, that turns out to be very
-similar to a rock-paper-scissors game.
+_in a real game of rock paper scissors_ [[8]](#Kerr). It describes the 
+relationship between three populations of _Escherichia coli_, that turns out to 
+be very similar to a rock-paper-scissors game.
 
 An E. coli community can have a specific strain of colicinogenic bacteria,
 that are capable of creating colicin, a toxin to which this special strain is
@@ -122,6 +122,16 @@ crs <- function (a, b, c){
 ```
 
 The equations are:
+
+\begin{align}
+  W\left(WT\right) = 1 + af_R - bf_C\\
+	W\left(C\right) = 1 + bf_{WT} - cf_R\\
+	W\left(R\right) = 1 + cf_C - af_{WT}\\
+\end{align}
+
+
+where $f_{WT}$, $f_C$ and $f_R$ are the frequencies of WT, C and R, 
+respectively. 
 
 ```{r message=F}
 crs("a", "b", "c")
@@ -1332,7 +1342,7 @@ simulScen1 <- oncoSimulIndiv(scen1,
                               model = "McFL",
                               onlyCancer = FALSE,
                               finalTime = 150,
-                              mu = 1e-4,
+                              mu = 1e-3,
                               initSize = 4000,
                               keepPhylog = TRUE,
                               seed = NULL,
@@ -1365,7 +1375,7 @@ simulScen1Pop <- oncoSimulPop(20,
                               onlyCancer = FALSE,
                               mc.cores = n_cores,
                               finalTime = 150,
-                              mu = 1e-4,
+                              mu = 1e-3,
                               initSize = 4000,
                               keepPhylog = TRUE,
                               seed = NULL,
@@ -1375,7 +1385,7 @@ simulScen1Pop <- oncoSimulPop(20,
 compositionPop2(simulScen1Pop,
                 main = "First scenario",
                 ylab = "Number of cells")
-```
+  ```
 
 ### Second scenario
 
