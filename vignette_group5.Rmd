@@ -158,7 +158,8 @@ resultscrs1 <- oncoSimulIndiv(afcrs1,
                              errorHitMaxTries = FALSE,
                              errorHitWallTime = FALSE)
 
-plot(resultscrs1, show = "genotypes", type = "line")
+plot(resultscrs1, show = "genotypes", type = "line", cex.lab=1.1,
+     las = 1)
 ```
 
 An oscillatory equilibrium is reached, in which the same populations have a
@@ -203,7 +204,8 @@ different scenarios, so we decided to plot the data as points and join with
 lines the ones that come from the same simulation.
 
 ```{r message=F}
-meanCompositionPop(resultscrs2, ylab = "Number of cells")
+meanCompositionPop(resultscrs2, ylab = "Number of cells", cex.lab=1.1,
+     las = 1)
 ```
 
 There are two scenarios. The first one is the one in which all the strains
@@ -243,7 +245,8 @@ resultscrs2b <- oncoSimulIndiv(afcrs2,
                              errorHitMaxTries = FALSE,
                              errorHitWallTime = FALSE)
 
-plot(resultscrs2b, show = "genotypes", type = "line")
+plot(resultscrs2b, show = "genotypes", type = "line", cex.lab=1.1,
+     las = 1)
 ```
 
 ## Case 3
@@ -269,7 +272,8 @@ resultscrs3 <- oncoSimulPop(10,
 
 meanCompositionPop(resultscrs3)
 
-plot(resultscrs3[[3]], show = "genotypes", type = "line")
+plot(resultscrs3[[3]], show = "genotypes", type = "line", cex.lab=1.1,
+     las = 1)
 ```
 
 In all the cases all three strains survive, with C having a much smaller
@@ -368,14 +372,14 @@ plot(simulation[[1]], show = "genotypes", type = "line", xlim = c(40, 500),
      main = "Hawk and Dove trajectory",  
      col = c("#a37acc", "#f8776d", "#7daf00"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 plot(simulation[[1]], show = "genotypes", xlim = c(40, 500), lwdClone = 2,
      ylab = "Number of individuals", main = "Hawk and Dove", 
      col = c("#a37acc", "#f8776d", "#7daf00"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
@@ -558,7 +562,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      main = "No competition effect", 
      col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 plot(S1S2_simulation[[1]], show = "genotypes", 
@@ -567,7 +571,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      main = "No competition effect", 
      col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 ```
 
@@ -680,7 +684,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      main = "Competition with Stable Coexistance", 
      col=c("black","salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 plot(S1S2_simulation[[1]], show = "genotypes", 
@@ -689,7 +693,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      main = "Competition with Stable Coexistance", 
      col=c("black","salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
@@ -782,7 +786,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      main = "Competitive Exclusion", 
      col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 plot(S1S2_simulation[[1]], show = "genotypes", 
@@ -791,7 +795,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      main = "Competitive Exclusion", 
      col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
@@ -873,7 +877,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      main = "Unestable competition", 
      col=c("#a37acc", "salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 plot(S1S2_simulation[[1]], show = "genotypes", 
@@ -882,7 +886,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      main = "Unestable competition", 
      col=c("#a37acc", "salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
@@ -930,7 +934,7 @@ plot(S1S2_simulation[[1]], show = "genotypes", type = "line",
      main = "Unestable competition", 
      col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 plot(S1S2_simulation[[1]], show = "genotypes", 
@@ -939,7 +943,7 @@ plot(S1S2_simulation[[1]], show = "genotypes",
      main = "Unestable competition", 
      col=c("#a37acc","salmon", "darkgreen"),
      font.main=2, font.lab=2,
-     cex.main=2, cex.lab=1.2,
+     cex.main=1.4, cex.lab=1.1,
      las = 1)
 
 ## Agreement: Show boxplot from several simulations. 
@@ -1047,7 +1051,7 @@ simulation <- oncoSimulPop(20,
 # highly similar).
 plot(simulation[[1]], show = "genotypes", type = "line",
      ylab = "Number of individuals", main = "Fully glycolytic tumours",
-     font.main=2, font.lab=2, cex.main=2, cex.lab=1.2, las = 1)
+     font.main=2, font.lab=2, cex.main=1.4, cex.lab=1.1, las = 1)
 
 ```
 
@@ -1108,7 +1112,7 @@ simulation <- oncoSimulPop(20,
 # highly similar).
 plot(simulation[[1]], show = "genotypes", type = "line",
      ylab = "Number of individuals", main = "Fully angiogenic tumours",
-     font.main=2, font.lab=2, cex.main=2, cex.lab=1.2, las = 1)
+     font.main=2, font.lab=2, cex.main=1.4, cex.lab=1.1, las = 1)
 
 ```
 
@@ -1171,7 +1175,7 @@ simulation <- oncoSimulPop(20,
 # highly similar).
 plot(simulation[[1]], show = "genotypes", type = "line",
      ylab = "Number of individuals", main = "Heterogeneous tumours",
-     font.main=2, font.lab=2, cex.main=2, cex.lab=1.2, las = 1)
+     font.main=2, font.lab=2, cex.main=1.4, cex.lab=1.1, las = 1)
 
 ```
 
@@ -1351,14 +1355,14 @@ simulScen1 <- oncoSimulIndiv(scen1,
 
 plot(simulScen1, show = "genotypes", type = "line",
      main = "First scenario",
-     cex.main = 1.3, cex.lab = 1.1,
+     cex.main = 1.4, cex.lab = 1.1,
      las = 1)
 ```
 
 ```{r example5scen1plot, message=FALSE}
 plot(simulScen1, show = "genotypes",
      main = "First scenario",
-     cex.main = 1.3, cex.lab = 1.1,
+     cex.main = 1.4, cex.lab = 1.1,
      las = 1)
 ```
 
@@ -1426,7 +1430,7 @@ simulScen2 <- oncoSimulIndiv(scen2,
 
 plot(simulScen2, show = "genotypes", type = "line",
      main = "Second scenario",
-     cex.main = 1.3, cex.lab = 1.1,
+     cex.main = 1.4, cex.lab = 1.1,
      las = 1)
 ```
 
@@ -1434,7 +1438,7 @@ plot(simulScen2, show = "genotypes", type = "line",
 
 plot(simulScen2, show = "genotypes",
      main = "Second scenario",
-     cex.main = 1.3, cex.lab = 1.1,
+     cex.main = 1.4, cex.lab = 1.1,
      las = 1)
 ```
 
@@ -1500,14 +1504,14 @@ simulScen3 <- oncoSimulIndiv(scen3,
 
 plot(simulScen3, show = "genotypes", type = "line",
      main = "Third scenario",
-     cex.main = 1.3, cex.lab = 1.1,
+     cex.main = 1.4, cex.lab = 1.1,
      las = 1)
 ```
 
 ```{r example5scen3plot, message=FALSE}
 plot(simulScen3, show = "genotypes",
      main = "Third scenario",
-     cex.main = 1.3, cex.lab = 1.1,
+     cex.main = 1.4, cex.lab = 1.1,
      las = 1)
 ```
 
@@ -1570,14 +1574,14 @@ simulScen4 <- oncoSimulIndiv(scen4,
 
 plot(simulScen4, show = "genotypes", type = "line",
      main = "Fourth scenario",
-     cex.main = 1.3, cex.lab = 1.1,
+     cex.main = 1.4, cex.lab = 1.1,
      las = 1)
 ```
 
 ```{r example5scen4plot, message=FALSE}
 plot(simulScen4, show = "genotypes",
      main = "Fourth scenario",
-     cex.main = 1.3, cex.lab = 1.1,
+     cex.main = 1.4, cex.lab = 1.1,
      las = 1)
 ```
 
