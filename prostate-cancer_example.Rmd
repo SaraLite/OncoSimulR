@@ -199,12 +199,42 @@ meanCompositionPop(resultscrs2, ylab = "Number of cells")
 There are two scenarios. The first one is the one in which all the strains
 coexist, with the colicinogenic bacteria having a much bigger population.
 
-![Coexistance scenario](./Images_markdown/CRS_caso2_2.png)
+```{r message=F}
+set.seed(1)
+
+resultscrs2a <- oncoSimulIndiv(afcrs2,
+                             model = "McFL", 
+                             onlyCancer = FALSE,
+                             finalTime = 100, 
+                             mu = 1e-2,
+                             initSize = 4000, 
+                             keepPhylog = TRUE,
+                             seed = NULL,
+                             errorHitMaxTries = FALSE,
+                             errorHitWallTime = FALSE)
+
+plot(resultscrs2a, show = "genotypes", type = "line")
+```
 
 In the second one, the wild type and the colicinogenic bacteria dissapear, so
 the resistant strain is the only one that survives.
 
-![Only resistant strain](./Images_markdown/CRS_caso2_3.png)
+```{r message=F}
+set.seed(3)
+
+resultscrs2b <- oncoSimulIndiv(afcrs2,
+                             model = "McFL", 
+                             onlyCancer = FALSE,
+                             finalTime = 100, 
+                             mu = 1e-2,
+                             initSize = 4000, 
+                             keepPhylog = TRUE,
+                             seed = NULL,
+                             errorHitMaxTries = FALSE,
+                             errorHitWallTime = FALSE)
+
+plot(resultscrs2b, show = "genotypes", type = "line")
+```
 
 ## Case 3
 
