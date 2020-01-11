@@ -7,7 +7,7 @@
 - __Authors__: Sara Dorado Alfaro, Miguel Hernández del Valle, Álvaro Huertas García, Diego Mañanes Cayero, Alejandro Martín Muñoz. 
 
 According to the specifications given, our group has worked on the second asked exercise, frequency-dependent fitness, whose results are available in the [OncoSimulR_Ejercicio2 GitHub repository](https://github.com/SaraLite/OncoSimulR_Ejercicio2) . 
- Modified the original OncoSimulR.Rmd vignette
+ Modified the original OncoSimulR.Rmd vignette.
 The vignette_group5.Rmd is a markdown file, which contains the code and comments required to generate the corresponding vignette. As it can be seen, once we understood and got used to the OncoSimulR package and its functionality, we proceeded to develop some examples: Rock-paper-scissors model in bacterial community, a simple example of relationships between different bacterial species; the classic evolutionary game Hawk and Dove, a didactical example of Lotka-Volterra competition models to understand better the concepts and situations treated by the package; and three examples of cancer, situation intended to be treated by the package particularly. In the told vignette, these examples and their corresponding codes can be analysed in higher detail. After running this markdown file, a html file is created, which is also present in the repository. 
 
 Regarding the package functionality, we have modified some functions in order to display some plots in a more comfortable way. Moreover, we have created some functions for showing a summary of the information given by multiple simulations of each situation, thus reaching a global vision of each scenario after simulating it several times. Those functions can be analysed in the file Funciones_plot_markdown.R. 
