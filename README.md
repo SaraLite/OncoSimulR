@@ -1,10 +1,5 @@
 # R programming exercise (Group 5)
 
-<style>
-body {
-text-align: justify}
-</style>
-
 - Project: OncoSimulR, frequency-dependent fitness
 
 - Subject: Programming and Statistics with R (Master's Degree in Bioinformatics and Computational Biology, Universidad Autónoma de Madrid).
@@ -23,6 +18,6 @@ We have also written some tests for the generated code, which can be run and ana
 
 Finally, the repository contains three different folders: css, required for the vignette file style; Images_markdown, which contains the images used in the told vignette; and presentation, which contains the different files related to the pdf file for the exposition of this work.
 
-Furthermore, the integration of the new code created in the original OncoSimulR package vignette has also been carried out. The additional examples added now correspond to section 11 of the vignette. Both codes have been successfully integrated. The functions used by our examples load the necessary functions at the beginning of the section, but are removed later at the end of the section. Thus, the results of the original vignette are not changed. 
+Furthermore, the integration of the new code created in the original OncoSimulR package vignette has also been carried out. The additional examples added now correspond to section 11 of the vignette. Both codes have been successfully integrated. The functions used by our examples load the necessary functions at the beginning of the section, but are removed later at the end of the section. Thus, the results of the original vignette are not changed and they have been merged nicely. 
 
 In the original OncoSimulR repository the new markdown has been added, its corresponding html and the Images_markdown folder where the images needed to generate the new vignette are located. The test document test_functions_group5.R has also been included in the testthat test folder, the scripts functions_plot_markdown.R and legend_outside.R in the R folder with the rest of the scripts.  
