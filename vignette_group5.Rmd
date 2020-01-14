@@ -1389,7 +1389,7 @@ simulScen1Pop <- oncoSimulPop(20,
 compositionPop2(simulScen1Pop,
                 main = "First scenario",
                 ylab = "Number of cells")
-  ```
+```
 
 ### Second scenario
 
@@ -1417,6 +1417,8 @@ scen2 <- allFitnessEffects(genotFitness = fitness_rel(a = 0.3, b = 0.7,
                           frequencyDependentFitness = TRUE,
                           frequencyType = "rel")
 
+set.seed(1)
+
 simulScen2 <- oncoSimulIndiv(scen2,
                               model = "McFL",
                               onlyCancer = FALSE,
@@ -1435,7 +1437,6 @@ plot(simulScen2, show = "genotypes", type = "line",
 ```
 
 ```{r example5scen2plot, message=FALSE}
-
 plot(simulScen2, show = "genotypes",
      main = "Second scenario",
      cex.main = 1.4, cex.lab = 1.1,
