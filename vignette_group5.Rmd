@@ -199,8 +199,8 @@ resultscrs2 <- oncoSimulPop(10,
 ```
 
 The following chart represents the average number of cells of each type during
-the last half of each simulation. As a boxplot would lose the informationof the
-different scenarios, so we decided to plot the data as points and join with
+the last half of each simulation. As a boxplot would lose the information of the
+different scenarios, we decided to plot the data as points and join with
 lines the ones that come from the same simulation.
 
 ```{r message=F}
