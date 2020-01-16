@@ -46,6 +46,11 @@ We have also written some tests for the generated code, which can be run and ana
 Finally, the repository contains three different folders: css, required for the vignette file style; Images_markdown, which contains the images used in the told vignette; and presentation, which contains the different files related to the pdf file for the exposition of this work.
 
 ### [OncoSimul Github repository](https://github.com/SaraLite/OncoSimul)
+This repository has merged the new features discussed above with the original package code. In this way, the package with the new features can be reinstalled using the following command for users with Linux operating system.
+
+       + devtools::install_git("git://github.com/SaraLite/OncoSimul", subdir = "OncoSimulR", branch = "freq-dep-fitness")
+
+For users with Windows operating system the installation would be done with rtools40 as indicated here (not tested). 
 
 ### Modified the original OncoSimulR.Rmd vignette
 Furthermore, the integration of the new code created in the original OncoSimulR package vignette has also been carried out. The additional examples added now correspond to section 11 of the vignette. Both codes have been successfully integrated. The functions used by our examples load the necessary functions at the beginning of the section, but are removed later at the end of the section. Thus, the results of the original vignette are not changed and they have been merged nicely. 
