@@ -18,7 +18,9 @@ classoption: a4paper
 geometry: margin=3cm
 fontsize: 12pt
 abstract: |
-  Description of your vignette
+   OncoSimulR, frequency-dependent fitness. Programming and Statistics with R 
+   (Master's Degree in Bioinformatics and Computational Biology, Universidad 
+   Autónoma de Madrid).
 vignette: |
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
