@@ -49,6 +49,9 @@ Finally, the repository contains three different folders: css, required for the 
 This repository has merged the new features discussed above with the original package code. In this way, the package with the new features can be reinstalled using the following command for users with Linux operating system:
 
     ## In R
+    if (!requireNamespace("devtools", quietly = TRUE))
+      install.packages("devtools")
+    
     devtools::install_git("git://github.com/SaraLite/OncoSimul", 
              subdir = "OncoSimulR", branch = "freq-dep-fitness")
 
