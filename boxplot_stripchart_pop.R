@@ -1,8 +1,8 @@
 ## Authors: Sara Dorado Alfaro
-##          Miguel Hernández del Valle,
-##          Álvaro Huertas García,
-##          Diego Mañanes Cayero,
-##          Alejandro Martin Muñoz, 
+##          Miguel Hern?ndez del Valle,
+##          ?lvaro Huertas Garc?a,
+##          Diego Ma?anes Cayero,
+##          Alejandro Martin Mu?oz, 
 
 ## Date: 16/01/2020
 
@@ -53,7 +53,7 @@ simul_boxplot2 <- function(df, main,  xlab,
 
 ## Extract and create a data frame with results from several simulations
 compositionPop2 <- function(objPop, cols = NULL,  xlab = "Genotype",
-                            ylab = "N", main = FALSE, ...) {
+                            ylab = "N", main = FALSE) {
   ## Extract the information to create a data frame
   clon_labels <- c("WT", objPop[[1]]$geneNames)
   n_labels <- length(clon_labels)
