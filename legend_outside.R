@@ -1,6 +1,20 @@
 ##########################################################
 ############## Modified plot.oncosimul ###################
-## Now you the legend is placed outside the plot on the right side
+## The legend_outside.R script expands the possible parameters for the 
+## representation of the fitness dependent frequency graphs. The new parameters 
+## (legend.out and legend.pos) are only available when the script is loaded.
+
+## legend.out -> Change the position of the legend. By default, the position 
+## of the legend is on the top-left corner of the plot. If \code{TRUE},
+## the legend is displaced outside the plot, on the rigth side. The new
+## position is optimizied to Rmarkdown files. In the case that the canvas
+## has a different size, see argument legend.out
+
+## legend.pos -> If legend.out == TRUE, the position of the legend
+## can be changed on the x axis by this argument. It allows to set a 
+## inset value (argument of legend() function) with respect to 
+## the rigth side of the plot.
+
 
 ## Function used by plot.oncosimul. Not modified
 xlim.pop.data <- function(x, xlim) {
@@ -151,6 +165,8 @@ plot.oncosimul <- function(x,
                            vrange = c(0.8, 1),
                            breakSortColors = "oe",
                            legend.ncols = "auto",
+                           legend.out = FALSE,
+                           legend.pos = 0,
                            ...
 ) {
   
@@ -170,11 +186,13 @@ plot.oncosimul <- function(x,
   
   
   colauto <- FALSE
-  if(col == "auto" && (type == "line") && (show == "drivers"))
+  if((length(col) ==1) && (col == "auto") &&
+     (type == "line") && (show == "drivers"))
     col <- c(8, "orange", 6:1)
-  if(col == "auto" && (show == "genotypes")) {
+  if((length(col) ==1) && (col == "auto") &&
+     (show == "genotypes")) {
     ## For categorical data, I find Dark2, Paired, or Set1 to work best.
-    col <- colorRampPalette( RColorBrewer::brewer.pal(8, "Dark2"))(ncol(x$pops.by.time) - 1)
+    col <- colorRampPalette(RColorBrewer::brewer.pal(8, "Dark2"))(ncol(x$pops.by.time) - 1)
     colauto <- TRUE
   }
   
@@ -254,6 +272,8 @@ plot.oncosimul <- function(x,
                  ylab = ylab,
                  ylim = ylim,
                  xlim = xlim,
+                 legend.out = legend.out,
+                 legend.pos = legend.pos,
                  ...)
   }
   
@@ -282,148 +302,192 @@ plot.oncosimul <- function(x,
   
 }
 
-plotClonesSt <- function (z,
-                          ndr, 
-                          show = "drivers",
-                          na.subs = TRUE, 
-                          log = "y", 
-                          lwd = 1, 
-                          lty = 1:8, 
-                          col = 1:9, 
-                          order.method = "as.is",
-                          stream.center = TRUE, 
-                          stream.frac.rand = 0.01, 
-                          stream.spar = 0.2, 
-                          border = NULL, 
-                          srange = c(0.4, 1), 
-                          vrange = c(0.8, 1), 
-                          type = "stacked", 
-                          breakSortColors = "oe",
-                          colauto = TRUE, 
-                          legend.ncols = "auto", 
-                          lwdStackedStream = 1, 
-                          xlab = "Time units",
-                          ylab = "Number of cells", 
-                          ylim = NULL, 
-                          xlim = NULL, 
-                          ypos = max(tail(z[[1]], 1)), ...) 
-{
+plotClonesSt <- function(z,
+                         ndr,
+                         show = "drivers",
+                         na.subs = TRUE,
+                         log = "y",
+                         lwd = 1,
+                         ## type = "l",
+                         lty = 1:8, col = 1:9,
+                         order.method = "as.is",
+                         stream.center = TRUE,
+                         stream.frac.rand = 0.01,
+                         stream.spar = 0.2,
+                         border = NULL,
+                         srange = c(0.4, 1),
+                         vrange = c(0.8, 1),
+                         type = "stacked",
+                         breakSortColors = "oe",
+                         colauto = TRUE,
+                         legend.ncols = "auto",
+                         lwdStackedStream = 1,
+                         xlab = "Time units",
+                         ylab = "Number of cells",
+                         ylim = NULL,
+                         xlim = NULL,
+                         legend.out = FALSE,
+                         legend.pos = 0,
+                         ...) {
+  
+  ## if given ndr, we order columns based on ndr, so clones with more
+  ## drivers are plotted last
+  
   y <- z$pops.by.time[, 2:ncol(z$pops.by.time), drop = FALSE]
-  if (type %in% c("stacked", "stream")) 
+  
+  ## Code in stacked and stream plots relies on there being no NAs. Could
+  ## change it, but it does not seem reasonable.
+  ##  But my original plotting code runs faster and is simpler if 0 are
+  ##  dealt as NAs (which also makes log transformations simpler).
+  
+  if(type %in% c("stacked", "stream") )
     na.subs <- FALSE
-  if (na.subs) {
+  
+  if(na.subs){
     y[y == 0] <- NA
   }
+  ## if(is.null(ndr))
+  ##     stop("Should never have null ndr")
+  ## if(!is.null(ndr)) {
+  ## could be done above, to avoid creating
+  ## more copies
   oo <- order(ndr)
   y <- y[, oo, drop = FALSE]
   ndr <- ndr[oo]
-  if (show == "drivers") {
+  if(show == "drivers") {
     col <- rep(col, length.out = (1 + max(ndr)))[ndr + 1]
     lty <- rep(lty, length.out = ncol(y))
-  }
-  else {
-    if (length(col) < max(ndr)) 
-      warning("Repeating colors; you might want to", "pass a col vector of more elements")
+  } else {
+    if(length(col) < max(ndr))
+      warning("Repeating colors; you might want to",
+              "pass a col vector of more elements")
     col <- rep(col, length.out = (max(ndr)))[ndr]
   }
   
-  ## Modified
-  if (type == "line") {
-    par(mar = c(4, 4.8, 3, 6))
-    matplot(x = z$pops.by.time[, 1], y = y, log = log, type = "l", 
-            col = col, lty = lty, lwd = lwd, xlab = xlab, ylab = ylab, 
-            ylim = ylim, xlim = xlim, ...)
+  ## Set variables to place the legend if legend.out = TRUE
+  if (legend.out) {
+    mar = c(4, 4.8, 3, 6)
+    xpd = TRUE
+    position = "right"
+    ## If legend.pos is zero (by default), the inset value is -0.2
+    ## This value allows a correct position in Rmarkdown files
+    if (legend.pos == 0)
+      inset = -0.2
+    else
+      inset = legend.pos
+  } else {
+    mar = c(5, 4, 4, 2) + 0.1
+    xpd = FALSE
+    position = "topleft"
+    inset = 0
+  }
+  
+  if(type == "line") {
+    par(mar = mar)
+    matplot(x = z$pops.by.time[, 1],
+            y = y,
+            log = log, type = "l",
+            col = col, lty = lty,
+            lwd = lwd,
+            xlab = xlab,
+            ylab = ylab,
+            ylim = ylim,
+            xlim = xlim,
+            ...)
     box()
-    if (show == "genotypes") {
-      if (!inherits(z, "oncosimul2")) {
+    if(show == "genotypes") {
+      if(!inherits(z, "oncosimul2")) {
         ldrv <- genotypeLabel(z)
-      }
-      else {
+      } else {
         ldrv <- z$GenotypesLabels
       }
       ldrv[ldrv == ""] <- "WT"
       ldrv[ldrv == " _ "] <- "WT"
-      if (legend.ncols == "auto") {
-        if (length(ldrv) > 6) 
-          legend.ncols <- 2
+      if(legend.ncols == "auto") {
+        if(length(ldrv) > 6) legend.ncols <- 2
         else legend.ncols <- 1
       }
-      ## Plotting outside the plot
-      par(xpd = TRUE)
-      ## coord <- par("usr")
-      ## coord[2]*1.02, y = coord[4]+ypos
-      ## Right side legend
-      legend(x = "right" , title = "Genotypes", lty = lty, 
-             inset = -0.2, col = col, lwd = lwd, legend = ldrv, 
+      par(xpd = xpd)
+      legend(x = position, title = "Genotypes", lty = lty, 
+             inset = inset, col = col, lwd = lwd, legend = ldrv, 
              ncol = legend.ncols)
     }
-  }
-  else {
+  } else {
+    par(mar = mar)
     ymax <- colSums(y)
-    if ((show == "drivers") || ((show == "genotypes") && 
-                                (colauto))) {
-      cll <- myhsvcols(ndr, ymax, srange = srange, vrange = vrange, 
+    if((show == "drivers") || ((show == "genotypes") && (colauto))) {
+      cll <- myhsvcols(ndr, ymax, srange = srange, vrange = vrange,
                        breakSortColors = breakSortColors)
-    }
-    else {
+    } else {
       cll <- list(colors = col)
     }
     x <- z$pops.by.time[, 1]
-    if (grepl("y", log)) {
-      stop("It makes little sense to do a stacked/stream", 
+    if(grepl("y", log)) {
+      stop("It makes little sense to do a stacked/stream",
            "plot after taking the log of the y data.")
     }
-    if (grepl("x", log)) {
+    if(grepl("x", log)) {
       x <- log10(x + 1)
     }
     
     if (type == "stacked") {
-      par(mar = c(4, 4.8, 3, 6))
-      plot.stacked2(x = x, y = y, order.method = order.method, 
-                    border = border, lwd = lwdStackedStream, col = cll$colors, 
-                    log = log, xlab = xlab, ylab = ylab, ylim = ylim, 
-                    xlim = xlim, ...)
+      plot.stacked2(x = x,
+                    y = y,
+                    order.method = order.method,
+                    border = border,
+                    lwd = lwdStackedStream,
+                    col = cll$colors,
+                    log = log,
+                    xlab = xlab,
+                    ylab = ylab,
+                    ylim = ylim,
+                    xlim = xlim,
+                    ...) 
+    } else if (type == "stream") {
+      plot.stream2(x = x,
+                   y = y,
+                   order.method = order.method,
+                   border = border,
+                   lwd = lwdStackedStream,
+                   col = cll$colors,
+                   frac.rand = stream.frac.rand,
+                   spar = stream.spar,
+                   center = stream.center,
+                   log = log,
+                   xlab = xlab,
+                   ylab = ylab,
+                   ylim = ylim,
+                   xlim = xlim,
+                   ...)
     }
-    
-    else if (type == "stream") {
-      plot.stream2(x = x, y = y, order.method = order.method, 
-                   border = border, lwd = lwdStackedStream, col = cll$colors, 
-                   frac.rand = stream.frac.rand, spar = stream.spar, 
-                   center = stream.center, log = log, xlab = xlab, 
-                   ylab = ylab, ylim = ylim, xlim = xlim, ...)
-    }
-    if (show == "drivers") {
-      if (legend.ncols == "auto") {
-        if (length(cll$colorsLegend$Drivers) > 6) 
-          legend.ncols <- 2
+    if(show == "drivers") {
+      par(mar = mar)
+      if(legend.ncols == "auto") {
+        if(length(cll$colorsLegend$Drivers) > 6) legend.ncols <- 2
         else legend.ncols <- 1
       }
-      legend(x = "topleft", title = "Number of drivers", 
-             pch = 15, col = cll$colorsLegend$Color, 
-             legend = cll$colorsLegend$Drivers, 
-             ncol = legend.ncols)
-    }
-    
-    ## Modified
-    else if (show == "genotypes") {
-      if (!inherits(z, "oncosimul2")) {
+      par(xpd = xpd)
+      legend(x = position, title = "Number of drivers", 
+             inset = inset, pch = 15, 
+             col = cll$colorsLegend$Color, 
+             legend = cll$colorsLegend$Drivers, ncol = legend.ncols)
+      
+    } else if (show == "genotypes") {
+      par(mar = mar)
+      if(!inherits(z, "oncosimul2")) {
         ldrv <- genotypeLabel(z)
-      }
-      else {
+      } else {
         ldrv <- z$GenotypesLabels
       }
       ldrv[ldrv == ""] <- "WT"
-      ldrv[ldrv == " _ "] <- "WT"
-      if (legend.ncols == "auto") {
-        if (length(ldrv) > 6) 
-          legend.ncols <- 2
+      ldrv[ldrv == " _ "] <- "WT"            
+      if(legend.ncols == "auto") {
+        if(length(ldrv) > 6) legend.ncols <- 2
         else legend.ncols <- 1
       }
-      ## Plotting outside the plot
-      par(xpd = TRUE)
-      ## Right side legend
-      legend(x = "right", title = "Genotypes", pch = 15,
-             inset = -0.2, lty = lty, lwd = lwd,
+      par(xpd = xpd)
+      legend(x = position, title = "Genotypes", pch = 15,
+             inset = inset, lty = lty, lwd = lwd,
              col = cll$colors, legend = ldrv, ncol = legend.ncols)
     }
   }
