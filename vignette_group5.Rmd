@@ -88,7 +88,7 @@ between several simulations.
 source("./boxplot_stripchart_pop.R")
 
 ## Import modified plot.oncosimul for plotting legend outside the plot
-source("legend_outside.R")
+source("./legend_outside.R")
 ```
 
 # Rock-paper-scissors model in bacterial community
